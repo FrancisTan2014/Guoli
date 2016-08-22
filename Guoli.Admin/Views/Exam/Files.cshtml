@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "考试管理";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.LastPage = "考试管理";
+    ViewBag.LastUrl = "javascript:void(0);";
+    ViewBag.ThisPage = "试题管理";
+    ViewBag.ThisUrl = "/Line/Files";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12">
+        <section class="tile">
+            <div class="tile-header dvd dvd-btm">
+                <h1 class="custom-font">
+                    <strong>题库列表</strong>
+                </h1>
+                <ul class="controls">
+                    <li>
+                        <button id="btnAdd" class="btn btn-hotpink btn-lg mr-40 mt-10">上传试题</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="tile-body">
+                <div id="responsive-usage_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-custom dt-responsive dataTable no-footer" id="responsive-usage" width="100%" role="grid" aria-describedby="responsive-usage_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-sort="ascending" aria-label="ID: activate to sort column descending" style="width: 82px;">试题名称</th>
+                                        <th class="sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="First Name: activate to sort column ascending" style="width: 255px;">试题描述</th>
+                                        <th class="sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="Last Name: activate to sort column ascending" style="width: 245px;">试题分类</th>
+                                        <th class="none sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="Street Address: activate to sort column ascending" style="width: 335px;">题目总数</th>
+                                        <th class="none sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="City: activate to sort column ascending" style="width: 121px;">上传时间</th>
+                                        <th class="none sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="ZIP: activate to sort column ascending" style="width: 107px;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody><tr class="odd"><td valign="top" colspan="8" class="dataTables_empty">Loading...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="/Scripts/page-scripts/exam-files.js"></script>
+

@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{51A4767F-B4F5-4C94-BDAF-408605DCD54D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Guoli.Dal</RootNamespace>
+    <AssemblyName>Guoli.Dal</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseDal.cs" />
+    <Compile Include="Partital\AnnounceCommandsDal.cs" />
+    <Compile Include="Partital\AnnouncementDal.cs" />
+    <Compile Include="Partital\BaseLineDal.cs" />
+    <Compile Include="Partital\BaseStationDal.cs" />
+    <Compile Include="Partital\DbUpdateLogDal.cs" />
+    <Compile Include="Partital\DepartInfoDal.cs" />
+    <Compile Include="Partital\DrivePlanDal.cs" />
+    <Compile Include="Partital\DriveRecordsDal.cs" />
+    <Compile Include="Partital\DriveSignPointDal.cs" />
+    <Compile Include="Partital\DriveTrainNoAndLineDal.cs" />
+    <Compile Include="Partital\ExamAnswersDal.cs" />
+    <Compile Include="Partital\ExamErrorQuestionsDal.cs" />
+    <Compile Include="Partital\ExamFilesDal.cs" />
+    <Compile Include="Partital\ExamNotifyDal.cs" />
+    <Compile Include="Partital\ExamQuestionDal.cs" />
+    <Compile Include="Partital\ExamRecordsDal.cs" />
+    <Compile Include="Partital\ExamTypeDal.cs" />
+    <Compile Include="Partital\ExceptionLogDal.cs" />
+    <Compile Include="Partital\FeedbackDal.cs" />
+    <Compile Include="Partital\InstructorAcceptDal.cs" />
+    <Compile Include="Partital\InstructorAnalysisDal.cs" />
+    <Compile Include="Partital\InstructorCheckDal.cs" />
+    <Compile Include="Partital\InstructorGoodJobDal.cs" />
+    <Compile Include="Partital\InstructorKeyPersonDal.cs" />
+    <Compile Include="Partital\InstructorLocoQualityDal.cs" />
+    <Compile Include="Partital\InstructorPeccancyDal.cs" />
+    <Compile Include="Partital\InstructorPlanDal.cs" />
+    <Compile Include="Partital\InstructorQuotaDal.cs" />
+    <Compile Include="Partital\InstructorQuotaRecordDal.cs" />
+    <Compile Include="Partital\InstructorRepairDal.cs" />
+    <Compile Include="Partital\InstructorTeachDal.cs" />
+    <Compile Include="Partital\InstructorTempTakeDal.cs" />
+    <Compile Include="Partital\LineAnnounceCommandsDal.cs" />
+    <Compile Include="Partital\LineStationsDal.cs" />
+    <Compile Include="Partital\OperateLogDal.cs" />
+    <Compile Include="Partital\PersonInfoDal.cs" />
+    <Compile Include="Partital\PostsDal.cs" />
+    <Compile Include="Partital\StationFilesDal.cs" />
+    <Compile Include="Partital\SystemUserDal.cs" />
+    <Compile Include="Partital\TraficFilesDal.cs" />
+    <Compile Include="Partital\TraficFileTypeDal.cs" />
+    <Compile Include="Partital\TraficKeywordsDal.cs" />
+    <Compile Include="Partital\TraficSearchRecordDal.cs" />
+    <Compile Include="Partital\TraficSearchResultDal.cs" />
+    <Compile Include="Partital\TraficSearchTextDal.cs" />
+    <Compile Include="Partital\TrainFormationDal.cs" />
+    <Compile Include="Partital\TrainMomentDal.cs" />
+    <Compile Include="Partital\TrainNoDal.cs" />
+    <Compile Include="Partital\TrainNoLineDal.cs" />
+    <Compile Include="Partital\ViewBaseLineDal.cs" />
+    <Compile Include="Partital\ViewExamFilesDal.cs" />
+    <Compile Include="Partital\ViewExamNotifyDal.cs" />
+    <Compile Include="Partital\ViewExamRecordsDal.cs" />
+    <Compile Include="Partital\ViewInstructorAcceptDal.cs" />
+    <Compile Include="Partital\ViewInstructorAnalysisDal.cs" />
+    <Compile Include="Partital\ViewInstructorCheckDal.cs" />
+    <Compile Include="Partital\ViewInstructorGoodJobDal.cs" />
+    <Compile Include="Partital\ViewInstructorKeyPersonDal.cs" />
+    <Compile Include="Partital\ViewInstructorLocoQualityDal.cs" />
+    <Compile Include="Partital\ViewInstructorPeccancyDal.cs" />
+    <Compile Include="Partital\ViewInstructorPlanDal.cs" />
+    <Compile Include="Partital\ViewInstructorRepairDal.cs" />
+    <Compile Include="Partital\ViewInstructorTeachDal.cs" />
+    <Compile Include="Partital\ViewInstructorTempTakeDal.cs" />
+    <Compile Include="Partital\ViewPersonInfoDal.cs" />
+    <Compile Include="Partital\ViewStationDal.cs" />
+    <Compile Include="Partital\ViewTrainMomentDal.cs" />
+    <Compile Include="Partital\ViewTrainNoLIneBll.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Guoli.DbProvider\Guoli.DbProvider.csproj">
+      <Project>{c363c115-7397-4727-8f95-397351b5450e}</Project>
+      <Name>Guoli.DbProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Guoli.Model\Guoli.Model.csproj">
+      <Project>{3a39861f-daf5-4320-8154-3ff01eb56846}</Project>
+      <Name>Guoli.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

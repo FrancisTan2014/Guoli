@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <section class="tile">
+            <div class="tile-header dvd dvd-btm">
+                <h3>@ViewBag.TrainNo.FullName（@ViewBag.TrainNo.FirstStation-@ViewBag.TrainNo.LastStation）的列车时刻表</h3>
+            </div>
+            <div class="tile-body">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>车站</th>
+                            <th>到达</th>
+                            <th>出发</th>
+                            <th>区间公里</th>
+                            <th>建议车速</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.Moments)
+                        {
+                            <tr>
+                                <td>@item.Sort</td>
+                                <td>武威南</td>
+                                <td>
+                                    <input type="text" class="form-control" value="武威南" />
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" value="武威南" />
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" value="武威南" />
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" value="武威南" />
+                                </td>
+                            </tr>
+                        }
+                                                
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>

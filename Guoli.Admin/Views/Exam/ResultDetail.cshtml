@@ -1,0 +1,97 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "考试详情";
+    ViewBag.LastPage = "考试结果";
+    ViewBag.LastUrl = "/Exam/Result";
+    ViewBag.ThisPage = "考试详情";
+    ViewBag.ThisUrl = string.Format("/Exam/ResultDetail?notifyId={0}&personId={1}", ViewBag.NotifyId, ViewBag.PersonId);
+
+    var notify = ViewBag.Notify;
+    var results = ViewBag.Results;
+}
+
+<div class="row">
+    <div class="tile">
+        <div class="tile-header">
+            <h4>
+                <strong>@notify.Name 参加《@notify.ExamName》的考试结果</strong>
+            </h4>
+        </div>
+        <div class="tile-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="text-right">参考人员：</label>
+                            <label>@notify.Name</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="text-right">职务：</label>
+                            <label>@notify.PostName</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="text-right">所属部门：</label>
+                            <label>@notify.DepartmentName</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="text-right">考试名称：</label>
+                            <label>@notify.ExamName</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="text-right">通过分数：</label>
+                            <label>@notify.PassScore</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="text-right">最高得分：</label>
+                            <label>@notify.MaxScore</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="text-right">是否通过：</label>
+                            <label>@notify.Passed</label>
+                        </div>
+                    </div>
+                </div>
+
+                @{
+                    var colNum = 12 / results.Count;
+                    if (colNum < 4)
+                    {
+                        colNum = 4;
+                    }
+                }
+
+                @for (int i = 0; i < results.Count; i++)
+                {
+                    var record = results[i];
+
+                    <div class="col-sm-@colNum">
+                        <div class="tile">
+                            <div class="tile-header text-center">
+                                <h5>第@(i + 1)次考试</h5>
+                            </div>
+                            <div class="tile-body">
+                                <div>
+                                    <label class="text-right">正确题数：</label>
+                                    <label>@record.RightCount</label>
+                                </div>
+                                <div>
+                                    <label class="text-right">错误题数：</label>
+                                    <label>@record.RightCount</label>
+                                </div>
+                                <div>
+                                    <label class="text-right">最终得分：</label>
+                                    <label>@record.Score</label>
+                                </div>
+                                <div>
+                                    <label class="text-right">考试用时：</label>
+                                    <label>@record.TimeSpends 分</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

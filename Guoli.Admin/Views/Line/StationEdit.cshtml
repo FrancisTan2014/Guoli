@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = ViewBag.Id != null && ViewBag.Id > 0 ? "修改车站" : "添加车站";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.LastPage = "车站管理";
+    ViewBag.LastUrl = "/Line/Stations";
+    ViewBag.ThisPage = "编辑车站信息";
+    ViewBag.ThisUrl = "/Line/StationEdit?id=" + ViewBag.Id;
+}
+
+
+<form class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <label for="input01" class="col-sm-2 control-label">车站名称：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="StationName" id="input01" required data-parsley-trigger="change" data-parsley-required-message="车站名称不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="车站名称不能超过20个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input02" class="col-sm-2 control-label">SN：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="SN" id="input02" required data-parsley-trigger="change" data-parsley-required-message="SN号码不能为空" data-parsley-maxlength="50" data-parsley-maxlength-message="SN长度不能超过50个字符">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input03" class="col-sm-2 control-label">拼音：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="Spell" id="input03" required data-parsley-trigger="change" data-parsley-required-message="拼音不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="拼音不能超过20个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input04" class="col-sm-2 control-label">操纵提示卡：</label>
+        <div class="col-sm-10">
+            <input type="button" class="btn btn-lightred form-control file-upload" data-type="2" id="input04" value="上传文件">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <label for="input05" class="col-sm-2 control-label">站场示意图：</label>
+        <div class="col-sm-10">
+            <input type="button" class="btn btn-lightred form-control file-upload" data-type="3" id="input05" value="上传文件">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input06" class="col-sm-2 control-label">站段明细：</label>
+        <div class="col-sm-10">
+            <input type="button" class="btn btn-lightred form-control file-upload" data-type="1" id="input06" value="上传文件">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="uploadify-box" style="display: none;">
+        <input type="file" id="btnSelect" />
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-lightred" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnReset">重 置</button>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/station-edit.js"></script>

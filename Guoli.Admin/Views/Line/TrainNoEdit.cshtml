@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "车次编辑";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.LastPage = "车次管理";
+    ViewBag.LastUrl = "/Line/Index";
+    ViewBag.ThisPage = "编辑车次信息";
+    ViewBag.ThisUrl = "/Line/TrainNoEdit?id=" + ViewBag.Id;
+}
+
+<style>
+    .btn.active {
+        background-color: #e05d6f !important;
+        color: #fff;
+    }
+</style>
+
+<form class="form-horizontal" role="form">
+
+    <input type="hidden" name="Id" value="0" />
+    <input type="hidden" name="Code" />
+    <input type="hidden" name="Number" />
+    <input type="hidden" name="FirstStation" />
+    <input type="hidden" name="LastStation"/>
+
+    <div class="form-group">
+        <label for="input01" class="col-sm-2 control-label">车次：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="FullName" id="input01" required data-parsley-trigger="change" data-parsley-required-message="车次不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="车次不能超过20个字" placeholder="如Z180">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">运行方向：</label>
+        <div class="col-sm-10">
+            <input type="hidden" name="Direction" />
+            <div class="btn-group direction">
+                <label class="btn btn-default toggle-class radio-label" data-value="上行" data-toggle="active" data-type="radio">上 行</label>
+                <label class="btn btn-default toggle-class radio-label" data-value="下行" data-toggle="active" data-type="radio">下 行</label>
+            </div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">车次类型：</label>
+        <div class="col-sm-10">
+            <input type="hidden" name="RunType" />
+            <div class="btn-group runtype">
+                <label class="btn btn-default toggle-class radio-label" data-value="1" data-toggle="active" data-type="radio">客 车</label>
+                <label class="btn btn-default toggle-class radio-label" data-value="2" data-toggle="active" data-type="radio">货 车</label>
+                <label class="btn btn-default toggle-class radio-label" data-value="3" data-toggle="active" data-type="radio">单 机</label>
+                <label class="btn btn-default toggle-class radio-label" data-value="4" data-toggle="active" data-type="radio">其 他</label>
+            </div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <label class="col-sm-2 control-label">起点-终点：</label>
+        <div class="col-sm-10" id="firstLastStations">
+            @*<label class="mr-10 text-lg">嘉峪关</label>
+            <i class="fa fa-chevron-right text-lg mr-10"></i>
+            <label class="text-lg">张掖</label>*@
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">经过线路：</label>
+        <div class="col-sm-10">
+            <div class="line-list"></div>
+            <input type="text" class="form-control station-intell" placeholder="在此输入线路拼音/名称可添加线路">
+            <div class="list-group mb-0 add-station"></div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-primary" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnBack">返 回</button>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/trainno-edit.js"></script>

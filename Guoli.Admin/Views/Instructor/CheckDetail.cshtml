@@ -1,0 +1,87 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "抽查信息单-详情";
+    ViewBag.LastPage = "抽查信息单列表";
+    ViewBag.LastUrl = "/Instructor/Check";
+    ViewBag.ThisPage = "抽查信息单详情";
+    ViewBag.ThisUrl = "/Instructor/CheckDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorCheck" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">抽查时间：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StartTime">2016-05-08 16:08</label>
+            <label class="control-label mr-10 ml-10">~</label>
+            <label class="control-label text-left" name="EndTime">2016-05-08 19:08</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">抽查地点：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StartTime">大虎山</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">抽查类型：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StartTime">坐岗</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">发现问题个数：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StartTime">4</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">抽查内容：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StartTime">检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">发现问题：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StartTime">检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">处理意见：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StartTime">检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业检查标准化作业</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Check" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>

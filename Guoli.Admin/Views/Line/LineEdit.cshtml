@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "编辑线路";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.LastPage = "线路管理";
+    ViewBag.LastUrl = "/Line/Index";
+    ViewBag.ThisPage = "编辑线路信息";
+    ViewBag.ThisUrl = "/Line/LineEdit?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <input type="hidden" name="Id" value="0"/>
+        <label for="input04" class="col-sm-2 control-label">起始站：</label>
+        <div class="col-sm-10">
+            <input type="hidden" name="FirstStationId"/>
+            <input type="text" class="form-control station-input" name="FirstStation" id="input04" required data-parsley-trigger="change" data-parsley-required-message="起始站不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="起始站不能超过20个字" placeholder="可以输入车站拼音/名称/SN搜索">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input05" class="col-sm-2 control-label">终点站：</label>
+        <div class="col-sm-10">
+            <input type="hidden" name="LastStationId"/>
+            <input type="text" class="form-control station-input" name="LastStation" id="input05" required data-parsley-trigger="change" data-parsley-required-message="终点站不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="终点站不能超过20个字" placeholder="可以输入车站拼音/名称/SN搜索">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input01" class="col-sm-2 control-label">线路名称：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="LineName" id="input01" required data-parsley-trigger="change" data-parsley-required-message="线路名称不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="线路名称不能超过20个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input03" class="col-sm-2 control-label">拼音：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="Spell" id="input03" required data-parsley-trigger="change" data-parsley-required-message="拼音不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="拼音不能超过20个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input06" class="col-sm-2 control-label">线路长度（公里）：</label>
+        <div class="col-sm-10">
+            <input type="number" class="form-control" name="LineLength" id="input06" required data-parsley-trigger="change" data-parsley-required-message="线路长度不能为空" data-parsley-range="[1,100000]" data-parsley-range-message="请输入有效的公里数">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">经过车站：</label>
+        <div class="col-sm-10">
+            <div class="station-list">
+                @*<div class="btn btn-lightred btn-ef btn-ef-5 btn-ef-5b mb-10 mr-10">
+                    <i class="fa fa-trash"></i>
+                    <span>兰州站</span>
+                </div>
+                <i class="fa fa-chevron-right text-lg mr-10"></i>
+                <div class="btn btn-lightred btn-ef btn-ef-5 btn-ef-5b mb-10 mr-10">
+                    <i class="fa fa-trash"></i>
+                    <span>兰州站</span>
+                </div>*@
+            </div>
+            <input type="text" class="form-control station-intell" placeholder="在此输入车站拼音/名称/SN可添加车站">
+            <div class="list-group mb-0 add-station"></div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-primary" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnBack">返 回</button>
+        </div>
+    </div>
+</form>
+
+<div class="form-group input-alert" style="display: none; overflow: hidden;">
+    <label class="col-sm-2 control-label text-right">选择车站：</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control station-intell" placeholder="在此输入车站拼音/名称/SN可添加车站">
+        <div class="list-group mb-0"></div>
+    </div>
+</div>
+
+<script src="/Scripts/page-scripts/line-edit.js"></script>

@@ -1,0 +1,624 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>司机手账</title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/index.css" rel="stylesheet" />
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/basedata.js"></script>
+    <script src="js/progressbar.min.js"></script>
+</head>
+<body>
+    <!-- 首页 -->
+    <div class="page page-1">
+        <h3 class="page-title">司机手账</h3>
+        <div class="page-content">
+            <div class="part-1">
+                <h4 class="border-bottom">今日行车计划</h4>
+                <ul>
+                    <li class="border-bottom">Z69 张掖-嘉峪关</li>
+                    <li><input class="btn btn-primary btn-attend next" type="button" value="出 勤" /></li>
+                </ul>
+            </div>
+            <div class="part-2">
+                <h4>最近产生的手账记录</h4>
+                <ul style="display: none">
+                    <li>
+                        <span>张掖-嘉峪关</span>
+                        <span>Z69</span>
+                        <span>2016-07-08</span>
+                        <span id="uploadedDesc" style="display: none">已上传</span>
+                    </li>
+                    <!--<li>
+                        <span>嘉峪关-兰州</span>
+                        <span>Z180</span>
+                        <span>2016-06-23</span>
+                        <input type="button" value="上传" class="btn btn-default btn-sm btn-upload"/>
+                        <input type="button" value="修改" class="btn btn-default btn-sm btn-edit"/>
+                    </li>
+                    <li>
+                        <span>嘉峪关-兰州</span>
+                        <span>Z180</span>
+                        <span>2016-06-23</span>
+                        <input type="button" value="上传" class="btn btn-default btn-sm btn-upload"/>
+                        <input type="button" value="修改" class="btn btn-default btn-sm btn-edit"/>
+                    </li>
+                    <li>
+                        <span>嘉峪关-兰州</span>
+                        <span>Z180</span>
+                        <span>2016-06-23</span>
+                        <input type="button" value="上传" class="btn btn-default btn-sm btn-upload"/>
+                        <input type="button" value="修改" class="btn btn-default btn-sm btn-edit"/>
+                    </li>
+                    <li>
+                        <input type="button" class="btn btn-default btn-lg btn-upload-all" value="一键上传"/>
+                    </li>-->
+                </ul>
+            </div>
+            <div id="progress" style="display: none;">
+                <div id="progressBar"></div>
+                <div id="tips">检测到您已连接到段内Wifi，将自动为您上传手账记录</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认车次 -->
+    <div class="page page-2">
+        <h3 class="page-title">确认车次</h3>
+        <div class="page-content">
+            <span class="title">欢迎出勤，请选择车次：</span>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#inputTrainCode" data-toggle="modal" data-target="#inputTrainCode">手动输入</a><br />
+            <ul>
+                <li class="fl select-item select-active">Z69</li>
+            </ul>
+            <span class="title">请选择线路：</span><br />
+            <ul>
+                <li class="fl select-item select-active">张掖-嘉峪关</li>
+            </ul>
+            <input type="button" class="btn btn-primary btn-lg btn-confirm next" value="确 定" />
+        </div>
+    </div>
+
+    <!-- 出勤信息 -->
+    <div class="page page-3">
+        <h3 class="page-title">出勤信息</h3>
+        <div class="page-content">
+            <ul class="input-conteont">
+                <li>
+                    <label>车次：</label>
+                    <input type="text" value="Z69" />
+                </li>
+                <li>
+                    <label>机车型号：</label>
+                    <input type="text" value="HXD3D-0104" />
+                </li>
+                <li>
+                    <label>线路：</label>
+                    <input type="text" value="张掖-嘉峪关" />
+                </li>
+                <li>
+                    <label>出勤时间：</label>
+                    <input type="text" value="00：33" class="auto-input" />
+                </li>
+                <li>
+                    <label>司机：</label>
+                    <input type="text" value="刘翔" />
+                </li>
+                <li>
+                    <label>接车时间：</label>
+                    <input type="text" placeholder="点击签点" class="auto-input" />
+                </li>
+                <li>
+                    <label>副司机：</label>
+                    <input type="text" value="曹建周" />
+                </li>
+                <li>
+                    <label>出本段时间：</label>
+                    <input type="text" value="" placeholder="点击签点" class="auto-input" />
+                </li>
+                <li>
+                    <label>学员：</label>
+                    <input type="text" value="" />
+                </li>
+                <li>
+                    <label>出外段时间：</label>
+                    <input type="text" value="" placeholder="点击签点" class="auto-input" />
+                </li>
+                <li class="last">
+                    <label>出勤会：</label>
+                    <input class="textarea" type="text" />
+                </li>
+                <li class="last">
+                    <input type="button" class="btn btn-primary btn-lg btn-attend next" value="确定出勤" />
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 行车操作 -->
+    <div class="page page-4">
+        <h3 class="page-title">Z180 嘉峪关-兰州</h3>
+        <div class="btn btn-default btn-sm next">行车结束</div>
+        <div class="page-content">
+            <div class="top row">
+                <div class="top-left col-md-6 col-sm-6 col-xs-6">
+                    <div class="stations">
+                        <span class="current-label">始发站：</span><strong class="arrive-station">兰州站</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="next-station">下一站：</span><span class="next-station">迎水桥</span>
+                    </div>
+                    <div class="big-btns">
+                        <div class="btn btn-primary btn-arrive hide">到达签点</div>
+                        <div class="btn btn-primary btn-start">发车签点</div>
+                        <div class="btn btn-default btn-sm hide">查看记点</div>
+                        <div class="btn btn-default btn-sm hide">更换车次</div>
+                    </div>
+                    <div class="small-btns">
+                        <div class="title">兰州站的：</div>
+                        <div class="btn btn-default btn-sm" data-toggle="modal" data-target="#inputTrainFormation">列车编组</div>
+                        <div class="btn btn-default btn-sm btn-pic hide">站段明细</div>
+                        <div class="btn btn-default btn-sm hide">记事</div>
+                        <div class="btn btn-default btn-sm btn-pic">操纵提示卡</div>
+                        <div class="btn btn-default btn-sm btn-pic">站场示意图</div>
+                    </div>
+                </div>
+                <div class="top-right col-md-6 col-sm-6 col-xs-6">
+                    <div class="title text-center">列车时刻</div>
+                    <table class="table train-ticks">
+                        <tr>
+                            <th>车站</th>
+                            <th>到</th>
+                            <th>发</th>
+                            <th>建议车速</th>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <span class="btn btn-default btn-sm more-ticks" data-toggle="modal" data-target="#trainTicks">更多时刻</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="bottom row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <h4 class="title">揭示命令</h4>
+                    <table class="table commands">
+                        <tr>
+                            <th width="10%">调试命令号</th>
+                            <th width="25%">区间</th>
+                            <th width="5%">方向</th>
+                            <th>限速地点</th>
+                            <th>起止时间</th>
+                            <th width="10%">限速值</th>
+                            <th width="10%">操作/状态</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 退勤 -->
+    <div class="page page-5">
+        <h3 class="page-title">退 勤</h3>
+        <div class="page-content">
+            <div class="part">
+                <h4 class="part-title">时间点</h4>
+                <ul class="part-content">
+                    <li>
+                        <label>入本段时间：</label>
+                        <input type="datetime" class="short auto-input" />
+                    </li>
+                    <li>
+                        <label>入外段时间：</label>
+                        <input type="datetime" class="short auto-input" />
+                    </li>
+                    <li>
+                        <label>交车时间：</label>
+                        <input type="datetime" class="short auto-input" />
+                    </li>
+                    <li>
+                        <label>退勤时间：</label>
+                        <input type="datetime" class="short auto-input" />
+                    </li>
+                </ul>
+            </div>
+            <div class="part">
+                <h4 class="part-title">能源消耗</h4>
+                <ul class="part-content">
+                    <li>
+                        <label>运转使用油/电量：</label>
+                        <input type="number" class="tiny-short" />
+                    </li>
+                    <li>
+                        <label>段内打温消耗：</label>
+                        <input type="number" class="short" />
+                    </li>
+                    <li>
+                        <label>接收量：</label>
+                        <input type="number" class="short" />
+                    </li>
+                    <li>
+                        <label>交出量：</label>
+                        <input type="number" class="short" />
+                    </li>
+                </ul>
+            </div>
+            <div class="part">
+                <h4 class="part-title">油脂消耗</h4>
+                <ul class="part-content">
+                    <li>
+                        <label>机油：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>风泵油：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>透平油：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>齿轮油：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>调速器油：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>其它油类：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>棉丝：</label>
+                        <input type="number" />
+                    </li>
+                </ul>
+            </div>
+            <div class="part up-part">
+                <h4 class="part-title">列车编组</h4>
+                <ul class="part-content">
+                    <li>
+                        <label>辆数：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>吨数：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <label>计长：</label>
+                        <input type="number" />
+                    </li>
+                    <li>
+                        <div class="btn btn-default btn-sm hide">列车编组变化记录</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="part up-part">
+                <h4 class="part-title">重联机车</h4>
+                <ul class="part-content">
+                    <li>
+                        <label>机务段：</label>
+                        <input type="text" />
+                    </li>
+                    <li>
+                        <label>机车型号：</label>
+                        <input type="text" />
+                    </li>
+                    <li>
+                        <label>附挂区间：</label>
+                        <input type="text" />
+                    </li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+            <div class="part last">
+                <h4 class="part-title">退勤会</h4>
+                <div class="part-content">
+                    <input type="text" placeholder="在此输入" class="long" />
+                </div>
+            </div>
+            <div class="btn btn-primary btn-lg btn-end">退 勤</div>
+        </div>
+    </div>
+
+    <!-- 输入车次 -->
+    <div id="inputTrainCode" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">x</a>
+                    <h3>请在下面的输入框中输入车次</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control input" />
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">确 定</a>
+                    <a href="javascript:void(0);" class="btn" data-dismiss="modal">取 消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 列车时刻 -->
+    <div id="trainTicks" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">x</a>
+                    <h3>以下是<strong class="line-name">Z180 嘉峪关-兰州</strong>的完整列车时刻表</h3>
+                </div>
+                <div class="modal-body">
+                    <table class="table train-ticks">
+                        <tr>
+                            <th>车站</th>
+                            <th>到</th>
+                            <th>发</th>
+                            <th>建议车速</th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">确 定</a>
+                    <a href="javascript:void(0);" class="btn" data-dismiss="modal">取 消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 列车编组 -->
+    <div id="inputTrainFormation" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">x</a>
+                    <h3>请在下面的输入框中输入列车编组信息</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-xs-2 control-label">辆数：</label>
+                        <div class="col-sm-10 col-xs-10">
+                            <input type="text" class="form-control input" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-xs-2 control-label">吨数：</label>
+                        <div class="col-sm-10 col-xs-10">
+                            <input type="text" class="form-control input" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-xs-2 control-label">计长：</label>
+                        <div class="col-sm-10 col-xs-10">
+                            <input type="text" class="form-control input" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">保 存</a>
+                    <a href="javascript:void(0);" class="btn" data-dismiss="modal">取 消</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="showPic" style="display: none">
+        <div class="img">
+            <img src="img/zcsyt.jpg" />
+            <span class="close">关闭</span>
+        </div>
+    </div>
+
+    <script>
+        var line = lines[0];
+        var currentStation = 0;
+        var stationCount = 0;
+        var uploadTime = 3500;
+
+        var changePage = (function () {
+            var current = 4;
+
+            return function (number) {
+                if (number == 1 || number == -1) {
+                    current = current + number;
+                    if (current < 0) {
+                        current = 0;
+                    } else if (current > 4) {
+                        current = 4;
+                    }
+                } else {
+                    current = number;
+                }
+
+                $('.page').eq(current).show().siblings('.page').hide();
+            };
+        })();
+
+        var getCurrentTime = function () {
+            var date = new Date();
+            var time = date.getHours() + '：' + date.getMinutes();
+
+            return time;
+        };
+
+        var init = function () {
+            var station = line.trainTicks[currentStation];
+            $('.arrive-station').text(station.station);
+
+            var nextStation = line.trainTicks[currentStation + 1];
+            if (nextStation) {
+                $('.next-station:last').text(nextStation.station);
+            }
+        };
+
+        // 进度条
+        var progressBar = new ProgressBar.Circle('#progressBar', {
+             color: '#aaa',
+             easing: 'easeInOut',
+             strokeWidth: 4,
+             trailWidth: 1,
+             duration: uploadTime,
+            text: {
+                autoStyleContainer: false
+            },
+            from: { color: '#fff', width: 1 },
+            to: { color: '#fff', width: 4 },
+            step: function(state, circle) {
+                circle.path.setAttribute('stroke', state.color);
+                circle.path.setAttribute('stroke-width', state.width);
+
+                var value = Math.round(circle.value() * 100);
+                if (value === 0) {
+                    circle.setText('');
+                } else {
+                    circle.setText(value);
+                }
+            }
+        });
+        progressBar.text.style.fontSize = '1.8em';
+        progressBar.text.style.color = '#fff';
+
+        $(function () {
+            init();
+            changePage(0);
+            stationCount = line.trainTicks.length;
+            $('.page-4 .page-title').text(line.trainCode + ' ' + line.lineName);
+
+            // 列车时刻加载
+            $('.line-name').text(line.trainCode + ' ' + line.lineName);
+            for (var i = 0; i < line.trainTicks.length; i++) {
+                var station = line.trainTicks[i];
+
+                var trClass = 'ticks';
+                if (i === 0) {
+                    trClass += ' large';
+                } else if (i > 4) {
+                    trClass += ' behind';
+                }
+
+                var arrive = station.arrive;
+                if (i === 0) {
+                    arrive = '起点站';
+                } else if (station.arrive === '') {
+                    arrive = '不停车';
+                }
+
+                var start = station.start;
+                if (i === line.trainTicks.length - 1) {
+                    start = '终点站';
+                }
+
+                var tr = '<tr class="' + trClass + '"><td>' + station.station + '</td><td>' + arrive + '</td><td>' + start + '</td><td>' + (station.speed ? station.speed : '-') + '</td></tr>';
+                $(tr).insertBefore('.train-ticks:first tr:last');
+                $(tr).appendTo('.train-ticks:last');
+            }
+
+            // 揭示命令加载
+            for (var j = 0; j < line.commands.length; j++) {
+                var command = line.commands[j];
+                $('.commands').append('<tr><td>' + command.no + '</td><td>' + command.section + '</td><td>' + command.derection + '</td><td>' + command.location + '</td><td>' + command.expire + '</td><td>' + command.speed + '</td><td><span class="btn btn-primary btn-sm btn-pass">确认通过</span></td></tr>');
+            }
+
+            // 切换下一页
+            $('.btn.next').on('click', function () {
+                changePage(1);
+            });
+
+            // 自动输入时间
+            $('.auto-input').on('focus', function () {
+                var time = getCurrentTime();
+                $(this).val(time);
+            });
+
+            // 确认车次
+            $('.select-item').on('click', function () {
+                $(this).addClass('select-active').siblings().removeClass('select-active');
+            });
+
+            // 行车操作
+            //到达签点
+            $('.btn-arrive').on('click', function () {
+                var time = getCurrentTime();
+                $(this).text(time);
+
+                if (currentStation === stationCount - 1) {
+                    alert('行车结束！');
+                    changePage(1);
+                }
+            });
+            //发车签点
+            $('.btn-start').on('click', function () {
+                if (currentStation === 0) {
+                    $('.current-label').text('即将到达：');
+                    $('.btn-arrive').removeClass('hide');
+                    $(this).text('发车/通过签点');
+                }
+
+                currentStation += 1;
+                init();
+                $('.btn-arrive').text('到达签点');
+
+                if (currentStation === stationCount - 1) {
+                    $(this).hide();
+                    $('.current-label').text('终点站：');
+                    $('.next-station').hide();
+                }
+
+                // 列车时刻变化
+                var $firstTr = $('.page-4 .train-ticks .large');
+                if ($('.page-4 .train-ticks .ticks').length > 5) {
+                    $firstTr.hide();
+                }
+                $firstTr.removeClass('large').removeClass('ticks')
+                    .next().addClass('large');
+                $('.page-4 .behind:first').removeClass('behind');
+            });
+            // 揭示通过
+            $('.btn-pass').on('click', function () {
+                $(this).hide()
+                    .parent().append('<span>已通过</span>');
+                $(this).parents('tr').addClass('deleted')
+                    .appendTo($(this).parents('table'));
+
+            });
+            // 操作提示卡等
+            $('.btn-pic').on('click', function () {
+                var src = 'img/' + line.trainTicks[currentStation].station + $(this).text() + '.jpg';
+                $('#showPic img').attr('src', src);
+                $('#showPic').show();
+            });
+            // 关闭图片展示框
+            $('#showPic .close').click(function () {
+                $('#showPic').hide();
+            });
+            // 图片放大
+            $('#showPic img').click(function() {
+                var width = parseInt($(this).css('width'));
+                width = width + 0.1 * width;
+                $(this).css('width', width);
+            });
+
+            // 退勤
+            $('.btn-end').on('click', function () {
+                changePage(0);
+
+                $('.page-1 .part-2>ul').show();
+                setTimeout(function () {
+                    $('#progress').show();
+                    progressBar.animate(1);
+                    setTimeout(function () {
+                        $('#uploadedDesc').show();
+                        $('#progress').hide();
+                        alert('上传成功');
+                    }, uploadTime);
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

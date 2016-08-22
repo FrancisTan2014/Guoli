@@ -1,0 +1,510 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using Guoli.DbProvider;
+using System.Transactions;
+
+namespace Guoli.Dal
+{
+    public abstract class BaseDal<T> where T : class,new()
+    {
+        /// <summary>
+        /// 在派生类中重写时，表示当前操作的表名称
+        /// </summary>
+        protected abstract string TableName { get; }
+
+        /// <summary>
+        /// 在派生类中重写时，表示当前表的主键名称
+        /// </summary>
+        protected abstract string PrimaryKeyName { get; }
+
+        /// <summary>
+        /// 数据库连接字符串
+        /// </summary>
+        protected virtual string ConnectionString
+        {
+            get
+            {
+                var conStr = ConfigurationManager.ConnectionStrings["MainDb"];
+                if (conStr == null)
+                {
+                    throw new ConfigurationErrorsException("未能获取到主数据库连接字符串MainDb");
+                }
+
+                return conStr.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 数据库操作对象
+        /// </summary>
+        protected IDbHelper DbHelper { get; set; }
+
+        /// <summary>
+        /// 默认构造方法
+        /// </summary>
+        protected BaseDal()
+        {
+            DbHelper = DbHelperFactory.GetInstance(DatabaseType.SqlServer);
+        }
+
+        /// <summary>
+        /// 判断指定类型是否是自定义类型
+        /// </summary>
+        /// <param name="type">指定的类型</param>
+        /// <returns>是自定义类型返回<c>true</c>否则返回<c>false</c></returns>
+        protected bool IsReferenceTypeButNotString(Type type)
+        {
+            return !type.IsValueType && type != typeof(string);
+        }
+
+        /// <summary>
+        /// 在插入数据库之前处理属性的默认值问题（如DateTime类型及string类型的默认值），这些类型以默认插入数据库是会报错
+        /// </summary>
+        /// <param name="propertyInfo">待处理的属性信息对象</param>
+        /// <param name="value">属性值</param>
+        /// <returns>返回处理过后的属性值</returns>
+        protected object DealDefaultValue(PropertyInfo propertyInfo, object value)
+        {
+            if (propertyInfo.PropertyType == typeof(DateTime) && value.Equals(default(DateTime)))
+            {
+                value = new DateTime(1900, 1, 1);
+            }
+            else if (propertyInfo.PropertyType == typeof(string) && value == null)
+            {
+                value = string.Empty;
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// 向数据库中插入新的数据，插入成功会将新的主键id记录在实体中返回
+        /// </summary>
+        /// <param name="model">待插入的实体对象</param>
+        /// <param name="fields"></param>
+        /// <returns>带有插入数据的主键id的实体对象</returns>
+        public virtual T Insert(T model, string[] fields = null)
+        {
+            var type = typeof(T);
+            var properties = type.GetProperties();
+            var propNameList = new List<string>();
+            var paraNameList = new List<string>();
+            var sqlParamList = new List<SqlParameter>();
+
+            PropertyInfo primaryKeyProp = null;
+            foreach (var propertyInfo in properties)
+            {
+                var propName = propertyInfo.Name;
+                if (propName == PrimaryKeyName)
+                {
+                    primaryKeyProp = propertyInfo;
+                    continue;
+                }
+
+                if (fields != null && !fields.Contains(propName))
+                {
+                    continue;
+                }
+
+                var propType = propertyInfo.PropertyType;
+                if (!IsReferenceTypeButNotString(propType) && propType.Name != PrimaryKeyName)
+                {
+                    var propValue = propertyInfo.GetValue(model, null);
+                    propValue = DealDefaultValue(propertyInfo, propValue);
+
+                    sqlParamList.Add(new SqlParameter
+                    {
+                        ParameterName = "@" + propName,
+                        Value = propValue
+                    });
+                    propNameList.Add(propName);
+                    paraNameList.Add("@" + propName);
+                }
+            }
+
+            if (primaryKeyProp == null)
+            {
+                return model;
+            }
+
+            var outParamName = "@identity";
+            var outParamSqlType = SqlDbType.Int;
+            if (primaryKeyProp.PropertyType == typeof(long))
+            {
+                outParamSqlType = SqlDbType.BigInt;
+            }
+            else if (primaryKeyProp.PropertyType == typeof(string))
+            {
+                outParamSqlType = SqlDbType.NVarChar;
+            }
+
+            var outIdentity = new SqlParameter
+            {
+                ParameterName = outParamName,
+                Direction = ParameterDirection.Output,
+                SqlDbType = outParamSqlType
+            };
+            sqlParamList.Add(outIdentity);
+
+            var propNames = string.Join(",", propNameList);
+            var paramNames = string.Join(",", paraNameList);
+            var cmdText = string.Format("INSERT INTO {0}({1}) VALUES({2}) SELECT {3}=SCOPE_IDENTITY()", TableName, propNames, paramNames, outParamName);
+
+            var count = DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText, sqlParamList.ToArray());
+
+            if (count > 0)
+            {
+                type.InvokeMember(primaryKeyProp.Name, BindingFlags.SetProperty, null, model,
+                    new[] { outIdentity.Value });
+            }
+
+            return model;
+        }
+
+        /// <summary>
+        /// 批量插入数据
+        /// </summary>
+        /// <param name="list">待插入的数据集合</param>
+        public virtual void BulkInsert(IEnumerable<T> list)
+        {
+            if (list == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            DbHelper.BulkInsert(ConnectionString, TableName, list);
+        }
+
+        /// <summary>
+        /// 更新指定数据
+        /// </summary>
+        /// <param name="model">待更新的数据实体</param>
+        /// <param name="fields">指定需要更新的字段，若为null则默认更新所有字段</param>
+        /// <returns>操作成功返回<c>true</c>，否则返回<c>false</c></returns>
+        public virtual bool Update(T model, string[] fields = null)
+        {
+            var type = typeof(T);
+            var properties = type.GetProperties();
+            var paraNameList = new List<string>();
+            var sqlParamList = new List<SqlParameter>();
+
+            object primaryKeyValue = null;
+            foreach (var propertyInfo in properties)
+            {
+                var propName = propertyInfo.Name;
+                if (propName != PrimaryKeyName && null != fields && !fields.Contains(propName))
+                {
+                    continue;
+                }
+
+                var propType = propertyInfo.PropertyType;
+                if (!IsReferenceTypeButNotString(propType))
+                {
+                    var propValue = propertyInfo.GetValue(model, null);
+                    if (propName == PrimaryKeyName)
+                    {
+                        primaryKeyValue = propValue;
+                    }
+                    else
+                    {
+                        propValue = DealDefaultValue(propertyInfo, propValue);
+
+                        sqlParamList.Add(new SqlParameter
+                        {
+                            ParameterName = "@" + propName,
+                            Value = propValue
+                        });
+                        paraNameList.Add(string.Format("{0}=@{0}", propName));
+                    }
+                }
+            }
+
+            if (null == primaryKeyValue)
+            {
+                return false;
+            }
+
+            var paramNames = string.Join(",", paraNameList);
+            var cmdText = string.Format("UPDATE {0} SET {1} WHERE {2}={3}", TableName, paramNames, PrimaryKeyName, primaryKeyValue);
+
+            return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText, sqlParamList.ToArray()) > 0;
+        }
+
+        /// <summary>
+        /// 根据主键id删除指定数据
+        /// </summary>
+        /// <param name="id">主键id值</param>
+        /// <returns>操作成功返回<c>true</c>，否则返回<c>false</c></returns>
+        public virtual bool Delete(object id)
+        {
+            var cmdText = string.Format("DELETE {0} WHERE {1}={2}", TableName, PrimaryKeyName, id);
+
+            return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText) > 0;
+        }
+
+        /// <summary>
+        /// 根据主键id将指定数据软删除（将记录删除状态的字段值置为1）
+        /// </summary>
+        /// <param name="id">主键id</param>
+        /// <param name="softDeleteFieldName">记录删除状态的字段名称，默认为IsDelete</param>
+        /// <returns></returns>
+        public virtual bool DeleteSoftly(object id, string softDeleteFieldName = "IsDelete")
+        {
+            var cmdText = string.Format("UPDATE {0} SET {1}=1 WHERE {2}={3}", TableName, softDeleteFieldName, PrimaryKeyName, id);
+
+            return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText) > 0;
+        }
+
+        /// <summary>
+        /// 根据主键id查询单个实体
+        /// </summary>
+        /// <param name="id">主键id</param>
+        /// <param name="queryFields">指定要查询的部分列名称，此参数为空则默认查询所有列</param>
+        /// <returns>查询到数据则返回实体对象，否则返回null</returns>
+        public virtual T QuerySingle(object id, string[] queryFields = null)
+        {
+            var fieldStr = queryFields == null ? "*" : string.Join(",", queryFields);
+            var cmdText = string.Format("SELECT {0} FROM {1} WHERE {2}={3}", fieldStr, TableName, PrimaryKeyName, id);
+            var modelList = DbHelper.QueryModelFromDb<T>(ConnectionString, CommandType.Text, cmdText);
+
+            return modelList.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 根据条件查询单个实体
+        /// </summary>
+        /// <param name="whereStr">查询数据的where条件，不需要带有where关键字，只需要写出条件即可，如：name='test'，此参数为空时，默认查询所有数据</param>
+        /// <param name="queryFields">指定要查询的部分列名称，此参数为空则默认查询所有列</param>
+        /// <param name="paramDic">动态参数字典，键为字段名称，值为参数值，若有动态参数则参数名需要带有@字符</param>
+        /// <returns>查询到数据则返回实体对象，否则返回null</returns>
+        public virtual T QuerySingle(string whereStr, string[] queryFields = null, IDictionary<string, object> paramDic = null)
+        {
+            if (string.IsNullOrEmpty(whereStr))
+            {
+                throw new ArgumentNullException("whereStr");
+            }
+
+            return QueryList(whereStr, queryFields, paramDic).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 根据条件查询数据集合，请注意在调用此方法的时候，如果条件带有动态参数，请确保whereStr中的参数名与参数字段中的名称一致，如：
+        /// whereStr="name=@name"，则paramDic中相应参数的键应该为@name
+        ///     调用示例：
+        ///         查询所有数据：QueryList();
+        ///         查询部分数据：QueryList("name=test", new [] {"Id", "Name"});
+        ///         查询部分数据（带参数：
+        ///             QueryList("name=@name", 
+        ///                        new [] {"Id", "Name"}, 
+        ///                        new Dictionary string, object {{"@name", "test"}},
+        ///                        "Id", 
+        ///                        true);
+        /// </summary>
+        /// <param name="whereStr">查询数据的where条件，不需要带有where关键字，只需要写出条件即可，如：name='test'，此参数为空时，默认查询所有数据</param>
+        /// <param name="fields">指示查询的数据列的名称，带有此参数可避免select * 语句的低效查询，若此参数为空则默认查询所有列</param>
+        /// <param name="paramDic">动态参数字典，键为字段名称，值为参数值，若有动态参数则参数名需要带有@字符</param>
+        /// <param name="orderField">查询数据的排序字段名称</param>
+        /// <param name="isDescending">指示是否对查询结果降序排序</param>
+        /// <returns>返回查询到的实体集合</returns>
+        public virtual IEnumerable<T> QueryList(string whereStr = null, string[] fields = null, IDictionary<string, object> paramDic = null, string orderField = null,
+            bool isDescending = false)
+        {
+            var cmdText = PrepareSql(whereStr, fields, orderField, isDescending);
+
+            var sqlParams = new List<SqlParameter>();
+            if (paramDic != null)
+            {
+                sqlParams.AddRange(paramDic.Select(
+                    keyValuePair => new SqlParameter(
+                        keyValuePair.Key.StartsWith("@") ? keyValuePair.Key : "@" + keyValuePair.Key,
+                        keyValuePair.Value)
+                    ));
+            }
+
+            return DbHelper.QueryModelFromDb<T>(ConnectionString, CommandType.Text, cmdText, sqlParams.ToArray());
+        }
+
+        /// <summary>
+        /// 分页查询数据
+        /// </summary>
+        /// <param name="pageIndex">分页页码</param>
+        /// <param name="pageSize">每页数据个数</param>
+        /// <param name="whereStr">查询数据的where条件，不需要带有where关键字，只需要写出条件即可，如：name='test'，此参数为空时，默认查询所有数据</param>
+        /// <param name="fields">指示查询的数据列的名称，带有此参数可避免select * 语句的低效查询，若此参数为空则默认查询所有列</param>
+        /// <param name="paramDic">查询数据的参数字典，键为字段名称，值为参数值，若有动态参数则参数名需要带有@字符</param>
+        /// <param name="orderField">查询数据的排序字段名称</param>
+        /// <param name="isDescending">指示是否对查询结果降序排序</param>
+        /// <returns>返回查询到的实体集合</returns>
+        public virtual IEnumerable<T> QueryPageList(int pageIndex, int pageSize, string whereStr, string[] fields = null,
+            IDictionary<string, object> paramDic = null, string orderField = null,
+            bool isDescending = false)
+        {
+            if (pageIndex <= 0)
+            {
+                throw new ArgumentOutOfRangeException("pageIndex");
+            }
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException("pageSize");
+            }
+
+            var cmdText = PrepareSql(whereStr, fields, orderField, isDescending, pageIndex, pageSize);
+            var sqlParams = new List<SqlParameter>();
+            if (paramDic != null)
+            {
+                sqlParams.AddRange(paramDic.Select(keyValuePair => new SqlParameter(keyValuePair.Key, keyValuePair.Value)));
+            }
+
+            return DbHelper.QueryModelFromDb<T>(ConnectionString, CommandType.Text, cmdText, sqlParams.ToArray());
+        }
+
+        /// <summary>
+        /// 获取根据指定条件查询本表将得到的结果集数量
+        /// </summary>
+        /// <param name="whereStr">指定条件</param>
+        /// <returns>总数量</returns>
+        public virtual int GetTotalCount(string whereStr = null)
+        {
+            var cmdText = string.Format("SELECT COUNT(1) FROM {0} WHERE 1=1 {1}", TableName,
+                string.IsNullOrEmpty(whereStr) ? string.Empty : "AND" + whereStr);
+            return (int) DbHelper.ExecuteScalar(ConnectionString, CommandType.Text, cmdText);
+        }
+
+        /// <summary>
+        /// 获取当前表的最大主键值
+        /// </summary>
+        /// <returns>当前表的最大主键值</returns>
+        public virtual object GetMaxId()
+        {
+            var cmdText = string.Format("SELECT MAX(Id) FROM {0}", TableName);
+            var maxId = DbHelper.ExecuteScalar(ConnectionString, CommandType.Text, cmdText);
+            if (maxId.Equals(DBNull.Value))
+            {
+                return 0;
+            }
+
+            return maxId;
+        }
+
+        /// <summary>
+        /// 判断指定条件的数据是否存在
+        /// </summary>
+        /// <param name="condition">判断条件</param>
+        /// <returns>表示是否存在的布尔值</returns>
+        public virtual bool Exists(string condition)
+        {
+            condition = string.IsNullOrEmpty(condition) ? string.Empty : "AND " + condition;
+            var cmdText = string.Format("SELECT COUNT(1) FROM {0} WHERE 1=1 {1}", TableName, condition);
+
+            var res = DbHelper.ExecuteScalar(ConnectionString, CommandType.Text, cmdText);
+
+            return (int) res > 0;
+        }
+
+        /// <summary>
+        /// 根据条件查询表中的指定列，并返回这一列的数据集合，若查询不到数据则返回空集合(而非null)
+        /// </summary>
+        /// <param name="whereStr">查询条件</param>
+        /// <param name="fieldName">要查询的列名</param>
+        /// <returns>查询到的数据集合或者空集合（非null）</returns>
+        public virtual IEnumerable<object> QuerySingleColumn(string whereStr, string fieldName)
+        {
+            var list = QueryList(whereStr, new[] {fieldName});
+
+            var enumerable = list as T[] ?? list.ToArray();
+            if (!enumerable.Any())
+            {
+                return new List<object>();
+            }
+
+            try
+            {
+                return enumerable.Select(entity =>
+                {
+                    var type = entity.GetType();
+                    return type.InvokeMember(fieldName, BindingFlags.GetProperty, null, entity, null);
+                });
+            }
+            catch (Exception)
+            {
+                return new List<object>();
+            }
+        }
+
+        /// <summary>
+        /// 将多个执行数据库操作的委托封装到一个事务环境中，确保所有的委托都被正确执行，否则将执行回滚操作
+        /// </summary>
+        /// <param name="delegates">待执行的委托集合</param>
+        public virtual bool ExecuteTransation(params Func<bool>[] delegates)
+        {
+            if (delegates == null)
+            {
+                throw new ArgumentNullException("delegates");
+            }
+
+            using (TransactionScope scope = new TransactionScope())
+            {
+                try
+                {
+                    var result = false;
+                    foreach (var func in delegates)
+                    {
+                        result = func();
+                    }
+
+                    if (result)
+                    {
+                        scope.Complete();
+                    }
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }            
+        }
+
+        /// <summary>
+        /// 为查询方法准备sql语句
+        /// </summary>
+        /// <param name="whereStr">查询的where条件（条件开头与结尾不需要带AND）</param>
+        /// <param name="fields">查询的列名称</param>
+        /// <param name="orderField">排序字段名称</param>
+        /// <param name="isDescending">是否对结果进行降序排序</param>
+        /// <param name="pageIndex">分布查询的页码</param>
+        /// <param name="pageSize">分布查询每页长度</param>
+        /// <returns>按照规则拼接好的sql语句</returns>
+        private string PrepareSql(string whereStr, string[] fields, string orderField, bool isDescending, int pageIndex = 0, int pageSize = 0)
+        {
+            var selectFileds = fields == null ? "*" : string.Join(",", fields);
+            var orderStr = orderField == null ? string.Format("ORDER BY {0}", PrimaryKeyName)
+                : string.Format("ORDER BY {0} {1}", orderField, isDescending ? "DESC" : "ASC");
+
+            if (!string.IsNullOrEmpty(whereStr))
+            {
+                whereStr = whereStr.ToLower().Trim();
+                whereStr = string.Format("AND {0}", whereStr);
+            }
+
+            string sql;
+            if (pageIndex == 0 || pageSize == 0)
+            {
+                sql = string.Format("SELECT {0} FROM {1} WHERE 1=1 {2} {3}", selectFileds, TableName, whereStr, orderStr);
+            }
+            else
+            {
+                sql = string.Format("SELECT {0} FROM (SELECT {0},ROW_NUMBER() OVER({1}) AS RowNumber FROM {2} WHERE 1=1 {3}) AS NEWTABLE WHERE RowNumber BETWEEN ({4}-1)*{5}+1 AND {4}*{5}", selectFileds, orderStr, TableName, whereStr, pageIndex, pageSize);
+            }
+
+            return sql;
+        }
+    }
+}

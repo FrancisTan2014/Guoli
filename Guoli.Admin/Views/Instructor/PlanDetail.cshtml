@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "工作总结计划-详情";
+    ViewBag.LastPage = "工作总结计划列表";
+    ViewBag.LastUrl = "/Instructor/Plan";
+    ViewBag.ThisPage = "工作总结计划详情";
+    ViewBag.ThisUrl = "/Instructor/PlanDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorPlan" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">日期：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="WriteDate"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">总结人：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Name"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">本月工作完成情况：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="WorkSummary"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">存在问题分析：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Problems"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">下月工作计划：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="WorkPlans"></label>
+        </div>
+    </div>
+    
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Plan" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>

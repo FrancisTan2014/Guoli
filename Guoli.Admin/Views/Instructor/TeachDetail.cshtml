@@ -1,0 +1,60 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "授课培训记录-详情";
+    ViewBag.LastPage = "授课培训记录列表";
+    ViewBag.LastUrl = "/Instructor/Teach";
+    ViewBag.ThisPage = "授课培训记录详情";
+    ViewBag.ThisUrl = "/Instructor/TeachDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorTeach" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">授课时间：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TeachStart">2016-05-08 16:08</label>
+            <label class="control-label mr-10 ml-10">~</label>
+            <label class="control-label text-left" name="TeachEnd">2016-05-08 19:08</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">授课地点：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TeachPlace"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">参与人数：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="JoinCount"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">授课内容：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TeachContent"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Teach" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>

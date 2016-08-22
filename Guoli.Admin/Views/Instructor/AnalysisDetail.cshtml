@@ -1,0 +1,105 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "监控分析单-详情";
+    ViewBag.LastPage = "监控分析单列表";
+    ViewBag.LastUrl = "/Instructor/Check";
+    ViewBag.ThisPage = "监控分析单详情";
+    ViewBag.ThisUrl = "/Instructor/RepairDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorAnalysis" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">车次：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TrainCode"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">机车型号：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="LocomotiveType"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">运行日期：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="RunDate"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">主班司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="DriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">副司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="ViceDriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">运行区段：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="RunSection"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">分析时间：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="AnalysisStart">2016-05-08 16:08</label>
+            <label class="control-label mr-10 ml-10">~</label>
+            <label class="control-label text-left" name="AnalysisEnd">2016-05-08 19:08</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">发现问题：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Problems"></label>
+        </div>
+    </div>
+    
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">指导意见：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Suggests"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Analysis" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>

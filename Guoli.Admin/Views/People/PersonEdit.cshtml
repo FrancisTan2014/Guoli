@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "编辑人员信息";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.LastPage = "人员管理";
+    ViewBag.LastUrl = "/People/Index";
+    ViewBag.ThisPage = "编辑人员信息";
+    ViewBag.ThisUrl = "/People/PersonEdit?id=" + ViewBag.Id;
+}
+
+<style>
+    .btn.active {
+        background-color: #e05d6f !important;
+        color: #fff;
+    }
+</style>
+
+<form class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <input type="hidden" name="Id" value="0" />
+        <input type="hidden" name="PersonId" value="''" />
+        <label for="input04" class="col-sm-2 control-label">工号：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="WorkNo" id="input04" required data-parsley-trigger="change" data-parsley-required-message="工号不能为空" data-parsley-maxlength="16" data-parsley-maxlength-message="工号不能起过16个字符">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input05" class="col-sm-2 control-label">姓名：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="Name" id="input05" required data-parsley-trigger="change" data-parsley-required-message="姓名不能为空" data-parsley-maxlength="10" data-parsley-maxlength-message="姓名不能超过十个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <input type="hidden" name="Sex" />
+        <label class="col-sm-2 control-label">性别：</label>
+        <div class="col-sm-10">
+            <div class="btn-group">
+                <label class="btn btn-default sex toggle-class radio-label" data-value="1" data-toggle="active" data-type="radio">男</label>
+                <label class="btn btn-default sex toggle-class radio-label" data-value="2" data-toggle="active" data-type="radio">女</label>
+            </div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input06" class="col-sm-2 control-label">拼音：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="Spell" id="input06" required data-parsley-trigger="change" data-parsley-required-message="拼音不能为空" data-parsley-maxlength="10" data-parsley-maxlength-message="拼音不能超过十个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input07" class="col-sm-2 control-label">身份证：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="IdentityNo" id="input07" required data-parsley-trigger="change" data-parsley-required-message="身份证不能为空" data-parsley-pattern="(^[1-9]\d{5}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$)" data-parsley-pattern-message="请输入合法的身份证号">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input09" class="col-sm-2 control-label">生日：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="BirthDate" id="input09" readonly>
+            <label class="mt-10 text-small">生日会根据身份证号自动计算</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">部门：</label>
+        <div class="col-sm-10">
+            <select name="DepartmentId" class="form-control">
+                <option value="-1">请选择</option>
+            </select>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">职务：</label>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-9">
+                    <select name="PostId" class="form-control">
+                        <option value="-1">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <div class="btn btn-default" id="btnAddPost">添加职务</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <input type="hidden" name="PhotoPath" />
+        <label class="col-sm-2 control-label">照片：</label>
+        <div class="col-sm-10">
+            <img id="photo" src="#" class="responsive mb-10" />
+            <input type="file" id="imgUpload"/>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-primary" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnBack">返 回</button>
+        </div>
+    </div>
+</form>
+
+<div class="post-input" style="display: none; overflow: hidden;">
+    <label class="col-sm-4 control-label text-right">职务名称：</label>
+    <div class="col-sm-8">
+        <input type="text" class="form-control" name="PostName" placeholder="在此输入职务名称" required data-parsley-required-message="职务名称不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="职务名称不能起过二十个字">
+    </div>
+</div>
+
+<script src="/Scripts/page-scripts/person-edit.js"></script>

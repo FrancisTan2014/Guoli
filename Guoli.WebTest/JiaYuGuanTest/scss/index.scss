@@ -1,0 +1,456 @@
+﻿$borderColor: #d7d7d7;
+$fontGray: #999;
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0;
+    overflow: hidden;
+}
+
+.fl {
+    float: left;
+}
+
+.clear{
+    clear:both;
+}
+
+.btn{
+    font-size:1em;
+}
+
+.page {
+    width: 100%;
+    height: 100%;
+
+    .page-title {
+        text-align: center;
+        font-size:1.4em;
+        font-weight:bold;
+    }
+
+    .page-content {
+        width: 60%;
+        margin: 0 auto;
+        padding-left: 20px;
+    }
+}
+
+.select-item {
+    padding: 5px 10px;
+    border: 1px solid $borderColor;
+    margin-right: 10px;
+    margin-top: 10px;
+
+    &.select-active {
+        border: none;
+        background: #3399FF;
+        color: #fff;
+    }
+}
+
+.pager {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+}
+
+.page-1{
+    width:90%;
+    margin:0 auto;
+    
+    .page-content{
+        width:80%;
+    }
+
+    h4{
+        font-weight:bold;
+    }
+
+    ul{
+        padding-left:20px;
+
+        li{
+            font-size:1.2em;
+            margin-top:10px;
+
+            span,input{
+                margin-left:10px;
+            }
+        }
+    }
+
+    .part-1{
+        margin-top:50px;
+
+        .btn-attend{
+            width:150px;
+            height:50px;
+        }
+    }
+
+    .part-2{
+        margin-top:50px;
+
+        .btn-upload-all{
+            float:right;
+            margin-right:15px;
+        }
+    }
+    
+    #progress{
+        position:fixed;
+        top:0;
+        right:0;
+        left:0;
+        bottom:0;
+        background: rgba(0,0,0,0.7);
+
+        #tips{
+            font-size: 1.8em;
+            text-align: center;
+            margin-top: 10%;
+            color: #fff;
+        }
+    }
+
+    #progressBar {
+        width: 200px; 
+        height: 200px;
+        position: relative;
+        margin: 10% auto;
+    }
+}
+
+.page-2 {
+    margin: 0 auto;
+
+    .page-content{
+        margin-top:5%;
+        width:60%;
+        font-size:1.4em;
+    }
+
+    .title{
+        font-weight:bold;
+        margin-top:2%;
+        display:inline-block;
+    }
+
+    .btn-confirm {
+        width:150px;
+        height:50px;
+        margin-top:5%;
+    }
+}
+
+.page-3 {
+    .page-content {
+        width: 90%;
+        margin-top:30px;
+    }
+
+    ul {
+        overflow: hidden;
+        width:100%;
+    }
+
+    li {
+        float: left;
+        padding: 5px 20px 5px 0;
+        width:48%;
+        font-size:1.2em;
+
+        label {
+            padding: 5px;
+            text-align: right;
+            width: 55%;
+            display: inline-block;
+            font-weight:normal;
+        }
+
+        input {
+            display: inline-block;
+            width: 43%;
+            padding: 10px 5px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        &.last{
+            width:98%;
+
+            label{
+                width:27%;
+            }
+
+            input{
+                width:71%;
+            }
+
+            .btn-attend{
+                width:30%;
+                float:right;
+                margin-top:30px;
+            }
+        }
+    }
+}
+
+.page-4 {
+    .page-content {
+        width: 100%;
+    }
+
+    .top {
+        border-bottom: 1px solid $borderColor;
+    }
+
+    .top-left {
+        text-align: center;
+        border-right: 1px solid $borderColor;
+
+        .arrive-station {
+            font-size: 1.8em;
+        }
+
+        .big-btns {
+            .btn {
+                width: 45%;
+                margin-left: 6%;
+                margin-top: 2%;
+            }
+        }
+
+        .small-btns {
+            margin-top: 5%;
+
+            .title {
+                text-align: right;
+                display: inline-block;
+            }
+
+            div {
+                width: 30%;
+                margin-bottom: 1%;
+                font-size: 1.0em;
+            }
+        }
+    }
+
+    .top-right {
+        .title {
+            padding-bottom: 5px;
+        }
+    }
+
+    .bottom {
+        text-align:center;
+        margin-top: 10px;
+        
+        tr.deleted{
+            text-decoration:line-through;
+            color:$fontGray;
+        }
+
+        th, td {
+            text-align: center;
+            border-top: none;
+            font-size: 1em;
+        }
+    }
+
+    .next {
+        position: absolute;
+        top: 1%;
+        right:1%;
+    }
+
+    .train-ticks {
+        th, td {
+            border-top: none;
+            font-size: 1em;
+            padding: 2px;
+            font-weight: normal;
+            text-align: center;
+            color: $fontGray;
+        }
+
+        tr.large {
+            font-size: 1.2em;
+
+            td {
+                color:#333;
+            }
+        }
+
+        tr.behind {
+            display:none;
+        }
+
+        .more-ticks {
+            color: $fontGray;
+        }
+    }
+}
+
+.page-5{
+    .page-content{
+        width:100%;
+        margin-top:3%;
+    }
+
+    .part{
+        width:30%;
+        margin-left:2%;
+        float:left;
+
+        &.up-part{
+            margin-top: -14%;
+        }
+
+        &.last{
+            float:none;
+            width:65%;
+            margin-top:30px;
+
+            input{
+                width:95%;
+            }
+        }
+
+        .part-title{
+            border-bottom:1px solid $borderColor;
+            font-weight:bold;
+            padding-bottom:10px;
+        }
+
+        .part-content{
+            width:100%;
+            font-size:1em;
+            color:$fontGray;
+            text-align:right;
+
+            label{
+                display:inline-block;
+                font-weight:normal;
+                padding: 10px 5px;
+            }
+
+            input{
+                    display:inline-block;
+                border-top:none;
+                border-right:none;
+                border-left:none;
+                padding: 10px 5px;
+                width:50%;
+
+                &.long{
+                    width:90%;
+                }
+
+                &.short{
+                    width:30%;
+                }
+
+                &.tiny-short{
+                    width:20%;
+                }
+            }
+        }
+    }
+
+    .btn-end{
+        width:20%;
+        height:60px;
+        font-size:1.4em;
+        line-height:1.8;
+        float:right;
+        margin-right:4%;
+        margin-top:-6%;
+    }
+}
+
+.modal{
+    .close {
+        display:inline-block;
+        width:50px;
+        height:50px;
+        font-size:1.4em;
+        text-align:center;
+    }
+
+    .control-label{
+        font-size:1.4em;
+        font-weight:normal;
+        padding:14px 0;
+        text-align:right;
+    }
+
+    .input{
+        font-size: 1.4em;
+        padding:30px 10px;
+    }
+
+    .train-ticks {
+        th, td {
+            border-top: none;
+            font-size: 1.2em;
+            padding: 2px;
+            font-weight: normal;
+            text-align: center;
+            color: #333;
+        }
+
+        .more-ticks {
+            color: $fontGray;
+        }
+    }
+}
+
+#showPic{
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    overflow-x:scroll;
+    overflow-y:scroll;
+
+    .img{
+        width:94%;
+        margin:0 auto;
+        margin-top:3%;
+        position:relative;
+    }
+
+    .close{
+        font-size:1.4em;
+        display:inline-block;
+        width:70px;
+        height:70px;
+        line-height:70px;
+        text-align:center;
+        color:#fff;
+        border-radius:50%;
+        background:rgb(0,0,0);
+        position:absolute;
+        top:2%;
+        right:2%;
+        z-index:5;
+    }
+
+    img{
+        width:100%;
+    }
+}

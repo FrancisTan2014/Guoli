@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "防止事故及好人好事记录-详情";
+    ViewBag.LastPage = "防止事故及好人好事记录列表";
+    ViewBag.LastUrl = "/Instructor/Goo";
+    ViewBag.ThisPage = "防止事故及好人好事记录详情";
+    ViewBag.ThisUrl = "/Instructor/GoodDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorGoodJob" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">登记日期：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="WriteDate"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">责任司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="DriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">性质：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="GoodJobType"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">概况：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="GeneralSituation"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">处理意见：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Suggests"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Good" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>

@@ -1,0 +1,112 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "机破临修记录-详情";
+    ViewBag.LastPage = "机破临修记录列表";
+    ViewBag.LastUrl = "/Instructor/Check";
+    ViewBag.ThisPage = "机破临修记录详情";
+    ViewBag.ThisUrl = "/Instructor/RepairDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorRepair" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">发生时间：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="HappenTime"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <label class="col-sm-2 control-label">发生地点：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Location"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">车次：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TrainCode"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">机车型号：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="LocomotiveType"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">主班司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="DriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">副司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="ViceDriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">学员：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StudentName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">故障处所：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="FaultLocation"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <label class="col-sm-2 control-label">故障原因：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="FaultReason"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">责任：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Responsibility"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Repair" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>

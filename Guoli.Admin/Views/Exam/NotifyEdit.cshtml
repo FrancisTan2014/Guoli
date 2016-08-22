@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "考试通知详情";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.LastPage = "考试通知";
+    ViewBag.LastUrl = "/Exam/Notify";
+    ViewBag.ThisPage = "考试通知详情";
+    ViewBag.ThisUrl = "/Exam/NotifyEdit";
+}
+
+<form class="form-horizontal" role="form" id="examInputForm">
+
+    <div class="form-group">
+        <label class="col-sm-10 col-sm-offset-2 text-primary">考试通知一旦填写并保存，不能再修改，同时，相关岗位人员的手持终端上会收到这条通知，在他们考试完成并提交成绩后，您可在考试结果中查看此次考试情况
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label for="input03" class="col-sm-2 control-label">考试名称：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="ExamName" id="input03" required data-parsley-trigger="change" data-parsley-required-message="考试名称不能为空" data-parsley-maxlength="50" data-parsley-maxlength-message="考试名称不能超过50个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">考试内容：</label>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-9">
+                    <select class="form-control" name="ExamFilesId" data-parsley-trigger="change" data-parsley-range="[1, 10000]" data-parsley-range-message="请选择考试类容">
+                        <option value="-1">请选择</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">参考人员：</label>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-9">
+                    <select class="form-control" name="PostId" data-parsley-trigger="change" data-parsley-range="[1, 10000]" data-parsley-range-message="请选择参考人员">
+                        <option value="-1">请选择</option>
+                    </select>
+                    <label class="mt-10">仅您选中的岗位人员会收到此通知</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input05" class="col-sm-2 control-label">试题数量：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="QuestionCount" id="input05" required data-parsley-trigger="change" data-parsley-required-message="试题数量不能为空" data-parsley-type="number" data-parsley-type-message="请输入数字" data-parsley-range="[1, 10000]" data-parsley-range-message="请输入有效的数量" />
+            <label class="mt-10">将在您选择的题库中随机抽取指定数量的题目</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+
+    <div class="form-group">
+        <label for="input10" class="col-sm-2 control-label">考试时长（分钟）：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="TimeLimit" id="input10" required data-parsley-trigger="change" data-parsley-required-message="考试时长不能为空" data-parsley-type="number" data-parsley-type-message="请输入数字" data-parsley-range="[1, 1000]" data-parsley-range-message="请输入有效的考试时长" />
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input06" class="col-sm-2 control-label">通过分数：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="PassScore" id="input06" required data-parsley-trigger="change" data-parsley-required-message="通过分数不能为空" data-parsley-type="number" data-parsley-type-message="请输入数字" data-parsley-range="[1, 100]" data-parsley-range-message="请确保通过分数在1~100之间" />
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <label for="input07" class="col-sm-2 control-label">允许补考次数：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="ResitCount" id="input07" required data-parsley-trigger="change" data-parsley-required-message="补考次数不能为空" data-parsley-type="number" data-parsley-type-message="请输入数字" data-parsley-range="[1, 100]" data-parsley-range-message="请输入有效的次数" />
+            <label class="mt-10">当参考人员第一次考试未通过时，此次数决定他是否可以重新考试</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input08" class="col-sm-2 control-label">考试截止时间：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="EndTime" id="input08" required data-parsley-trigger="change" data-parsley-required-message="考试截止时间不能为空" />
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-lightred" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnBack">返 回</button>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/notify-edit.js"></script>

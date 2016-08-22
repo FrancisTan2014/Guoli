@@ -1,0 +1,103 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "机车质量登记-详情";
+    ViewBag.LastPage = "机车质量登记列表";
+    ViewBag.LastUrl = "/Instructor/Quality";
+    ViewBag.ThisPage = "机车质量登记详情";
+    ViewBag.ThisUrl = "/Instructor/QualityDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorLocoQuality" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">登记日期：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="RegistDate"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">车次：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TrainCode"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">机车型号：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="LocomotiveType"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">主班司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="DriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">修程：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="RepairClass"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">保养状态：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="MaintenanceStatus"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">评定成绩：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Score"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">惯性及故障处所：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="FaultLocation"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">概况：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="GeneralSituation"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Quality" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>

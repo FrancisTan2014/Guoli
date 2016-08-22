@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "试题上传";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.LastPage = "试题管理";
+    ViewBag.LastUrl = "/Exam/Questions";
+    ViewBag.ThisPage = "试题上传";
+    ViewBag.ThisUrl = "/Exam/Upload";
+}
+
+<form class="form-horizontal" role="form" id="examInputForm">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">试题分类：</label>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-9">
+                    <select class="form-control" name="ExamTypeId" data-parsley-trigger="change" data-parsley-range="[1, 10000]" data-parsley-range-message="请选择试题分类" >
+                        <option value="-1">请选择</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <div class="btn btn-default" id="btnAdd">添加分类</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">题库文件：</label>
+        <div class="col-sm-10">
+            <input type="hidden" name="FilePath" required data-parsley-required-message="请上传题库文件" />
+            <input type="button" value="选择文件" class="btn btn-lightred form-control" id="btnShowUpload" />
+            <label>题库文件必须与模板文件的格式一样才能上传成功</label>&nbsp;&nbsp;
+            <a class="text-lg text-primary" href="/Upload/ExamFiles/template.xls">下载模板</a>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input03" class="col-sm-2 control-label">试题名称：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="FileName" id="input03" required data-parsley-trigger="change" data-parsley-required-message="试题名称不能为空" data-parsley-maxlength="50" data-parsley-maxlength-message="试题名称不能超过50个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input04" class="col-sm-2 control-label">试题描述：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="FileDesc" id="input04" />
+        </div>
+    </div>
+    
+    <hr class="line-dashed line-full">
+
+    <div class="uploadify-box" style="display: none;">
+        <input type="file" id="btnSelect" />
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-lightred" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnBack">返 回</button>
+        </div>
+    </div>
+</form>
+
+<form id="addTypeBox" class="form-group" style="display: none; overflow:hidden;">
+    <label form="input06" class="col-sm-3 control-label text-right">分类名称：</label>
+    <div class="col-sm-9">
+        <input type="text" class="form-control" id="input06" name="typeName" required data-parsley-trigger="change" data-parsley-required-message="分类名称不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="分类名称不能超过20个字" placeholder="在此输入" />
+    </div>
+</form>
+
+<div class="row" id="uploadBox" style="display: none;">
+    <input type="file" id="uploadify" />
+</div>
+
+<script src="/Scripts/page-scripts/exam-upload.js"></script>

@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
+
+namespace Guoli.DbProvider
+{
+    /// <summary>
+    /// MSSQLSERVER数据库操作类，提供对指定数据库进行操作的方法
+    /// </summary>
+    /// <author>FrancisTan</author>
+    /// <since>2016-07-01</since>
+    public class SqlHelper : DbHelper
+    {
+        public override void BulkInsert(string connectionString, string tableName, DataTable table)
+        {
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentNullException("connectionString");
+            }
+            if (string.IsNullOrEmpty(tableName))
+            {
+                throw new ArgumentNullException("tableName");
+            }
+            if (table == null || table.Rows.Count == 0)
+            {
+                return;
+            }
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlBulkCopy bulk = new SqlBulkCopy(connection))
+                    {
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            bulk.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                        }
+                        
+                        bulk.DestinationTableName = tableName;
+                        bulk.WriteToServer(table);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public override void BulkInsert<T>(string connectionString, string tableName, IEnumerable<T> data)
+        {
+            var table = data.ToDataTable();
+            BulkInsert(connectionString, tableName, table);
+        }
+
+        public SqlHelper(DatabaseType dbType) : base(dbType)
+        {
+            
+        }
+    }
+}

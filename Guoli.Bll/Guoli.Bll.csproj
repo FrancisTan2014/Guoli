@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BE4AE0E1-EFC2-4A7F-9D4D-590539144E0C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Guoli.Bll</RootNamespace>
+    <AssemblyName>Guoli.Bll</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseBll.cs" />
+    <Compile Include="DalFactory.cs" />
+    <Compile Include="ExceptionLogBll.cs" />
+    <Compile Include="LoginResult.cs" />
+    <Compile Include="Partital\AnnounceCommandsBll.cs" />
+    <Compile Include="Partital\AnnouncementBll.cs" />
+    <Compile Include="Partital\BaseLineBll.cs" />
+    <Compile Include="Partital\BaseStationBll.cs" />
+    <Compile Include="Partital\DbUpdateLogBll.cs" />
+    <Compile Include="Partital\DepartInfoBll.cs" />
+    <Compile Include="Partital\DrivePlanBll.cs" />
+    <Compile Include="Partital\DriveRecordsBll.cs" />
+    <Compile Include="Partital\DriveSignPointBll.cs" />
+    <Compile Include="Partital\DriveTrainNoAndLineBll.cs" />
+    <Compile Include="Partital\ExamAnswersBll.cs" />
+    <Compile Include="Partital\ExamErrorQuestionsBll.cs" />
+    <Compile Include="Partital\ExamFilesBll.cs" />
+    <Compile Include="Partital\ExamNotifyBll.cs" />
+    <Compile Include="Partital\ExamQuestionBll.cs" />
+    <Compile Include="Partital\ExamRecordsBll.cs" />
+    <Compile Include="Partital\ExamTypeBll.cs" />
+    <Compile Include="Partital\ExceptionLogBll.cs" />
+    <Compile Include="Partital\FeedbackBll.cs" />
+    <Compile Include="Partital\InstructorAcceptBll.cs" />
+    <Compile Include="Partital\LineAnnounceCommandsBll.cs" />
+    <Compile Include="Partital\LineStationsBll.cs" />
+    <Compile Include="Partital\OperateLogBll.cs" />
+    <Compile Include="Partital\PersonInfoBll.cs" />
+    <Compile Include="Partital\PostsBll.cs" />
+    <Compile Include="Partital\StationFilesBll.cs" />
+    <Compile Include="Partital\SystemUserBll.cs" />
+    <Compile Include="Partital\TraficFilesBll.cs" />
+    <Compile Include="Partital\TraficFileTypeBll.cs" />
+    <Compile Include="Partital\TraficKeywordsBll.cs" />
+    <Compile Include="Partital\TraficSearchRecordBll.cs" />
+    <Compile Include="Partital\TraficSearchResultBll.cs" />
+    <Compile Include="Partital\TraficSearchTextBll.cs" />
+    <Compile Include="Partital\TrainFormationBll.cs" />
+    <Compile Include="Partital\TrainMomentBll.cs" />
+    <Compile Include="Partital\TrainNoBll.cs" />
+    <Compile Include="Partital\TrainNoLineBll.cs" />
+    <Compile Include="Partital\ViewBaseLineBll.cs" />
+    <Compile Include="Partital\ViewExamFilesBll.cs" />
+    <Compile Include="Partital\ViewExamNotifyBll.cs" />
+    <Compile Include="Partital\ViewExamRecordsBll.cs" />
+    <Compile Include="Partital\ViewInstructorAcceptBll.cs" />
+    <Compile Include="Partital\ViewInstructorAnalysisBll.cs" />
+    <Compile Include="Partital\ViewInstructorCheckBll.cs" />
+    <Compile Include="Partital\ViewInstructorGoodJobBll.cs" />
+    <Compile Include="Partital\ViewInstructorKeyPersonBll.cs" />
+    <Compile Include="Partital\ViewInstructorLocoQualityBll.cs" />
+    <Compile Include="Partital\ViewInstructorPeccancyBll.cs" />
+    <Compile Include="Partital\ViewInstructorPlanBll.cs" />
+    <Compile Include="Partital\ViewInstructorRepairBll.cs" />
+    <Compile Include="Partital\ViewInstructorTeachBll.cs" />
+    <Compile Include="Partital\ViewInstructorTempTakeBll.cs" />
+    <Compile Include="Partital\ViewPersonInfoBll.cs" />
+    <Compile Include="Partital\ViewStationBll.cs" />
+    <Compile Include="Partital\ViewTrainMomentBll.cs" />
+    <Compile Include="Partital\ViewTrainNoLIneBll.cs" />
+    <Compile Include="PersonInfoBll.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemUserBll.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Guoli.Dal\Guoli.Dal.csproj">
+      <Project>{51a4767f-b4f5-4c94-bdaf-408605dcd54d}</Project>
+      <Name>Guoli.Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Guoli.Model\Guoli.Model.csproj">
+      <Project>{3a39861f-daf5-4320-8154-3ff01eb56846}</Project>
+      <Name>Guoli.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Guoli.Utilities\Guoli.Utilities.csproj">
+      <Project>{745f6e7c-1dc1-4288-804b-c68e2995f080}</Project>
+      <Name>Guoli.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

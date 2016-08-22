@@ -1,0 +1,231 @@
+sup {
+	vertical-align: baseline;
+	position: relative;
+	top: -0.4em;
+}
+sub {
+	vertical-align: baseline;
+	position: relative;
+	top: 0.4em;
+}
+@media screen and (min-device-pixel-ratio:0), (-webkit-min-device-pixel-ratio:0), (min--moz-device-pixel-ratio: 0) { .layer { font-size:10em; transform:scale(0.1); -moz-transform:scale(0.1); -webkit-transform:scale(0.1); -moz-transform-origin:top left; -webkit-transform-origin:top left; } }
+.ie { font-size: 1pt; }
+.ie body { font-size: 12em; }
+.stl_01 {
+	border-style: none;
+	height: 66em;
+	width: 51em;
+	margin: 0em;
+	line-height: 0.0em;
+	font-size: 1em;
+	display: block;
+}
+.stl_02 {
+	position: relative;
+}
+.stl_03 {
+	position: absolute;
+	left: 0em;
+	top: 0em;
+}
+.stl_04 {
+	position: relative;
+	width: 51em;
+}
+.stl_05 {
+	height: 6.6em;
+}
+.ie .stl_05 {
+	height: 66em;
+}
+@font-face {
+	font-family:"FUBUHE+Calibri Light";
+	src:url("73848880-0000-0000-0000-000000000000.woff") format("woff");
+}
+.stl_06 {
+	color: #000000;
+	font-size: 4em;
+	font-family: "FUBUHE+Calibri Light";
+}
+.stl_07 {
+	line-height: 1.220703em;
+}
+.stl_08 {
+	letter-spacing: -0.0211em;
+}
+
+.ie .stl_08 {
+	letter-spacing: -1.3494px;
+}
+.stl_09 {
+	color: #000000;
+	font-size: 2.17em;
+	font-family: "FUBUHE+Calibri Light";
+}
+.stl_10 {
+	letter-spacing: -0.0257em;
+}
+
+.ie .stl_10 {
+	letter-spacing: -0.8914px;
+}
+@font-face {
+	font-family:"CQSQIR+Calibri";
+	src:url("01f3100c-0000-0000-0000-000000000000.woff") format("woff");
+}
+.stl_11 {
+	color: #000000;
+	font-size: 0.92em;
+	font-family: "CQSQIR+Calibri";
+}
+.stl_12 {
+	letter-spacing: -0.0001em;
+}
+
+.ie .stl_12 {
+	letter-spacing: -0.0009px;
+}
+.stl_13 {
+	letter-spacing: 0em;
+}
+
+.ie .stl_13 {
+	letter-spacing: 0px;
+}
+@font-face {
+	font-family:"TAMJPA+Calibri Light";
+	src:url("66e85840-0000-0000-0000-000000000000.woff") format("woff");
+}
+.stl_14 {
+	color: #2E74B5;
+	font-size: 1.33em;
+	font-family: "TAMJPA+Calibri Light";
+}
+.stl_15 {
+	letter-spacing: 0.0008em;
+}
+
+.ie .stl_15 {
+	letter-spacing: 0.0177px;
+}
+.stl_16 {
+	letter-spacing: -0.0018em;
+}
+
+.ie .stl_16 {
+	letter-spacing: -0.0264px;
+}
+.stl_17 {
+	letter-spacing: -0.0011em;
+}
+
+.ie .stl_17 {
+	letter-spacing: -0.0159px;
+}
+@font-face {
+	font-family:"VQLRCO+Calibri";
+	src:url("e2c377ee-0000-0000-0000-000000000000.woff") format("woff");
+}
+.stl_18 {
+	color: #000000;
+	font-size: 0.92em;
+	font-family: "VQLRCO+Calibri";
+}
+.stl_19 {
+	letter-spacing: -0.0013em;
+}
+
+.ie .stl_19 {
+	letter-spacing: -0.0189px;
+}
+.stl_20 {
+	letter-spacing: -0.0015em;
+}
+
+.ie .stl_20 {
+	letter-spacing: -0.0214px;
+}
+.stl_21 {
+	color: #954F72;
+	font-size: 0.92em;
+	font-family: "CQSQIR+Calibri";
+}
+.stl_22 {
+	letter-spacing: -0.0014em;
+}
+
+.ie .stl_22 {
+	letter-spacing: -0.0213px;
+}
+@font-face {
+	font-family:"WSJBCW+Calibri,Bold";
+	src:url("4f891efa-0001-0000-0000-000000000000.woff") format("woff");
+}
+.stl_23 {
+	color: #000000;
+	font-size: 0.92em;
+	font-family: "WSJBCW+Calibri,Bold";
+}
+.stl_24 {
+	letter-spacing: 0.0011em;
+}
+
+.ie .stl_24 {
+	letter-spacing: 0.0241px;
+}
+.stl_25 {
+	letter-spacing: -0.0007em;
+}
+
+.ie .stl_25 {
+	letter-spacing: -0.0104px;
+}
+.stl_26 {
+	letter-spacing: -0.0016em;
+}
+
+.ie .stl_26 {
+	letter-spacing: -0.0229px;
+}
+.stl_27 {
+	letter-spacing: -0.0009em;
+}
+
+.ie .stl_27 {
+	letter-spacing: -0.0138px;
+}
+.stl_28 {
+	letter-spacing: -0.0008em;
+}
+
+.ie .stl_28 {
+	letter-spacing: -0.0124px;
+}
+.stl_29 {
+	letter-spacing: -0.0006em;
+}
+
+.ie .stl_29 {
+	letter-spacing: -0.009px;
+}
+.stl_30 {
+	letter-spacing: -0.0005em;
+}
+
+.ie .stl_30 {
+	letter-spacing: -0.0071px;
+}
+.stl_31 {
+	letter-spacing: -0.0012em;
+}
+
+.ie .stl_31 {
+	letter-spacing: -0.0178px;
+}
+.stl_32 {
+	letter-spacing: -0.001em;
+}
+
+.ie .stl_32 {
+	letter-spacing: -0.0141px;
+}

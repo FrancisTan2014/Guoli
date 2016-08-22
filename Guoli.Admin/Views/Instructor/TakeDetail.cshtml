@@ -1,0 +1,181 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "添乘信息单-详情";
+    ViewBag.LastPage = "添乘信息单列表";
+    ViewBag.LastUrl = "/Instructor/Take";
+    ViewBag.ThisPage = "添乘信息单详情";
+    ViewBag.ThisUrl = "/Instructor/TakeDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal bg-white p-10" role="form">
+
+    <input type="hidden" name="target" value="ViewInstructorTempTake" />
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">添乘日期：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TakeDate"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">添乘车次：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TrainCode"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">添乘区段：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TakeSection"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">开车-到达：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="RunStart">2016-05-08 16:08</label>
+            <label class="control-label mr-10 ml-10">~</label>
+            <label class="control-label text-left" name="RunEnd">2016-05-08 19:08</label>
+        </div>
+    </div>
+    
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">机车型号：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="LocomotiveType"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">主班司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="DriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">副司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="ViceDriverName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">学习司机：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="StudentName"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">操纵区段：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="OperateSection"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <label class="col-sm-2 control-label">操作时间：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="OperateStart">2016-05-08 16:08</label>
+            <label class="control-label mr-10 ml-10">~</label>
+            <label class="control-label text-left" name="OperateEnd">2016-05-08 19:08</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">辆数：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="CarCount"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">吨数：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="WholeWeight"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">换长：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Length"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">出勤-退勤：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="AttendTime">2016-05-08 16:08</label>
+            <label class="control-label mr-10 ml-10">~</label>
+            <label class="control-label text-left" name="EndAttendTime">2016-05-08 19:08</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">添乘目的：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="TakeAims"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">发现问题：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Problems"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">指导意见：</label>
+        <div class="col-sm-10">
+            <label class="control-label text-left" name="Suggests"></label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <a href="/Instructor/Take" class="btn btn-lg btn-primary" id="btnBack">返 回</a>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/instructor-detail.js"></script>
