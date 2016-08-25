@@ -8,11 +8,11 @@ using Guoli.Admin.Utilities;
 using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Helpers;
-using Microsoft.Ajax.Utilities;
+using Microsoft.Ajax.Utilities;   
 using WebGrease.Css.Extensions;
 
 namespace Guoli.Admin.Controllers
-{
+{ 
     public class LineController : Controller
     {
         #region 异步通用
@@ -488,13 +488,23 @@ namespace Guoli.Admin.Controllers
         #endregion
 
         #region 列车时刻
-        public ActionResult TrainMoment(int trainNoId)
+        public ActionResult TrainMoment(int? trainNoId)
         {
+            if (trainNoId == null)
+            {
+                return RedirectToAction("TrainNo");
+            }
+
             var trainNoBll = new TrainNoBll();
             var trainMomentBll = new ViewTrainMomentBll();
 
             var trainNo = trainNoBll.QuerySingle(trainNoId);
-            var moments = trainMomentBll.QueryList("TrainNoId=" + trainNoId, null, null, "Sort");
+            if (trainNo == null)
+            {
+                return RedirectToAction("TrainNo");
+            }
+
+            var moments = trainMomentBll.QueryList("TrainNoId=" + trainNoId, null, null, "Sort").ToList();
 
             var trainMomentHasAdded = true;
             if (!moments.Any())
@@ -511,45 +521,106 @@ namespace Guoli.Admin.Controllers
                 var stations = lineStationBll.QueryList(condition);
 
                 var lineStationDic = new List<KeyValuePair<ViewTrainNoLIne, List<LineStations>>>();
-                var stationOrder = 0;
                 lines.ForEach(line =>
                 {
                     // 将线路与其经过的车站以键值对的方式按顺序归到一起
-                    var theStations = stations.Where(item => item.LineId == line.Id).OrderBy(item => item.Sort);
-
-                    // 将所有车站按经过的顺序编号
-                    theStations.ForEach(station => station.Sort = ++stationOrder);
+                    var theStations = stations.Where(item => item.LineId == line.LineId).OrderBy(item => item.Sort);
 
                     lineStationDic.Add(new KeyValuePair<ViewTrainNoLIne, List<LineStations>>(line, theStations.ToList()));
                 });
 
                 // 构造一个ViewTrainMoment集合以便在前台统一展示
+                var lineCounter = 0;
+                var stationOrder = 0;
                 moments = new List<ViewTrainMoment>();
                 lineStationDic.ForEach(item =>
                 {
+                    lineCounter++;
+
                     var tempLine = item.Key;
                     var tempSations = item.Value;
 
+                    var stationCounter = 0;
                     tempSations.ForEach(t =>
                     {
+                        stationCounter++;
+                        if (lineCounter > 1 && stationCounter == 1)
+                        {
+                            // 由于上一条线的终点站与下一站的终点站相同，此处去掉后一条线的起点站
+                            return;
+                        }
+
+                        stationOrder++;
+
                         var model = new ViewTrainMoment();
                         model.FullName = trainNo.FullName;
-                        model.Sort = t.Sort;
+                        model.Sort = stationOrder;
                         model.StationName = t.StationName;
                         model.TrainNoId = trainNo.Id;
                         model.TrainNoLineId = tempLine.TrainNoLineId;
                         model.TrainStationId = t.StationId;
                         model.LineId = t.LineId;
                         model.LineName = tempLine.LineName;
+
+                        moments.Add(model);
                     });
                 });
             }
 
+            ViewBag.Id = trainNoId;
             ViewBag.TrainNo = trainNo;
             ViewBag.Moments = moments.ToList();
-            ViewBag.TrainMomentHasAdded = trainMomentHasAdded;
+            ViewBag.IsFirstTime = !trainMomentHasAdded;
 
             return View();
+        }
+
+        public JsonResult Save(string json)
+        {
+            var list = JsonHelper.Deserialize<List<TrainMoment>>(json);
+            if (list == null || !list.Any())
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            // 对列车时刻的更新只存在两种情况
+            //  1 某车次的列车时刻第一次添加，此时将所有车站的列车时刻表插入数据库
+            //  2 对某车次的某些车站的列车时刻进行更新
+
+            var trainMomentBll = new TrainMomentBll();
+            var tableName = typeof(TrainMoment).Name;
+
+            var isInsert = list[0].Id == 0;
+            if (isInsert)
+            {
+                var maxId = trainMomentBll.GetMaxId();
+                trainMomentBll.BulkInsert(list);
+
+                DataUpdateLog.BulkUpdate(tableName, (int)maxId);
+
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            var success = trainMomentBll.ExecuteTransation(() => {
+                foreach (var item in list)
+                {
+                    if (!trainMomentBll.Update(item))
+                    {
+                        return false;
+                    }
+
+                    DataUpdateLog.SingleUpdate(tableName, item.Id, DataUpdateType.Update);
+                }
+
+                return true;
+            });
+
+            if (success)
+            {
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            return Json(ErrorModel.OperateFailed);
         }
         #endregion
     }

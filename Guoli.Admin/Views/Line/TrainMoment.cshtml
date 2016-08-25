@@ -1,12 +1,29 @@
 ﻿@{
+    ViewBag.Title = "列车时刻";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.LastPage = "车次管理";
+    ViewBag.LastUrl = "/Line/TrainNo";
+    ViewBag.ThisPage = "列车时刻";
+    ViewBag.ThisUrl = "/Line/TrainMoment?trainNoId=" + ViewBag.Id;
 }
+
+<link href="/Scripts/plugins/datetimepicker/DateTimePicker.min.css" rel="stylesheet" />
+<style>
+    .error-tr{
+        border: 3px solid #f00;
+    }
+</style>
 
 <div class="row">
     <div class="col-sm-12">
         <section class="tile">
             <div class="tile-header dvd dvd-btm">
-                <h3>@ViewBag.TrainNo.FullName（@ViewBag.TrainNo.FirstStation-@ViewBag.TrainNo.LastStation）的列车时刻表</h3>
+                <h3>
+                    <strong>
+                        @ViewBag.TrainNo.FullName
+                        （@ViewBag.TrainNo.FirstStation-@ViewBag.TrainNo.LastStation）的列车时刻表
+                    </strong>
+                </h3>
             </div>
             <div class="tile-body">
                 <table class="table table-responsive">
@@ -23,27 +40,46 @@
                     <tbody>
                         @foreach (var item in ViewBag.Moments)
                         {
-                            <tr>
+                            <tr class="train-moment">
                                 <td>@item.Sort</td>
-                                <td>武威南</td>
+                                <td>@item.StationName</td>
                                 <td>
-                                    <input type="text" class="form-control" value="武威南" />
+                                    <input type="hidden" name="Sort" value="@item.Sort" />
+                                    <input type="hidden" name="Id" value="@item.Id" />
+                                    <input type="hidden" name="TrainNoLineId" value="@item.TrainNoLineId" />
+                                    <input type="hidden" name="TrainStationId" value="@item.TrainStationId" />
+                                    <input type="hidden" name="StopMinutes" value="@item.StopMinutes" />
+                                    <input type="hidden" name="Updated" value="false" />
+                                    <input type="text" class="form-control pick-time" name="ArriveTime" data-orignal="@item.ArriveTime" value="@item.ArriveTime" data-field="time" />
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" value="武威南" />
+                                    <input type="text" class="form-control pick-time" name="DepartTime" data-orignal="@item.DepartTime" value="@item.DepartTime" data-field="time" />
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" value="武威南" />
+                                    <input type="number" class="form-control" name="IntervalKms" data-orignal="@item.IntervalKms" value="@item.IntervalKms" />
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control" value="武威南" />
+                                    <input type="number" class="form-control" name="SuggestSpeed" data-orignal="@item.SuggestSpeed" value="@item.SuggestSpeed" />
                                 </td>
                             </tr>
                         }
                                                 
                     </tbody>
                 </table>
+
+                <input type="hidden" value="@ViewBag.Moments.Count" name="StationCount" />
+                <input type="hidden" value="@ViewBag.IsFirstTime.ToString()" name="IsFirstTime" />
+                <div id="dtBox"></div>
+
+                <div class="btns mt-20">
+                    <div class="btn btn-primary btn-lg" id="btnSave">保 存</div>
+                    <div class="btn btn-default btn-lg" id="btnBack">返 回</div>
+                </div>
             </div>
         </section>
     </div>
 </div>
+
+<script src="/Scripts/plugins/datetimepicker/DateTimePicker.min.js"></script>
+<script src="/Scripts/plugins/datetimepicker/i18n/DatetimePicker-i18n-zh-CN.js"></script>
+<script src="~/Scripts/page-scripts/trainmonment.js"></script>

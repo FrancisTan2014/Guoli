@@ -80,6 +80,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="code-generate\android-entity.aspx" />
     <Content Include="CSharpTest.aspx" />
     <Content Include="DbProviderTest\connect-db.aspx" />
     <Content Include="DbProviderTest\framwork-text.aspx" />
@@ -106,6 +107,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="code-generate\android-entity.aspx.cs">
+      <DependentUpon>android-entity.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="code-generate\android-entity.aspx.designer.cs">
+      <DependentUpon>android-entity.aspx</DependentUpon>
+    </Compile>
     <Compile Include="CSharpTest.aspx.cs">
       <DependentUpon>CSharpTest.aspx</DependentUpon>
     </Compile>
