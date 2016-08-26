@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
 
 namespace Guoli.Utilities.Helpers
 {
@@ -18,7 +19,9 @@ namespace Guoli.Utilities.Helpers
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             MissingMemberHandling = MissingMemberHandling.Ignore,
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented,
+            Converters = new List<JsonConverter> { new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" } }
         };
 
         /// <summary>

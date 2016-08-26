@@ -7,9 +7,11 @@ using Guoli.Admin.Models;
 using Guoli.Admin.Utilities;
 using Guoli.Bll;
 using Guoli.Utilities.Enums;
+using Guoli.Utilities.Helpers;
 
 namespace Guoli.Admin.Controllers
 {
+    [LogFilter]
     [AppSignatureFilter]
     public class AppController : Controller
     {
@@ -40,7 +42,10 @@ namespace Guoli.Admin.Controllers
                 var result = entityType.InvokeMember(methodName, BindingFlags.InvokeMethod, null, bllEntity, invokeParameters);
                 var jsonObj = ErrorModel.GetDataSuccess(result, parameters.TableName);
 
-                return Json(jsonObj, JsonRequestBehavior.AllowGet);
+                return new CustomJsonResult {
+                    Data = jsonObj,
+                    FormateStr = "yyyy-MM-dd HH:mm:ss"
+                };
             }
             catch (Exception ex)
             {

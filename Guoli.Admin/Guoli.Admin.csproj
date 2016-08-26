@@ -162,6 +162,7 @@
     <Compile Include="Filters\Authority.cs" />
     <Compile Include="Filters\AuthorityFilter.cs" />
     <Compile Include="Filters\ExceptionFilter.cs" />
+    <Compile Include="Filters\LogFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -173,6 +174,7 @@
     <Compile Include="Utilities\AppSettings.cs" />
     <Compile Include="Utilities\BllFactory.cs" />
     <Compile Include="Utilities\CookieNames.cs" />
+    <Compile Include="Utilities\CustomJsonResult.cs" />
     <Compile Include="Utilities\DataUpdateLog.cs" />
     <Compile Include="Utilities\DataUpdateType.cs" />
     <Compile Include="Utilities\NpoiHelper.cs" />
