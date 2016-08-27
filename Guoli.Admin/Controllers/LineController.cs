@@ -133,14 +133,21 @@ namespace Guoli.Admin.Controllers
 
             var updateType = trainNo.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
 
-            var updateSuccess = false;
             var trainNoBll = new TrainNoBll();
+            var updateSuccess = false;
             if (trainNo.Id > 0)
             {
                 updateSuccess = trainNoBll.Update(trainNo);
             }
             else
             {
+                // 验证是否存在相同的车次
+                var condition = string.Format("FullName='{0}' AND IsDelete=0", trainNo.FullName);
+                if (trainNoBll.Exists(condition))
+                {
+                    return Json(ErrorModel.ExistSameItem);
+                }
+
                 var insertedTrainNo = trainNoBll.Insert(trainNo);
                 updateSuccess = insertedTrainNo.Id > 0;
             }
@@ -224,14 +231,20 @@ namespace Guoli.Admin.Controllers
 
             // 更新线路
             var lineUpdateRes = false;
-            var stationBll = new BaseLineBll();
+            var lineBll = new BaseLineBll();
             if (line.Id > 0)
             {
-                lineUpdateRes = stationBll.Update(line);
+                lineUpdateRes = lineBll.Update(line);
             }
             else
             {
-                var insertedLine = stationBll.Insert(line);
+                var condition = string.Format("LineName='{0}' AND IsDelete=0", line.LineName);
+                if (lineBll.Exists(condition))
+                {
+                    return Json(ErrorModel.ExistSameItem);
+                }
+
+                var insertedLine = lineBll.Insert(line);
                 lineUpdateRes = insertedLine.Id > 0;
             }
 
@@ -405,6 +418,12 @@ namespace Guoli.Admin.Controllers
             }
             else
             {
+                var condition = string.Format("StationName='{0}' AND IsDelete=0", station.StationName);
+                if (stationBll.Exists(condition))
+                {
+                    return Json(ErrorModel.ExistSameItem);
+                }
+
                 var insertedStation = stationBll.Insert(station);
                 stationUpdateRes = insertedStation.Id > 0;
             }
