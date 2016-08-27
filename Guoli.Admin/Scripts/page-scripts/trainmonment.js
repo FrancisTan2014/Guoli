@@ -85,10 +85,9 @@ var Page = (function () {
                 }
             }
             else {
-                var isNotTheSameStatus = (model.ArriveTime === '' && model.DepartTime !== '') || (model.ArriveTime !== '' && model.DepartTime === '');
-                if (isNotTheSameStatus) {
+                if (!model.DepartTime) {
                     isValid = false;
-                    msg = '非起始或终点站的到达/出发时间要么同时有值，要么同时为空，请重新输入';
+                    msg = '出发时间不能为空';
                     return false;
                 }
             }
