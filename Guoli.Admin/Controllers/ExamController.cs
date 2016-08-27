@@ -207,7 +207,7 @@ namespace Guoli.Admin.Controllers
 
             var typeBll = new ExamTypeBll();
 
-            var condition = string.Format("IsDelete=0 AND name='{0}'", name.Trim());
+            var condition = string.Format("TypeName='{0}'", name.Trim());
             if (typeBll.Exists(condition))
             {
                 return Json(ErrorModel.ExistSameItem);
