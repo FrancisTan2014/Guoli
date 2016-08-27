@@ -8,6 +8,7 @@ using Guoli.Admin.Utilities;
 using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Helpers;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.Admin.Controllers
 {
@@ -57,7 +58,7 @@ namespace Guoli.Admin.Controllers
             {
                 return Json(ErrorModel.InputError);
             }
-
+            
             var dbUpdateType = person.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
 
             var personBll = new PersonInfoBll();
@@ -68,6 +69,10 @@ namespace Guoli.Admin.Controllers
             }
             else
             {
+                // 第一次录入时将密码设置为工号后四位
+                var password = person.WorkNo.Substring(person.WorkNo.Length - 4);
+                person.Password = password.GetMd5();
+
                 success = personBll.Insert(person).Id > 0;
             }
 

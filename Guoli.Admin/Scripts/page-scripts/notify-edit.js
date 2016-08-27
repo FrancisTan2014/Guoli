@@ -66,6 +66,7 @@
                 }
 
                 var json = common.formJsonfiy('#examInputForm');
+                json.EndTime = new Date(endTime).format('yyyy-MM-dd HH:mm:ss');
 
                 common.showLoading();
                 common.ajax({
