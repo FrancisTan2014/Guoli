@@ -166,6 +166,7 @@
                 }).done(function (res) {
                     if (res.code == 100) {
                         common.alert('上传成功');
+                        location.href = '/Exam/Files';
                     } else {
                         common.alert('上传失败，请严格按照模板的格式上传文件');
                     }
