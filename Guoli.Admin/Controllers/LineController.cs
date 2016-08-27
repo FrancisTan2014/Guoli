@@ -580,7 +580,7 @@ namespace Guoli.Admin.Controllers
             var list = JsonHelper.Deserialize<List<TrainMoment>>(json);
             if (list == null || !list.Any())
             {
-                return Json(ErrorModel.InputError);
+                return Json(ErrorModel.OperateSuccess);
             }
 
             // 对列车时刻的更新只存在两种情况
