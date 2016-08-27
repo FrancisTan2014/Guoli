@@ -146,6 +146,7 @@ var Page = (function () {
         model.Sort = $tr.find('input[name=Sort]').val();
         model.ArriveTime = $tr.find('input[name=ArriveTime]').val();
         model.DepartTime = $tr.find('input[name=DepartTime]').val();
+
         var orignalArrive = $tr.find('input[name=ArriveTime]').data('orignal');
         var orignalDepart = $tr.find('input[name=DepartTime]').data('orignal');
         var orignalInter = $tr.find('input[name=IntervalKms]').data('orignal');
