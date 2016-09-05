@@ -42,6 +42,7 @@ namespace Guoli.Model
 		private string _actualcontrol="";
 		private string _locationremovesuggests="";
 		private DateTime _uploadtime= DateTime.Now;
+        private bool _isremoved = false;
 		private bool _isdelete= false;
 		/// <summary>
 		/// 主键
@@ -171,6 +172,14 @@ namespace Guoli.Model
 			set{ _uploadtime=value;}
 			get{return _uploadtime;}
 		}
+        /// <summary>
+        /// 是否已解除
+        /// </summary>
+        public bool IsRemoved
+        {
+            set { _isremoved = value; }
+            get { return _isremoved;  }
+        }
 		/// <summary>
 		/// 删除标识
 		/// </summary>

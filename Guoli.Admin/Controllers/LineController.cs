@@ -422,7 +422,7 @@ namespace Guoli.Admin.Controllers
                 if (stationBll.Exists(condition))
                 {
                     return Json(ErrorModel.ExistSameItem);
-                }
+                }   
 
                 var insertedStation = stationBll.Insert(station);
                 stationUpdateRes = insertedStation.Id > 0;
