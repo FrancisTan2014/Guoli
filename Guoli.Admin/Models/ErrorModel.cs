@@ -270,16 +270,19 @@ namespace Guoli.Admin.Models
         /// <summary>
         /// 已存在相同项
         /// </summary>
-        public static object ExistSameItem
+        public static object ExistSameItem => new
         {
-            get
-            {
-                return new
-                {
-                    code = 118,
-                    msg = "已存在相同顶"
-                };
-            }
-        }
+            code = 118,
+            msg = "已存在相同顶"
+        };
+
+        /// <summary>
+        /// 目录已存在
+        /// </summary>
+        public static object DirectoryExists => new
+        {
+            code = 119,
+            msg = "目录已存在，无法创建相同名称的目录"
+        };
     }
 }

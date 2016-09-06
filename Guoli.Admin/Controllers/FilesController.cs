@@ -100,6 +100,16 @@ namespace Guoli.Admin.Controllers
             }
 
             var dirBll = new TraficFileTypeBll();
+            if (model.ParentId > 0)
+            {
+                // 验证目录是否重名
+                var condition = $"ParentId={model.ParentId} AND TypeName='{model.TypeName}'";
+                if (dirBll.Exists(condition))
+                {
+                    return Json(ErrorModel.DirectoryExists);
+                }
+            }
+
             dirBll.Insert(model);
 
             if (model.Id > 0)
