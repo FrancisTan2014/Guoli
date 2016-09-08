@@ -37,7 +37,7 @@ namespace Guoli.Admin.Utilities
                         return ErrorModel.UnknownUploadFileType;
                     }
 
-                    var filePathInfo = new FilePathInfo(fileName, fileSize, savePath);
+                    var filePathInfo = new FilePathInfo(fileName, fileSize, savePath, true);
 
                     filePathInfo.CreateDirectory();
                     receptFile.SaveAs(filePathInfo.FileAbsolutePath);

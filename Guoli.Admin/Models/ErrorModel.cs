@@ -284,5 +284,14 @@ namespace Guoli.Admin.Models
             code = 119,
             msg = "目录已存在，无法创建相同名称的目录"
         };
+
+        /// <summary>
+        /// 文件已存在
+        /// </summary>
+        public static object FileExists => new
+        {
+            code = 120,
+            msg = "当前目录下已存在同名文件，无法上传"
+        };
     }
 }

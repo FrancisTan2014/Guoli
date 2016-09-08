@@ -24,7 +24,7 @@ namespace Guoli.Utilities.FileUpload
         /// <summary>
         /// 文件类型（后缀名，*.jpg）
         /// </summary>
-        public string FileExtension { get { return Path.GetExtension(OriginalFileName); } }
+        public string FileExtension => Path.GetExtension(OriginalFileName);
 
         /// <summary>
         /// 文件大小（单位：KB）
@@ -44,12 +44,18 @@ namespace Guoli.Utilities.FileUpload
         /// <summary>
         /// 文件存储在服务器上的相对路径
         /// </summary>
-        public string FileRelativePath { get { return Path.Combine(RootRelativeDir, NewFileName).Replace("\\", "/"); } }
+        public string FileRelativePath => Path.Combine(RootRelativeDir, NewFileName).Replace("\\", "/");
 
         /// <summary>
         /// 文件存储在服务器磁盘上的绝对路径
         /// </summary>
-        public string FileAbsolutePath { get { return Path.Combine(RootAbsolutePath, NewFileName).Replace("/", "\\"); } }
+        public string FileAbsolutePath => Path.Combine(RootAbsolutePath, NewFileName).Replace("/", "\\");
+
+        /// <summary>
+        /// 用于指示在创建文件路径时是否保留原文件名称，或者采用guid作为新名称
+        /// </summary>
+        public bool KeepOriginalName { get; set; }
+
         #endregion
 
         /// <summary>
@@ -59,7 +65,7 @@ namespace Guoli.Utilities.FileUpload
         /// <param name="relativeDirPath">文件存储于服务器的目录的相对路径</param>
         public FilePathInfo(string fileName, string relativeDirPath)
         {
-            Init(fileName, 0, relativeDirPath);
+            Init(fileName, 0, relativeDirPath, false);
         }
 
         /// <summary>
@@ -70,21 +76,37 @@ namespace Guoli.Utilities.FileUpload
         /// <param name="relativeDirPath">文件存储于服务器的目录的相对路径</param>
         public FilePathInfo(string fileName, long fileSize, string relativeDirPath)
         {
-            Init(fileName, fileSize, relativeDirPath);
+            Init(fileName, fileSize, relativeDirPath, false);
         }
 
-        private void Init(string fileName, long fileSize, string relativeDirPath)
+        /// <summary>
+        /// 通过指定参数创建实例对象
+        /// </summary>
+        /// <param name="fileName">图片文件名称</param>
+        /// <param name="fileSize">文件大小，以KB为单位</param>
+        /// <param name="relativeDirPath">文件存储于服务器的目录的相对路径</param>
+        /// <param name="keepOriginalName">是否保留原文件名（若为false，则使用guid命名）</param>
+        public FilePathInfo(string fileName, long fileSize, string relativeDirPath, bool keepOriginalName)
+        {
+            Init(fileName, fileSize, relativeDirPath, keepOriginalName);
+        }
+
+        private void Init(string fileName, long fileSize, string relativeDirPath, bool keepOriginalName)
         {
             OriginalFileName = fileName;
 
             var dir = relativeDirPath.Replace("~/", "/");
             var rootAbPath = HttpContext.Current.Server.MapPath(dir);
-            var dateDirName = DateTime.Now.ToString("yyyy/MM/dd");
+            var dateDirName = DateTime.Now.ToString("yyyy-MM-dd");
             RootAbsolutePath = Path.Combine(rootAbPath, dateDirName);
             RootRelativeDir = Path.Combine(dir, dateDirName);
 
-            var guid = Guid.NewGuid();
-            NewFileName = guid + FileExtension;
+            NewFileName = fileName;
+            if (!keepOriginalName)
+            {
+                var guid = Guid.NewGuid();
+                NewFileName = guid + FileExtension;
+            }
 
             FileSize = fileSize;
         }

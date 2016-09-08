@@ -38,11 +38,19 @@ namespace Guoli.Admin.Controllers
             }
 
             var uploadRes = UploadHelper.FileUpload();
-
             var filePathInfo = uploadRes as FilePathInfo;
             if (filePathInfo == null)
             {
                 return Json(new { msg = uploadRes });
+            }
+
+            var fileBll = new TraficFilesBll();
+
+            // 验证文件是否重名
+            var condition = $"IsDelete=0 AND TypeId={typeId} AND FileName='{filePathInfo.OriginalFileName}'";
+            if (fileBll.Exists(condition))
+            {
+                return Json(ErrorModel.FileExists);
             }
 
             var fileModel = new TraficFiles
@@ -54,7 +62,6 @@ namespace Guoli.Admin.Controllers
                 TypeId = typeId
             };
 
-            var fileBll = new TraficFilesBll();
             fileBll.Insert(fileModel);
 
             if (fileModel.Id > 0)
@@ -100,14 +107,11 @@ namespace Guoli.Admin.Controllers
             }
 
             var dirBll = new TraficFileTypeBll();
-            if (model.ParentId > 0)
+            // 验证目录是否重名
+            var condition = $"ParentId={model.ParentId} AND TypeName='{model.TypeName}'";
+            if (dirBll.Exists(condition))
             {
-                // 验证目录是否重名
-                var condition = $"ParentId={model.ParentId} AND TypeName='{model.TypeName}'";
-                if (dirBll.Exists(condition))
-                {
-                    return Json(ErrorModel.DirectoryExists);
-                }
+                return Json(ErrorModel.DirectoryExists);
             }
 
             dirBll.Insert(model);
