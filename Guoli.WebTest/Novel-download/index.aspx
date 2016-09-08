@@ -17,8 +17,10 @@
         }
 
         #chapters {
-            width: 95%;
+            background: #fff;
+            max-width: 640px;
             margin: 0 auto;
+            padding: 0 10px;
         }
 
         article {
@@ -28,7 +30,7 @@
         }
 
             article div {
-                font-size: 1em;
+                font-size: 1.2em;
                 text-align:justify;
                 text-justify: inter-word;
             }
@@ -41,11 +43,14 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div id="chapters">
+        <div class="shadow">
+            <div id="chapters">
+            </div>
         </div>
     </form>
 
     <script src="/js/jquery-1.9.1.min.js"></script>
+    <script src="/js/common.js"></script>
     <script>
         var nextChapter = function (url, callback) {
             $.ajax({
@@ -54,19 +59,20 @@
                 dataType: 'json',
                 data: { novelUrl: url }
             }).done(function (data) {
-                var article = '<article>' + data.Title + data.Content + '</article>'
+                var article = '<article>' + data.Title + data.Content + '</article>';
                 $('#chapters').append(article);
             }).done(function (data) {
                 if (data.NextChapter) {
                     setTimeout(function () {
                         nextChapter(data.NextChapter);
-                    }, 30 * 1000);
+                    }, 5 * 1000);
                 }
             });
         };
 
         $(function () {
-            nextChapter('http://www.biquge.tw/3_3258/4491335.html');
+            var url = common.getQueryParam('url');
+            nextChapter(url);
         });
     </script>
 </body>

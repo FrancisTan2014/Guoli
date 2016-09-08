@@ -85,6 +85,7 @@
     <Content Include="CSharpTest.aspx" />
     <Content Include="DbProviderTest\connect-db.aspx" />
     <Content Include="DbProviderTest\framwork-text.aspx" />
+    <Content Include="js\common.js" />
     <Content Include="js\jquery-1.9.1.js" />
     <Content Include="js\jquery-1.9.1.min.js" />
     <Content Include="Novel-download\index.aspx" />
