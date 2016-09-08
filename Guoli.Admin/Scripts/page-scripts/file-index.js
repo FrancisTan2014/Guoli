@@ -173,6 +173,8 @@
                 var path = res.data;
                 var text = _this.createTreeItem('file', res.fileId, path.OriginalFileName);
                 _this.$tree.treeview('addNode', [_this.currNodeId, { node: { text: text } }]);
+            } else {
+                alert(msg);
             }
         },
 
