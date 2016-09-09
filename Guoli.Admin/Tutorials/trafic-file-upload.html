@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>行车资料文件上传说明</title>
+    <meta charset="utf-8"/>
+    <style>
+        #content {
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        #content img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="content"></div>
+
+    <script src="/Scripts/plugins/jquery-2.1.3/jquery.min.js"></script>
+    <script src="/Scripts/plugins/marked/highlight.js"></script>
+    <script src="/Scripts/plugins/marked/marked.min.js"></script>
+    <script>
+        $('#content').load('行车资料文件上传说明.md');
+
+        marked.setOptions({
+            highlight: function(code) {
+                return hljs.highlightAuto(code).value;
+            }
+        });
+
+        setTimeout(function() {
+            var markdown = $('#content').text();
+            var html = marked(markdown);
+
+            $('#content').empty().append(html);
+        }, 1000);
+    </script>
+</body>
+</html>

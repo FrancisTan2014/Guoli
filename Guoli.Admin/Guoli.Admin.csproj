@@ -1165,9 +1165,26 @@
     <Content Include="Scripts\plugins\jquery.uploadify\uploadify-cancel.png" />
     <Content Include="Scripts\plugins\jquery.uploadify\uploadify.css" />
     <Content Include="Scripts\plugins\jquery.uploadify\uploadify.swf" />
+    <Content Include="Scripts\plugins\marked\highlight.js" />
+    <Content Include="Scripts\plugins\marked\marked.min.js" />
     <Content Include="Scripts\plugins\spin\spin.js" />
     <Content Include="Scripts\plugins\spin\spin.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Tutorials\imgs\Solid-1.jpg" />
+    <Content Include="Tutorials\imgs\Solid-2.jpg" />
+    <Content Include="Tutorials\imgs\Solid-3.jpg" />
+    <Content Include="Tutorials\imgs\Solid-4.jpg" />
+    <Content Include="Tutorials\imgs\Solid-5.jpg" />
+    <Content Include="Tutorials\imgs\Solid-6.jpg" />
+    <Content Include="Tutorials\imgs\Solid-7.jpg" />
+    <Content Include="Tutorials\imgs\Solid-8.jpg" />
+    <Content Include="Tutorials\imgs\Solid-9.jpg" />
+    <Content Include="Tutorials\imgs\word2html-1.jpg" />
+    <Content Include="Tutorials\imgs\word2html-2.jpg" />
+    <Content Include="Tutorials\imgs\word2html-3.png" />
+    <Content Include="Tutorials\imgs\word2html-4.png" />
+    <Content Include="Tutorials\imgs\word2html-5.png" />
+    <Content Include="Tutorials\trafic-file-upload.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1229,6 +1246,7 @@
     <Content Include="Views\Exam\Result.cshtml" />
     <Content Include="Views\Exam\ResultDetail.cshtml" />
     <Content Include="Views\Line\TrainMoment.cshtml" />
+    <Content Include="Tutorials\行车资料文件上传说明.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

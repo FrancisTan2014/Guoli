@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "devDependencies": {
     "angular2": "^2.0.0-beta.9",
+    "highlight.js": "^9.6.0",
     "jquery": "^1.9.1",
+    "marked": "^0.3.6",
     "typescript": "^2.1.0-dev.20160810"
   }
 }
