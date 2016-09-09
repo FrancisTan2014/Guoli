@@ -1132,6 +1132,7 @@
     <Content Include="Scripts\page-scripts\line-edit.js" />
     <Content Include="Scripts\page-scripts\lines.js" />
     <Content Include="Scripts\page-scripts\login.js" />
+    <Content Include="Scripts\page-scripts\nav-status.js" />
     <Content Include="Scripts\page-scripts\notify-edit.js" />
     <Content Include="Scripts\page-scripts\peccancy.js" />
     <Content Include="Scripts\page-scripts\people.js" />
@@ -1160,6 +1161,7 @@
     <Content Include="Scripts\plugins\datetimepicker\i18n\DatetimePicker-i18n-zh-CN.js" />
     <Content Include="Scripts\plugins\jquery-2.1.3\jquery.js" />
     <Content Include="Scripts\plugins\jquery-2.1.3\jquery.min.js" />
+    <Content Include="Scripts\plugins\jquery.cookie\jquery.cookie.js" />
     <Content Include="Scripts\plugins\jquery.uploadify\jquery.uploadify.js" />
     <Content Include="Scripts\plugins\jquery.uploadify\jquery.uploadify.min.js" />
     <Content Include="Scripts\plugins\jquery.uploadify\uploadify-cancel.png" />
