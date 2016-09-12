@@ -19,7 +19,7 @@
                 fields: ['Name', 'DepartmentName', 'TrainCode', 'TakeSection', 'DriverName', 'TakeDate', "Id"],
                 aoColumnDefs: [
                 {
-                    aTargets: [4],
+                    aTargets: [5],
                     fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                         var date = common.processDate(sData);
                         $(nTd).empty().append(date.format('yyyy-MM-dd'));

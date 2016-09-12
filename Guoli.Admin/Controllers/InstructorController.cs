@@ -101,7 +101,7 @@ namespace Guoli.Admin.Controllers
 
             var type = bllInstance.GetType();
             var data = type.InvokeMember("QuerySingle", BindingFlags.InvokeMethod, null, bllInstance,
-                new object[] { id });
+                new object[] { id, null });
 
             if (data == null)
             {

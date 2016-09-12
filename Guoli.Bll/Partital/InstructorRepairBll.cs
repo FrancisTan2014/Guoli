@@ -9,10 +9,10 @@ using Guoli.Model;
 namespace Guoli.Bll 
 {
 	/// <summary>
-    /// InstructorAccept表的业务逻辑层实现
+    /// InstructorRepair表的业务逻辑层实现
     /// </summary>
     /// <remarks>动软生成于2016-09-10</remarks>
-	public partial class InstructorAcceptBll : BaseBll<InstructorAccept>
+	public partial class InstructorRepairBll : BaseBll<InstructorRepair>
 	{
 		
 	}

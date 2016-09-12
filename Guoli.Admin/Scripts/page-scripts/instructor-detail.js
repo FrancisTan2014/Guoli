@@ -15,7 +15,7 @@
             url: '/Instructor/GetSingle',
             data: { id: id, target: target },
             success: function(res) {
-                if (res.code == 108) {
+                if (res.code != 108) {
                     goback();
                     return;
                 }

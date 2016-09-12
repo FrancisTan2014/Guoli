@@ -20,10 +20,11 @@ namespace Guoli.Admin.Utilities
     public static class NpoiHelper
     {
         #region 考试试题上传
+
         /// <summary>
         /// 对上传的试题题库进行分析
         /// </summary>
-        /// <param name="workBook"></param>
+        /// <param name="examFiles"></param>
         /// <returns></returns>
         public static object AnalysisExamQuestion(ExamFiles examFiles)
         {

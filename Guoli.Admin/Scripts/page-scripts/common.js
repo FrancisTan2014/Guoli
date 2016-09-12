@@ -405,12 +405,33 @@
                 if (json.hasOwnProperty(key)) {
                     var value = json[key];
                     if (/Date\(\d+\)/.test(value)) {
-                        value = _this.processDate(value);
+                        value = _this.processDate(value).format('yyyy-MM-dd HH:mm:ss');
                     }
 
-                    $form.find('*[name={0}]'.format(key)).val(json[key]);
+                    var $dom = $form.find('*[name={0}]'.format(key));
+                    if (_this.isFormElement($dom[0])) {
+                        $dom.val(value);;
+                    } else {
+                        $dom.html(value);
+                    }
                 }
             }
+        },
+
+        /**
+         * 判断给定元素是否是表单元素
+         * @param {Dom} dom 
+         * @returns {Boolean} 
+         */
+        isFormElement: function(dom) {
+            try {
+                var nodeName = dom.nodeName;
+
+                return nodeName === 'INPUT' || nodeName === 'TEXTAREA' || nodeName === 'SELECT';
+            } catch (e) {
+                console.info(e);
+                return false;
+            } 
         },
 
         /**
