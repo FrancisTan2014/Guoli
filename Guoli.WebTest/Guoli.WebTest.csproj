@@ -85,6 +85,7 @@
     <Content Include="CSharpTest.aspx" />
     <Content Include="DbProviderTest\connect-db.aspx" />
     <Content Include="DbProviderTest\framwork-text.aspx" />
+    <Content Include="HtmlParser\index.aspx" />
     <Content Include="js\common.js" />
     <Content Include="js\jquery-1.9.1.js" />
     <Content Include="js\jquery-1.9.1.min.js" />
@@ -94,6 +95,7 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Zip\index.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="code-generate\android-entity.aspx.cs">
@@ -123,6 +125,13 @@
     <Compile Include="DbProviderTest\framwork-text.aspx.designer.cs">
       <DependentUpon>framwork-text.aspx</DependentUpon>
     </Compile>
+    <Compile Include="HtmlParser\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HtmlParser\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Novel-download\index.aspx.cs">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
@@ -144,6 +153,13 @@
       <DependentUpon>path-generate.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Zip\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Zip\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -185,6 +201,7 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

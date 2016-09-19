@@ -68,6 +68,11 @@ namespace Guoli.Admin.Controllers
             {
                 DataUpdateLog.SingleUpdate(typeof(TraficFiles).Name, fileModel.Id, DataUpdateType.Insert);
 
+                if (filePathInfo.FileExtension.ToLower() == ".zip")
+                {
+                    SearchHelper.AddSearchTask(1, fileModel.Id);
+                }
+
                 return Json(new
                 {
                     msg = ErrorModel.OperateSuccess,
@@ -88,6 +93,8 @@ namespace Guoli.Admin.Controllers
             if (success)
             {
                 DataUpdateLog.SingleUpdate(typeof(TraficFiles).Name, id, DataUpdateType.Update);
+
+                DeleteSearchResult(1, id);
 
                 return Json(ErrorModel.OperateSuccess);
             }
@@ -197,6 +204,8 @@ namespace Guoli.Admin.Controllers
             {
                 DataUpdateLog.SingleUpdate(typeof(TraficKeywords).Name, model.Id, DataUpdateType.Insert);
 
+                SearchHelper.AddSearchTask(2, model.Id);
+
                 return Json(ErrorModel.OperateSuccess);
             }
 
@@ -211,6 +220,47 @@ namespace Guoli.Admin.Controllers
         {
             var uploadRes = UploadHelper.FileUpload();
             return Json(uploadRes);
+        }
+
+        /// <summary>
+        /// 在删除文件或者关键字的同时将其对应的搜索结果删除
+        /// </summary>
+        /// <param name="targetType">
+        ///     当此参数为1时，则第二个参数表示TraficFilesId
+        ///     当此参数为2时，则第二个参数表示KeywordsId
+        /// </param>
+        /// <param name="targetId">文件Id或者关键字Id</param>
+        private void DeleteSearchResult(int targetType, int targetId)
+        {
+            string condition;
+            switch (targetType)
+            {
+                case 1:
+                    condition = $"TraficFileId={targetId}";
+                    break;
+                case 2:
+                    condition = $"KeywordsId={targetId}";
+                    break;
+                default:
+                    return;
+            }
+
+            var keywordsBll = new TraficKeywordsBll();
+            var list = keywordsBll.QueryList(condition, new[] {"Id"}).ToList();
+            if (list.Any())
+            {
+                var idList = list.Select(item => item.Id);
+                var tableName = typeof (TraficSearchResult).Name;
+                
+                keywordsBll.ExecuteTransation(
+                    () => keywordsBll.Delete(condition),
+                    () =>
+                    {
+                        DataUpdateLog.BulkUpdate(tableName, idList);
+                        return true;
+                    });
+            }
+            
         }
     }
 }

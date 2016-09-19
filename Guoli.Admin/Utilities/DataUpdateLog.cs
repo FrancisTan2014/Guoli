@@ -69,5 +69,40 @@ namespace Guoli.Admin.Utilities
                 ExceptionLogBll.ExceptionPersistence("DataUpdateLog.cs", "DataUpdateLog", ex);
             }
         }
+
+        /// <summary>
+        /// 对数据的批量更新
+        /// </summary>
+        /// <param name="tableName">目标表格名称</param>
+        /// <param name="targetIdList">目标Id集合</param>
+        /// <param name="updateType">更新类型枚举</param>
+        public static void BulkUpdate(string tableName, IEnumerable<int> targetIdList,
+            DataUpdateType updateType = DataUpdateType.Insert)
+        {
+            if (string.IsNullOrEmpty(tableName))
+            {
+                throw new ArgumentNullException(nameof(tableName));
+            }
+            if (targetIdList == null)
+            {
+                throw new ArgumentNullException(nameof(targetIdList));
+            }
+
+            var idList = targetIdList.ToList();
+            if (!idList.Any())
+            {
+                return;
+            }
+
+            var updateList = idList.Select(id => new DbUpdateLog
+            {
+                TableName = tableName,
+                TargetId = id,
+                UpdateType = 3,
+                UpdateTime = DateTime.Now
+            });
+
+            UpdateBll.BulkInsert(updateList);
+        }
     }
 }

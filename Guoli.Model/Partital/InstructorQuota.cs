@@ -6,7 +6,7 @@
 *
 * Ver    变更日期             负责人  变更内容
 * ───────────────────────────────────
-* V0.01  2016/7/27 18:59:03   N/A    初版
+* V0.01  2016/9/18 8:51:32   N/A    初版
 *
 * Copyright (c) 2012 Maticsoft Corporation. All rights reserved.
 *┌──────────────────────────────────┐
@@ -29,6 +29,9 @@ namespace Guoli.Model
 		private int _id;
 		private string _quotaname;
 		private decimal _quataammount;
+		private bool _needreview= false;
+		private string _reviewdesc="";
+		private decimal _basescore=0M;
 		private DateTime _addtime= DateTime.Now;
 		private bool _isdelete= false;
 		/// <summary>
@@ -54,6 +57,30 @@ namespace Guoli.Model
 		{
 			set{ _quataammount=value;}
 			get{return _quataammount;}
+		}
+		/// <summary>
+		/// 是否参与评分
+		/// </summary>
+		public bool NeedReview
+		{
+			set{ _needreview=value;}
+			get{return _needreview;}
+		}
+		/// <summary>
+		/// 评分描述
+		/// </summary>
+		public string ReviewDesc
+		{
+			set{ _reviewdesc=value;}
+			get{return _reviewdesc;}
+		}
+		/// <summary>
+		/// 基础分值
+		/// </summary>
+		public decimal BaseScore
+		{
+			set{ _basescore=value;}
+			get{return _basescore;}
 		}
 		/// <summary>
 		/// 添加时间

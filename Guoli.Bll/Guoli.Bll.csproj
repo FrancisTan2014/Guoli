@@ -73,6 +73,8 @@
     <Compile Include="Partital\InstructorQuotaBll.cs" />
     <Compile Include="Partital\InstructorQuotaRecordBll.cs" />
     <Compile Include="Partital\InstructorRepairBll.cs" />
+    <Compile Include="Partital\InstructorReviewScoreBll.cs" />
+    <Compile Include="Partital\InstructorReviewStandardBll.cs" />
     <Compile Include="Partital\InstructorTeachBll.cs" />
     <Compile Include="Partital\InstructorTempTakeBll.cs" />
     <Compile Include="Partital\LineAnnounceCommandsBll.cs" />

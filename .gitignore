@@ -243,3 +243,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Guoli.Admin/Upload/PersonPhotos/2016/08/27
+/Guoli.Admin/Upload/DriveFiles/2016-09-11
+/Guoli.Admin/Upload/DriveFiles/2016-09-09/temps

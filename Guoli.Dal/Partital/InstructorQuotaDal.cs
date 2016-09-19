@@ -13,7 +13,7 @@ namespace Guoli.Dal
 	/// <summary>
     /// InstructorQuota表的数据访问层实现
     /// </summary>
-    /// <remarks>动软生成于2016-07-27</remarks>
+    /// <remarks>动软生成于2016-09-18</remarks>
 	public partial class InstructorQuotaDal : BaseDal<InstructorQuota>
 	{
 		/// <summary>

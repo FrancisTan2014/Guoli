@@ -73,6 +73,8 @@
     <Compile Include="Partital\InstructorQuotaDal.cs" />
     <Compile Include="Partital\InstructorQuotaRecordDal.cs" />
     <Compile Include="Partital\InstructorRepairDal.cs" />
+    <Compile Include="Partital\InstructorReviewScoreDal.cs" />
+    <Compile Include="Partital\InstructorReviewStandardDal.cs" />
     <Compile Include="Partital\InstructorTeachDal.cs" />
     <Compile Include="Partital\InstructorTempTakeDal.cs" />
     <Compile Include="Partital\LineAnnounceCommandsDal.cs" />

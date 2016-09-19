@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="/Content/minovate/js/vendor/chosen/chosen.css" />
     <link rel="stylesheet" href="/Content/minovate/js/vendor/summernote/summernote.css" />
     <link rel="stylesheet" href="/Content/minovate/css/main.css" />
-    <link href="/Scripts/plugins/jquery.uploadify/uploadify.css" rel="stylesheet"/>
+    <link href="/Scripts/plugins/jquery.uploadify/uploadify.css" rel="stylesheet" />
 
     <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="/Content/minovate/js/vendor/modernizr/modernizr-2.8.3-respond-1.4.2.min.js"></script>
@@ -65,6 +65,13 @@
     <script src="/Scripts/plugins/jquery.uploadify/jquery.uploadify.min.js"></script>
 
     <script src="/Scripts/page-scripts/common.js"></script>
+
+    <style>
+        .btn.active {
+            background-color: #e05d6f !important;
+            color: #fff;
+        }
+    </style>
 </head>
 <body id="minovate" class="appWrapper">
 
@@ -253,6 +260,8 @@
                                         <li>
                                             <a role="button" tabindex="0"><i class="fa fa-file-o"></i> <span>指导司机</span></a>
                                             <ul>
+                                                <li><a href="/Instructor/Quota"><i class="fa fa-caret-right"></i> 指标/评分标准</a></li>
+                                                <li><a href="/Instructor/Score"><i class="fa fa-caret-right"></i> 月度评分结果</a></li>
                                                 <li><a href="/Instructor/KeyPerson"><i class="fa fa-caret-right"></i> 关键人管理</a></li>
                                                 <li><a href="/Instructor/Take"><i class="fa fa-caret-right"></i> 添乘信息单</a></li>
                                                 <li><a href="/Instructor/Check"><i class="fa fa-caret-right"></i> 抽查信息单</a></li>
@@ -286,7 +295,7 @@
 
             </aside>
             <!--/ SIDEBAR Content -->
-           
+
         </div>
         <!--/ CONTROLS Content -->
         <!-- ====================================================

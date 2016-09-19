@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using Guoli.DbProvider;
 using System.Transactions;
 
@@ -244,6 +245,23 @@ namespace Guoli.Dal
         public virtual bool Delete(object id)
         {
             var cmdText = string.Format("DELETE {0} WHERE {1}={2}", TableName, PrimaryKeyName, id);
+
+            return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText) > 0;
+        }
+
+        /// <summary>
+        /// 根据条件删除数据
+        /// </summary>
+        /// <param name="condition">删除条件，它不能为空</param>
+        /// <returns>表示删除是否成功的布尔值</returns>
+        public virtual bool Delete(string condition)
+        {
+            if (string.IsNullOrEmpty(condition) || Regex.Replace(condition, "\\s+", "") == "1=1")
+            {
+                throw new ArgumentException("条件为空或为1=1，删除操作被阻止");
+            }
+
+            var cmdText = $"DELETE {TableName} WHERE {condition}";
 
             return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText) > 0;
         }

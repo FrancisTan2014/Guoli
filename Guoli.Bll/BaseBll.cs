@@ -133,6 +133,16 @@ namespace Guoli.Bll
         }
 
         /// <summary>
+        /// 根据条件删除数据
+        /// </summary>
+        /// <param name="condition">删除条件，它不能为空</param>
+        /// <returns>表示删除是否成功的布尔值</returns>
+        public bool Delete(string condition)
+        {
+            return DalInstance.Delete(condition);
+        }
+
+        /// <summary>
         /// 根据主键id将指定数据软删除（将记录删除状态的字段值置为1）
         /// </summary>
         /// <param name="id">主键id</param>

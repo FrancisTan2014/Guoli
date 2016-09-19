@@ -11,7 +11,7 @@ namespace Guoli.Bll
 	/// <summary>
     /// InstructorQuota表的业务逻辑层实现
     /// </summary>
-    /// <remarks>动软生成于2016-09-10</remarks>
+    /// <remarks>动软生成于2016-09-18</remarks>
 	public partial class InstructorQuotaBll : BaseBll<InstructorQuota>
 	{
 		

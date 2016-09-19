@@ -290,5 +290,21 @@ namespace Guoli.Admin.Controllers
             return View();
         }
         #endregion
+
+        #region 指标/评分管理
+
+        public ActionResult Quota()
+        {
+            return View();
+        }
+
+
+        public ActionResult QuotaEdit(int? id)
+        {
+            ViewBag.Id = id;
+
+            return View();
+        }
+        #endregion
     }
 }
