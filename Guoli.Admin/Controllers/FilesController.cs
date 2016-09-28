@@ -245,15 +245,15 @@ namespace Guoli.Admin.Controllers
                     return;
             }
 
-            var keywordsBll = new TraficKeywordsBll();
-            var list = keywordsBll.QueryList(condition, new[] {"Id"}).ToList();
+            var resultBll = new TraficSearchResultBll();
+            var list = resultBll.QueryList(condition, new[] {"Id"}).ToList();
             if (list.Any())
             {
                 var idList = list.Select(item => item.Id);
                 var tableName = typeof (TraficSearchResult).Name;
                 
-                keywordsBll.ExecuteTransation(
-                    () => keywordsBll.Delete(condition),
+                resultBll.ExecuteTransation(
+                    () => resultBll.Delete(condition),
                     () =>
                     {
                         DataUpdateLog.BulkUpdate(tableName, idList);

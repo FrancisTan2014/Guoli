@@ -93,13 +93,19 @@ namespace Guoli.Admin.Utilities
             {
                 var keywordsBll = new TraficKeywordsBll();
                 var keywordsList = keywordsBll.QueryAll();
+                var zipPath = Context.Server.MapPath(file.FilePath);
+                FileHelper.ExtractZip(zipPath, ExtractPath);
+
                 foreach (var keywords in keywordsList)
                 {
-                    var zipPath = Context.Server.MapPath(file.FilePath);
-                    var searchResult = SearchHtmlInZip(zipPath, ExtractPath, keywords.Keywords);
-
+                    var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
+                    
                     InsertToDb(searchResult, fileId, keywords.Id);
                 }
+
+                File.Delete(zipPath);
+                FileHelper.Zip(zipPath, ExtractPath);
+                Directory.Delete(ExtractPath, true);
             }
         }
 
@@ -114,11 +120,13 @@ namespace Guoli.Admin.Utilities
             if (keywords != null)
             {
                 var fileBll = new TraficFilesBll();
-                var fileList = fileBll.QueryList("IsDelete=0", new[] {"Id", "FilePath", "FileExtension"});
+                var fileList = fileBll.QueryList("IsDelete=0", new[] { "Id", "FilePath", "FileExtension" });
                 foreach (var file in fileList)
                 {
                     var zipPath = Context.Server.MapPath(file.FilePath);
-                    var searchResult = SearchHtmlInZip(zipPath, ExtractPath, keywords.Keywords);
+                    FileHelper.ExtractZip(zipPath, ExtractPath);
+
+                    var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
 
                     File.Delete(zipPath);
                     FileHelper.Zip(zipPath, ExtractPath);
@@ -142,7 +150,10 @@ namespace Guoli.Admin.Utilities
 
             var list = searchResult.Select(keyPair => new TraficSearchResult
             {
-                KeywordsId = keywordsId, TraficFileId = fileId, SearchResult = keyPair.Value, Position = keyPair.Key
+                KeywordsId = keywordsId,
+                TraficFileId = fileId,
+                SearchResult = keyPair.Value,
+                Position = keyPair.Key
             });
 
             resultBll.BulkInsert(list);
@@ -156,15 +167,12 @@ namespace Guoli.Admin.Utilities
         /// 将新的Html文本写入原文件中
         /// 返回包含关键字的元素的id及此元素文本（关键字高亮后）所组成的字典集
         /// </summary>
-        /// <param name="zipPath">压缩包绝对路径</param>
-        /// <param name="extractPath">解压路径</param>
+        /// <param name="filePath">待搜索文件所在路径</param>
         /// <param name="keywords">待搜索的关键字</param>
         /// <returns>搜索结果</returns>
-        public static Dictionary<string, string> SearchHtmlInZip(string zipPath, string extractPath, string keywords)
+        public static Dictionary<string, string> SearchHtmlInZip(string filePath, string keywords)
         {
-            FileHelper.ExtractZip(zipPath, extractPath);
-
-            var fileNames = Directory.GetFiles(extractPath);
+            var fileNames = Directory.GetFiles(filePath);
             var htmlFileName = fileNames.FirstOrDefault(f => f.EndsWith(".htm") || f.EndsWith(".html"));
 
             var result = new Dictionary<string, string>();
@@ -207,8 +215,11 @@ namespace Guoli.Admin.Utilities
                         html = html.Replace(body, newBody);
                         afterComplete?.Invoke(html);
 
-                        html = html.Replace("</body>",
-                            "<script>; (function (window, document) {window.getQueryString = function (name) {var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', \"i\");var r = window.location.search.substr(1).match(reg);if (r != null) return decodeURIComponent(r[2]);return '';};window.onload = function () {var id = getQueryString('id');var keywords = getQueryString('keywords');var dom = document.getElementById(id);var content = dom.innerText.replace(keywords, '<font style=\"background: yellow;\">' + keywords + '</font>');dom.innerHTML = content;window.scrollTo(0, dom.offsetTop-20);};})(window, document);</script></body>");
+                        if (!html.Contains("FrancisTan201609191127"))
+                        {
+                            html = html.Replace("</body>",
+                            "<script>; (function(window, document) {var author='FrancisTan201609191127';window.getQueryString = function(name) {var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', \"i\");var r = window.location.search.substr(1).match(reg);if (r != null) return decodeURIComponent(r[2]); return '';};window.jump = function(id, keywords) {var dom = document.getElementById(id);var content = dom.innerText.replace(keywords, '<font style=\"background: yellow;\">' + keywords + '</font>');dom.innerHTML = content;window.scrollTo(0, dom.offsetTop - 20);};window.onload = function() {var id = getQueryString('id');var keywords = getQueryString('keywords');jump(id, keywords);};})(window, document);</script></body>");
+                        }
                         using (var writer = new StreamWriter(fs, encoding))
                         {
                             fs.Seek(0, SeekOrigin.Begin);

@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var title = ViewBag.Id == null ? "添加路由器" : "修改路由器";
+    ViewBag.Title = title;
+    ViewBag.LastPage = "线路管理";
+    ViewBag.LastUrl = "/Instructor/Router";
+    ViewBag.ThisPage = title;
+    ViewBag.ThisUrl = "/Instructor/RouterDetail?id=" + ViewBag.Id;
+}
+
+<form class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <input type="hidden" name="Id" value="0" />
+        <label for="input04" class="col-sm-2 control-label">地点：</label>
+        <div class="col-sm-10">
+            <input type="hidden" name="Id" value="0" />
+            <input type="text" class="form-control station-input" name="Location" id="input04" required data-parsley-trigger="change" data-parsley-required-message="地点不能为空" data-parsley-maxlength="30" data-parsley-maxlength-message="地点不能超过30个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label for="input05" class="col-sm-2 control-label">路由器Mac地址：</label>
+        <div class="col-sm-10">
+            <input type="hidden" name="LastStationId" />
+            <input type="text" class="form-control station-input" name="BssId" id="input05" required data-parsley-trigger="change" data-parsley-required-message="Mac地址不能为空">
+            <label class="mt-10">多个mac地址之间用逗号隔开，中间不要加空格</label>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-primary" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnBack">返 回</button>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/page-scripts/router-detail.js"></script>

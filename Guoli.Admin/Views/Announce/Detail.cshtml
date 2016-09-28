@@ -1,0 +1,76 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var title = ViewBag.Id == null ? "发布公告" : "公告详情";
+    ViewBag.Title = title;
+    ViewBag.LastPage = "公告管理";
+    ViewBag.LastUrl = "/Announce/Index";
+    ViewBag.ThisPage = title;
+    ViewBag.ThisUrl = "/Announce/Detail?id=" + ViewBag.Id;
+}
+
+<link href="/Scripts/plugins/bootstrap-multiselect/bootstrap-multiselect.css" rel="stylesheet" />
+<form class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <input type="hidden" name="AnnounceType" value="1"/>
+        <label for="input04" class="col-sm-2 control-label">类型：</label>
+        <div class="col-sm-10">
+            <div class="btn-group">
+                <label class="btn btn-default sex toggle-class type-label active" data-value="1" data-toggle="active" data-type="radio" data-target="#file">上传文件</label>
+                <label class="btn btn-default sex toggle-class type-label" data-value="2" data-toggle="active" data-type="radio" data-target="#announceContent">手动编写文本</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="toggle-content" style="display: none;" id="announceContent">
+        <hr class="line-dashed line-full">
+
+        <div class="form-group">
+            <label for="input05" class="col-sm-2 control-label">内容：</label>
+            <div class="col-sm-10">
+                <textarea class="form-control station-input" name="Content" id="input05"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="toggle-content" id="file">
+        <hr class="line-dashed line-full">
+
+        <div class="form-group">
+            <label for="input08" class="col-sm-2 control-label">文件上传：</label>
+            <div class="col-sm-10">
+                <input type="hidden" name="FilePath"/>
+                <input type="hidden" name="FileName"/>
+                <input type="button" class="btn btn-lightred form-control file-upload" id="input08" value="上传文件">
+                <label class="mt-10">仅支持Word文档（.doc或者.docx格式）的文件</label>
+            </div>
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="form-group">
+        <input type="hidden" name="Id" value="0" />
+        <label for="input04" class="col-sm-2 control-label">标题：</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control station-input" name="Title" id="input04" required data-parsley-trigger="change" data-parsley-required-message="标题不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="标题不能超过20个字">
+        </div>
+    </div>
+
+    <hr class="line-dashed line-full">
+    
+    <div class="uploadify-box" style="display: none;">
+        <input type="file" id="btnSelect" />
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-4 col-sm-offset-2">
+            <button type="button" class="btn btn-lg btn-primary" id="btnSave">保 存</button>
+            <button type="button" class="btn btn-lg btn-default" id="btnBack">返 回</button>
+        </div>
+    </div>
+</form>
+
+<script src="/Scripts/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="/Scripts/page-scripts/announce-detail.js"></script>

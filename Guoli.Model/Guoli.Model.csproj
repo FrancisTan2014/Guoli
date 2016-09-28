@@ -76,8 +76,10 @@
     <Compile Include="Partital\InstructorRepair.cs" />
     <Compile Include="Partital\InstructorReviewScore.cs" />
     <Compile Include="Partital\InstructorReviewStandard.cs" />
+    <Compile Include="Partital\InstructorRouterPosition.cs" />
     <Compile Include="Partital\InstructorTeach.cs" />
     <Compile Include="Partital\InstructorTempTake.cs" />
+    <Compile Include="Partital\InstructorWifiRecord.cs" />
     <Compile Include="Partital\LineAnnounceCommands.cs" />
     <Compile Include="Partital\LineStations.cs" />
     <Compile Include="Partital\OperateLog.cs" />
@@ -97,8 +99,10 @@
     <Compile Include="Partital\ViewInstructorPeccancy.cs" />
     <Compile Include="Partital\ViewInstructorPlan.cs" />
     <Compile Include="Partital\ViewInstructorRepair.cs" />
+    <Compile Include="Partital\ViewInstructorReviewScore.cs" />
     <Compile Include="Partital\ViewInstructorTeach.cs" />
     <Compile Include="Partital\ViewInstructorTempTake.cs" />
+    <Compile Include="Partital\ViewInstructorWifiRecord.cs" />
     <Compile Include="Partital\ViewPersonInfo.cs" />
     <Compile Include="Partital\ViewStation.cs" />
     <Compile Include="Partital\ViewTrainMoment.cs" />

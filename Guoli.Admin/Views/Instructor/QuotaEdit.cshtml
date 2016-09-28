@@ -5,7 +5,7 @@
     ViewBag.LastPage = "指标/评分标准";
     ViewBag.LastUrl = "/Line/Quota";
     ViewBag.ThisPage = "指标详情";
-    ViewBag.ThisUrl = "/Line/QuotaEdit?id=" + ViewBag.Id;
+    ViewBag.ThisUrl = "/Instructor/QuotaEdit?id=" + ViewBag.Id;
 }
 
 
@@ -14,6 +14,7 @@
     <div class="form-group">
         <label for="input01" class="col-sm-2 control-label">指标名称：</label>
         <div class="col-sm-10">
+            <input type="hidden" name="Id" />
             <input type="text" class="form-control" name="QuotaName" id="input01" required data-parsley-trigger="change" data-parsley-required-message="指标名称不能为空" data-parsley-maxlength="20" data-parsley-maxlength-message="指标名称不能超过20个字">
         </div>
     </div>
@@ -23,7 +24,7 @@
     <div class="form-group">
         <label for="input02" class="col-sm-2 control-label">指标量化数：</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" name="QuataAmmount" id="input02" data-parsley-trigger="change" data-parsley-type="number" data-parsley-type-message="请输入有效的数字" data-parsley-range="[0,100000000]" data-parsley-range-message="请输入有效的数值">
+            <input type="text" class="form-control" name="QuataAmmount" id="input02" data-parsley-trigger="change" required data-parsley-required-message="指标量化数不能为空" data-parsley-type="number" data-parsley-type-message="请输入有效的数字" data-parsley-min="0" data-parsley-min-message="请输入有效的数值">
             <label class="mt-10">若此项指标为规定完成的量化指标，则您必须填入一个有效数值</label>
         </div>
     </div>
@@ -62,6 +63,33 @@
     </div>
 
     <hr class="line-dashed line-full">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">评分标准：</label>
+        <div class="col-sm-10">
+            <div class="btn btn-info btn-rounded btn-icon-only btn-ef btn-ef-7 btn-ef-7g mb-10" id="btnAddStandard">
+                <i class="fa fa-plus"></i> Add <i class="after fa fa-plus"></i>
+            </div>
+            @*<div class="btn btn-lightred btn-ef btn-ef-5 btn-ef-5b mb-10 mr-10"><i class="fa fa-trash"></i><span>达到180加50分</span></div>*@
+        </div>
+        @*<div class="col-sm-offset-2 col-sm-10">
+            <div class="row">
+                <div class="col-sm-4">
+                    <input type="text" id="finishAmmount" class="form-control" placeholder="完成量" required data-parsley-required-message="完成量不能为空" data-parsley-type="number" data-parsley-type-message="请输入有效的数值" data-parsley-min="0" data-parsley-min-message="请输入有效的数值"/>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" id="extraScore" class="form-control" placeholder="加/扣分数" required data-parsley-required-message="加/扣分数不能为空" data-parsley-type="number" data-parsley-type-message="请输入有效的数值"/>
+                </div>
+                <div class="col-sm-4 btn-group">
+                    <div class="btn btn-info" id="btnConfirmStandard">确 定</div>
+                    <div class="btn btn-default" id="btnCancelStandard">取 消</div>
+                </div>
+            </div>
+        </div>*@
+        <div class="col-sm-offset-2 col-sm-10 mt-10" id="standardDescription">
+            <label>评分标准的每一项所代表的含义为：对本项指标完成量达到某个数值时，在基础分值的基础上加/扣某个数值的分数</label>
+        </div>
+    </div>
 </form>
 
 <div class="form-group">

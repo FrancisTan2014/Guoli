@@ -28,7 +28,10 @@ namespace Guoli.Model
 		#region Model
 		private int _id;
 		private string _title;
-		private string _content;
+	    private int _announcetype;
+	    private string _filepath = string.Empty;
+	    private string _filename = string.Empty;
+		private string _content = string.Empty;
 		private int _systemuserid;
 		private DateTime _pubtime= DateTime.Now;
 		/// <summary>
@@ -47,6 +50,30 @@ namespace Guoli.Model
 			set{ _title=value;}
 			get{return _title;}
 		}
+        /// <summary>
+        /// 公告类型（1 文件； 2 文本）
+        /// </summary>
+	    public int AnnounceType
+	    {
+	        get { return _announcetype; }
+            set { _announcetype = value; }
+	    }
+        /// <summary>
+        /// 文件地址
+        /// </summary>
+	    public string FilePath
+	    {
+            get { return _filepath; }
+            set { _filepath = value; }
+	    }
+        /// <summary>
+        /// 文件名称
+        /// </summary>
+	    public string FileName
+	    {
+            get { return _filename; }
+            set { _filename = value; }
+	    }
 		/// <summary>
 		/// 公告信息
 		/// </summary>
@@ -55,10 +82,10 @@ namespace Guoli.Model
 			set{ _content=value;}
 			get{return _content;}
 		}
-		/// <summary>
-		/// 管理员Id
-		/// </summary>
-		public int SystemUserId
+        /// <summary>
+        /// 管理员Id
+        /// </summary>
+        public int SystemUserId
 		{
 			set{ _systemuserid=value;}
 			get{return _systemuserid;}

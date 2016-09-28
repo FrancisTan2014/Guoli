@@ -793,6 +793,28 @@
     };
 
     /**
+     * 根据条件返回数据中的匹配到的第一个元素
+     * 若没有找到返回null
+     * @param {Function} conditionFunc 匹配元素的方法
+     * @returns {Object|null} 
+     */
+    Array.prototype.single = function(conditionFunc) {
+        if (typeof(conditionFunc) !== 'function') {
+            return null;
+        }
+
+        var result = null;
+        this.forEach(function(value, index) {
+            if (conditionFunc(value)) {
+                result = value;
+                return false;
+            }
+        });
+
+        return result;
+    };
+
+    /**
      * 返回数组中的第一个元素
      */
     Array.prototype.first = function() {

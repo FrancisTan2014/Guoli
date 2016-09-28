@@ -6,6 +6,7 @@ using Guoli.Admin.Filters;
 using Guoli.Admin.Models;
 using Guoli.Admin.Utilities;
 using Guoli.Bll;
+using Guoli.Model;
 using Guoli.Utilities.Enums;
 using Guoli.Utilities.Helpers;
 
@@ -54,6 +55,20 @@ namespace Guoli.Admin.Controllers
                 return Json(ErrorModel.InputError, JsonRequestBehavior.AllowGet);
             }
         }
+
+        //[HttpPost]
+        //public JsonResult UpdateSearchRecord()
+        //{
+        //    var data = Request["data"];
+        //    var searchRecord = JsonHelper.Deserialize<TraficSearchRecord>(data);
+        //    if (searchRecord == null)
+        //    {
+        //        return Json(ErrorModel.InputError);
+        //    }
+
+        //    var searchBll = new TraficSearchRecordBll();
+        //    var existCondition = $"PersonId={searchRecord.PersonId} AND ";
+        //}
 
         private object[] PrepareInvokeParameters(CommonApiModel parameters)
         {

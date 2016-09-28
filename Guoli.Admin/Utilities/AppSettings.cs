@@ -37,6 +37,8 @@ namespace Guoli.Admin.Utilities
 
         public static readonly string ExamFiles = ConfigurationManager.AppSettings["ExamFiles"];
 
+        public static readonly string AnnounceFiles = ConfigurationManager.AppSettings["AnnounceFiles"];
+
         /// <summary>
         /// 根据要保存的文件类型，返回对应的文件保存路径配置信息
         /// </summary>
@@ -54,6 +56,8 @@ namespace Guoli.Admin.Utilities
                     return DriveFiles;
                 case 4:
                     return ExamFiles;
+                case 5:
+                    return AnnounceFiles;
                 default:
                     return string.Empty;
             }

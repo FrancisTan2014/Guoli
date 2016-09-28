@@ -1,0 +1,132 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "WIFI连接记录";
+    ViewBag.LastPage = "指导司机定位";
+    ViewBag.LastUrl = "javascript:void(0);";
+    ViewBag.ThisPage = "WIFI连接记录";
+    ViewBag.ThisUrl = "/Instructor/Wifi";
+}
+
+<link href="/Scripts/plugins/datetimepicker/DateTimePicker.min.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-md-12 col-sm-12">
+        <section class="tile">
+            <div class="tile-header dvd dvd-btm">
+                <h1 class="custom-font">
+                    <strong>WIFI连接记录</strong>
+                </h1>
+                <ul class="controls">
+                    <li class="mr-10">
+                        <div class="input-group w-360">
+                            <select class="form-control" name="InstructorId">
+                                <option value="-1">请选择指导司机</option>
+                            </select>
+                        </div>
+                    </li>
+                    <li class="mr-10">
+                        <div class="input-group w-360">
+                            <input type="datetime" name="ConnectTime" data-field="datetime" placeholder="请选择一个时间点" class="form-control">
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </li>
+                    <li class="mr-40">
+                        <div class="btn btn-primary w-100" id="btnView">查 看</div>
+                    </li>
+                </ul>
+                <div id="dtBox"></div>
+            </div>
+            <div class="tile-body streamline timeline p-0" style="background: #e7eaeb">
+                <ul class="mt-10" id="timeLine">
+                    <li class="heading"><a href="javascript:;" class="btn btn-greensea b-0" id="btnHead">姚智禄</a></li>
+
+                    <li class="timeline-post">
+                        <aside>
+                            <div class="thumb wh30 bg-blue">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </aside>
+                        <div class="post-container">
+                            <div class="panel panel-default b-0">
+                                <h3 class="custom-font text-blue">大虎山公寓</h3>
+                                <p>连接WIFI</p>
+                                <p>2016-09-28 13:15</p>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="timeline-post">
+                        <aside>
+                            <div class="thumb wh30 bg-blue">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </aside>
+                        <div class="post-container">
+                            <div class="panel panel-default b-0">
+                                <h3 class="custom-font text-blue">大虎山公寓</h3>
+                                <p>连接WIFI</p>
+                                <p>2016-09-28 13:15</p>
+                            </div>
+                        </div>
+                    </li>
+
+
+                    <li class="timeline-post">
+                        <aside>
+                            <div class="thumb wh30 bg-blue">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </aside>
+                        <div class="post-container">
+                            <div class="panel panel-default b-0">
+                                <h3 class="custom-font text-blue">大虎山公寓</h3>
+                                <p>连接WIFI</p>
+                                <p>2016-09-28 13:15</p>
+                            </div>
+                        </div>
+                    </li>
+
+
+                    <li class="timeline-post">
+                        <aside>
+                            <div class="thumb wh30 bg-blue">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </aside>
+                        <div class="post-container">
+                            <div class="panel panel-default b-0">
+                                <h3 class="custom-font text-blue">大虎山公寓</h3>
+                                <p>WIFI自动连接</p>
+                                <p>2016-09-28 13:15</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="timeline-post">
+                        <aside>
+                            <div class="thumb wh30 bg-blue">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </aside>
+                        <div class="post-container">
+                            <div class="panel panel-default b-0">
+                                <h3 class="custom-font text-blue">大虎山公寓</h3>
+                                <p>WIFI断开</p>
+                                <p>2016-09-28 13:15</p>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+                <div class="w-420">
+                    <div class="btn btn-primary" id="btnMore">加载更多</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="/Scripts/plugins/datetimepicker/DateTimePicker.min.js"></script>
+<script src="/Scripts/plugins/datetimepicker/i18n/DatetimePicker-i18n-zh-CN.js"></script>
+<script src="/Scripts/page-scripts/wifi.js"></script>

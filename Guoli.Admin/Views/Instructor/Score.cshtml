@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "指导司机月度评分";
+    ViewBag.LastPage = "指导司机";
+    ViewBag.LastUrl = "javascript:void(0);";
+    ViewBag.ThisPage = "指导司机月度评分";
+    ViewBag.ThisUrl = "/Instructor/Score";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12">
+        <section class="tile">
+            <div class="tile-body">
+                <div id="responsive-usage_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+
+                    <div id="filterBox" class="row">
+                        <div class="col-sm-3 mb-20">
+                            <label>选择月份：</label><select onchange="page.selectChange();" class="select filter" id="monthList"></select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-custom dt-responsive dataTable no-footer" id="responsive-usage" width="100%" role="grid" aria-describedby="responsive-usage_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-sort="ascending" aria-label="ID: activate to sort column descending" style="width: 82px;">指导司机</th>
+                                        <th class="sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="First Name: activate to sort column ascending" style="width: 255px;">所属</th>
+                                        <th class="sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="First Name: activate to sort column ascending" style="width: 255px;">得分</th>
+                                        <th class="sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="Last Name: activate to sort column ascending" style="width: 245px;">月份</th>
+                                        <th class="none sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="ZIP: activate to sort column ascending" style="width: 107px;">更新时间</th>
+                                        <th class="none sorting" tabindex="0" aria-controls="responsive-usage" rowspan="1" colspan="1" aria-label="ZIP: activate to sort column ascending" style="width: 107px;">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody><tr class="odd"><td valign="top" colspan="8" class="dataTables_empty">Loading...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="/Scripts/page-scripts/instructor-score.js"></script>
