@@ -36,7 +36,7 @@
                 uploader: '/Files/AddFiles',
                 queueSizeLimit: 10,
                 fileSizeLimit: '100MB',
-                fileTypeExts: '*.zip; *.htm; *.html; *.jpg; *.jpeg; *.png; *.gif; *.mp4;',
+                fileTypeExts: '*.zip; *.htm; *.html; *.jpg; *.jpeg; *.png; *.gif; *.mp4; *.doc; *.docx; *.xls; *.xlsx; *.ppt; *.pptx; *.pdf;',
                 formData: { fileType: 3 },
                 onUploadSuccess: _this.uploadSuccess,
                 onUploadStart: function () {

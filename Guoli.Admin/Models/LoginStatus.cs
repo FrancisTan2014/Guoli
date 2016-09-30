@@ -99,7 +99,7 @@ namespace Guoli.Admin.Models
             }
             else
             {
-                var redirectUrl = string.Format("/Home/Login?backUrl={0}", requestUrl);
+                var redirectUrl = $"/Home/Login?backUrl={requestUrl}";
                 context.Response.Redirect(redirectUrl);
             }
         }

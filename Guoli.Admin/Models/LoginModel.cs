@@ -35,9 +35,6 @@ namespace Guoli.Admin.Models
         /// <summary>
         /// 标识是否需要记住密码
         /// </summary>
-        public bool Remember
-        {
-            get { return null != Switch && Switch.ToLower() == "on"; }
-        }
+        public bool Remember => null != Switch && Switch.ToLower() == "on";
     }
 }
