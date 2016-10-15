@@ -35,7 +35,7 @@ namespace Guoli.Admin.Controllers
                     return new KeyValuePair<int, object>(totalCount, list);
                 }
             );
-
+            
             return Json(json);
         }
 

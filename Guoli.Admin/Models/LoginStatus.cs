@@ -1,4 +1,5 @@
 ﻿using System.Web;
+using System.Web.Mvc;
 using Guoli.Admin.Utilities;
 using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
@@ -84,7 +85,7 @@ namespace Guoli.Admin.Models
         /// <summary>
         /// 将当前请求终止，并重定向到登录页面
         /// </summary>
-        public static void RedirectToLogin()
+        public static ActionResult RedirectToLogin()
         {
             var context = HttpContext.Current;
             var requestUrl = context.Request.Url.ToString();
@@ -92,15 +93,19 @@ namespace Guoli.Admin.Models
             if (RequestHelper.IsAsyncRequest())
             {
                 var msg = ErrorModel.NeedLoginFirst(requestUrl);
-                var json = JsonHelper.Serialize(msg);
 
-                context.Response.Write(json);
-                context.Response.End();
+                var jsonResult = new JsonResult
+                {
+                    ContentType = "application/json",
+                    Data = msg
+                };
+
+                return jsonResult;
             }
             else
             {
                 var redirectUrl = $"/Home/Login?backUrl={requestUrl}";
-                context.Response.Redirect(redirectUrl);
+                return new RedirectResult(redirectUrl);
             }
         }
     }

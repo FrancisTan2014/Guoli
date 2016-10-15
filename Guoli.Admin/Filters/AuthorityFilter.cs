@@ -30,7 +30,8 @@ namespace Guoli.Admin.Filters
             {
                 if (!LoginStatus.IsLogin())
                 {
-                    LoginStatus.RedirectToLogin();
+                    var actionResult = LoginStatus.RedirectToLogin();
+                    filterContext.Result = actionResult;
                 }
             }
         }

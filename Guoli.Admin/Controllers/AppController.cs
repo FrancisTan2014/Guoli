@@ -110,5 +110,40 @@ namespace Guoli.Admin.Controllers
 
             return invokeParams;
         }
+
+        [HttpPost]
+        public JsonResult QuotaRecordUpload(List<InstructorQuotaRecord> list)
+        {
+            var bll = new InstructorQuotaRecordBll();
+            var delegates = new List<Func<bool>>();
+
+            list.ForEach(item =>
+            {
+                delegates.Add(() =>
+                {
+                    var condition =
+                        $"InstructorId={item.InstructorId} AND QuotaId={item.QuotaId} AND Year={item.Year} AND Month={item.Month}";
+                    if (bll.Exists(condition))
+                    {
+                        return bll.Delete(condition);
+                    }
+
+                    return true;
+                });
+            });
+
+            delegates.Add(() =>
+            {
+                bll.BulkInsert(list);
+                return true;
+            });
+
+            if (bll.ExecuteTransation(delegates.ToArray()))
+            {
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            return Json(ErrorModel.OperateFailed);
+        }
     }
 }

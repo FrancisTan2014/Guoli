@@ -52,8 +52,7 @@
             var pid = +$('[name=InstructorId]').val();
 
             if (!time) {
-                common.alert('请选择一个时间点');
-                return;
+                time = new Date().format('yyyy-MM-dd HH:mm:ss');
             }
 
             if (pid <= 0) {

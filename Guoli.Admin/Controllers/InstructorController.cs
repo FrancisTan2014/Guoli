@@ -518,10 +518,14 @@ namespace Guoli.Admin.Controllers
             // 删除本月当前得分记录，插入新的得分记录
             var scoreBll = new InstructorReviewScoreBll();
             var deleteCondition = $"Year={currentYear} AND Month={currentMonth}";
-            if (scoreBll.Delete(deleteCondition))
-            {
-                scoreBll.BulkInsert(instructorScoreList);
-            }
+
+            scoreBll.ExecuteTransation(
+                () => !scoreBll.Exists(deleteCondition) || scoreBll.Delete(deleteCondition),
+                () =>
+                {
+                    scoreBll.BulkInsert(instructorScoreList);
+                    return true;
+                });
         }
 
         private decimal ScoreCalculater(decimal quotaAmmount, decimal baseScore, decimal finishAmmount, List<InstructorReviewStandard> standardList)
@@ -627,7 +631,7 @@ namespace Guoli.Admin.Controllers
             var pageSize = Request["pageSize"].ToInt32();
 
             var bll = new ViewInstructorWifiRecordBll();
-            
+
             var condition = $"InstructorId={instructorId} AND ConnectTime<'{connectTime}'";
             var data = bll.QueryPageList(pageIndex, pageSize, condition, null, null, "ConnectTime", true);
 

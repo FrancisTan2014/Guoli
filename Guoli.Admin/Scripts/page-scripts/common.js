@@ -68,10 +68,12 @@
             var _this = this;
             var opts = $.extend({}, {
                 url: '',
-                data: { asunc: true },
+                data: {},
                 type: 'POST',
                 dataType: 'JSON'
             }, options);
+
+            opts.data.async = true;
 
             opts.success = function (data) {
                 if (data.code == 104) {
