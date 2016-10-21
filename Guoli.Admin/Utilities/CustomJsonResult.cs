@@ -51,7 +51,7 @@ namespace Guoli.Admin.Utilities
 
             if (this.Data != null)
             {
-                JavaScriptSerializer jss = new JavaScriptSerializer();
+                JavaScriptSerializer jss = new JavaScriptSerializer { MaxJsonLength = MaxJsonLength ?? int.MaxValue };
                 string jsonString = jss.Serialize(Data);
                 string p = @"\\/Date\((\d+)\)\\/";
                 MatchEvaluator matchEvaluator = new MatchEvaluator(this.ConvertJsonDateToDateString);

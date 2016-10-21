@@ -45,6 +45,7 @@ namespace Guoli.Admin.Controllers
 
                 return new CustomJsonResult {
                     Data = jsonObj,
+                    MaxJsonLength = int.MaxValue,
                     FormateStr = "yyyy-MM-dd HH:mm:ss"
                 };
             }

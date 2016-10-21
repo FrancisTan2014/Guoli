@@ -175,6 +175,7 @@
     <Compile Include="Utilities\AppSettings.cs" />
     <Compile Include="Utilities\BllFactory.cs" />
     <Compile Include="Utilities\CookieNames.cs" />
+    <Compile Include="Utilities\CSharpViaClrTest.cs" />
     <Compile Include="Utilities\CustomJsonResult.cs" />
     <Compile Include="Utilities\DataUpdateLog.cs" />
     <Compile Include="Utilities\DataUpdateType.cs" />
