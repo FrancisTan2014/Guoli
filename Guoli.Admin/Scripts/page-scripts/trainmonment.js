@@ -85,11 +85,11 @@ var Page = (function () {
                 }
             }
             else {
-                if (!model.DepartTime) {
-                    isValid = false;
-                    msg = '出发时间不能为空';
-                    return false;
-                }
+                //if (!model.DepartTime) {
+                //    isValid = false;
+                //    msg = '出发时间不能为空';
+                //    return false;
+                //}
             }
             var kms = parseFloat(model.IntervalKms);
             if (model.IntervalKms && (isNaN(kms) || kms < 0)) {

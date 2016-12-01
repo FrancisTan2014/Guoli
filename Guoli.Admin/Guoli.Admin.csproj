@@ -1099,6 +1099,7 @@
     <Content Include="filter.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="bundleconfig.json" />
     <None Include="Properties\PublishProfiles\Guoli.Admin.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
@@ -1157,6 +1158,9 @@
     <Content Include="Scripts\page-scripts\teach.js" />
     <Content Include="Scripts\page-scripts\train-moment.js" />
     <Content Include="Scripts\page-scripts\trainmonment.js" />
+    <Content Include="Scripts\page-scripts\trainmonment.min.js">
+      <DependentUpon>trainmonment.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\page-scripts\trainno-edit.js" />
     <Content Include="Scripts\page-scripts\trainno.js" />
     <Content Include="Scripts\page-scripts\wifi.js" />

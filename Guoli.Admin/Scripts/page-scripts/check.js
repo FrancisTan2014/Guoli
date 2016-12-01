@@ -9,6 +9,7 @@
 
         initDataTable: function () {
             var _this = this;
+            
             _this.$dataTable = common.dataTable('.dataTable', {
                 sAjaxSource: _this.ajaxUrl,
                 fnServerParams: function (aoData) {

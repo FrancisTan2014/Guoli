@@ -21,6 +21,7 @@ namespace Guoli.Admin.Controllers
         /// </summary>
         /// <param name="key">车站拼音/名称/SN编号</param>
         /// <returns></returns>
+        [HttpPost]
         public JsonResult SearchStations(string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -41,6 +42,7 @@ namespace Guoli.Admin.Controllers
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
+        [HttpPost]
         public JsonResult SearchLines(string key)
         {
             if (string.IsNullOrEmpty(key))
