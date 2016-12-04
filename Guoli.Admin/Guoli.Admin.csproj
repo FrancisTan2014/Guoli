@@ -159,6 +159,7 @@
     <Compile Include="Controllers\InstructorController.cs" />
     <Compile Include="Controllers\LineController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
+    <Compile Include="Controllers\PlannerController.cs" />
     <Compile Include="Filters\AppSignatureFilter.cs" />
     <Compile Include="Filters\Authority.cs" />
     <Compile Include="Filters\AuthorityFilter.cs" />
@@ -168,6 +169,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CommonApiModel.cs" />
+    <Compile Include="Models\GetListParams.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ErrorModel.cs" />
     <Compile Include="Models\LoginStatus.cs" />
@@ -1146,6 +1148,7 @@
     <Content Include="Scripts\page-scripts\people.js" />
     <Content Include="Scripts\page-scripts\person-edit.js" />
     <Content Include="Scripts\page-scripts\plan.js" />
+    <Content Include="Scripts\page-scripts\planner-reports.js" />
     <Content Include="Scripts\page-scripts\quality.js" />
     <Content Include="Scripts\page-scripts\exam-files.js" />
     <Content Include="Scripts\page-scripts\quota.js" />
@@ -1275,6 +1278,7 @@
     <Content Include="Views\Instructor\Router.cshtml" />
     <Content Include="Views\Instructor\Wifi.cshtml" />
     <Content Include="Views\Instructor\RouterDetail.cshtml" />
+    <Content Include="Views\Planner\Reports.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

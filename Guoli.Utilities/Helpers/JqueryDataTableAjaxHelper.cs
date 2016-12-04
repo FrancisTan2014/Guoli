@@ -24,11 +24,11 @@ namespace Guoli.Utilities.Helpers
         {
             if (request == null)
             {
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException(nameof(request));
             }
             if (queryPageListFunc == null)
             {
-                throw new ArgumentNullException("queryPageListFunc");
+                throw new ArgumentNullException(nameof(queryPageListFunc));
             }
 
             // 以下参数为jquery.datatable插件的传递的参数，名称不可更改
