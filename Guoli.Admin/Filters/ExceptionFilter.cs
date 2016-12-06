@@ -30,6 +30,10 @@ namespace Guoli.Admin.Filters
                 HttpContext.Current.Response.Write(JsonHelper.Serialize(ErrorModel.InputError));
                 HttpContext.Current.Response.End();
             }
+            else
+            {
+                HttpContext.Current.Response.Redirect("/Home/Index");
+            }
         }
     }
 }

@@ -1,0 +1,249 @@
+﻿@using Guoli.Model
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "司机报单-详情";
+    ViewBag.LastPage = "司机报单-列表";
+    ViewBag.LastUrl = "/Planner/Reports";
+    ViewBag.ThisPage = "司机报单-详情";
+    ViewBag.ThisUrl = "/Planner/Single?id=" + ViewBag.Id;
+
+    var record = (ViewDriveRecord)ViewBag.Record;
+    var signs = (List<ViewSignPoint>)ViewBag.Signs;
+
+    Func<DateTime, string> dealDateTime = date => date.Year < 2000 ? string.Empty : date.ToString("yyyy-MM-dd HH:mm");
+    Func<DateTime?, string> getTime = date => date == null || date.Value.Year < 2000 ? string.Empty : date.Value.ToString("HH:mm");
+}
+
+<h4>
+    <span>@record.FullName</span>
+    <span>@record.LineName</span>
+    （<span>@dealDateTime(record.AddTime)</span>）
+</h4>
+
+<!-- tab菜单 -->
+<ul class="nav nav-tabs">
+    <li><a href="#attend" data-toggle="tab">出勤信息</a></li>
+    <li class="active"><a href="#run" data-toggle="tab">运行及编组</a></li>
+    <li><a href="#end" data-toggle="tab">退勤信息</a></li>
+</ul>
+<!-- tab菜单 -->
+
+<!-- tab切换内容 -->
+<div class="tab-content bg-white">
+
+    <!-- 出勤信息 -->
+    <div id="attend" class="tab-pane fade in">
+        <div class="row mb-10">
+            <div class="col-md-2">
+                <span class="text-right">车次：</span>
+                <span class="text-left">@record.FullName</span>
+            </div>
+            <div class="col-md-2">
+                <span class="text-right">机车型号：</span>
+                <span class="text-left">@record.LocomotiveType</span>
+            </div>
+        </div>
+        <div class="row mb-10">
+            <div class="col-md-2">
+                <span class="text-right">线路：</span>
+                <span class="text-left">@record.LineName</span>
+            </div>
+            <div class="col-md-2">
+                <span class="text-right">出勤时间：</span>
+                <span class="text-left">@dealDateTime(record.AttendTime)</span>
+            </div>
+        </div>
+        <div class="row mb-10">
+            <div class="col-md-2">
+                <span class="text-right">司机：</span>
+                <span class="text-left">@record.DriverName</span>
+            </div>
+            <div class="col-md-2">
+                <span class="text-right">接车时间：</span>
+                <span class="text-left">@dealDateTime(record.GetTrainTime)</span>
+            </div>
+        </div>
+        <div class="row mb-10">
+            <div class="col-md-2">
+                <span class="text-right">副司机：</span>
+                <span class="text-left">@record.ViceDriverName</span>
+            </div>
+            <div class="col-md-2">
+                <span class="text-right">出本段时间：</span>
+                <span class="text-left">@dealDateTime(record.LeaveDepotTime1)</span>
+            </div>
+        </div>
+        <div class="row mb-10">
+            <div class="col-md-2">
+                <span class="text-right">学员：</span>
+                <span class="text-left">@record.StuDriverName</span>
+            </div>
+            <div class="col-md-2">
+                <span class="text-right">出外段时间：</span>
+                <span class="text-left">@dealDateTime(record.LeaveDepotTime2)</span>
+            </div>
+        </div>
+        <div class="row mb-10">
+            <div class="col-md-4">
+                <span class="text-right">出勤会：</span>
+                <span class="text-left">@record.AttendForecast</span>
+            </div>
+        </div>
+    </div>
+<!-- 出勤信息 -->
+
+    <!-- 运行及编组信息 -->
+    <div id="run" class="tab-pane fade in active">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>站名</th>
+                    <th>到达时分</th>
+                    <th>出发时分</th>
+                    <th>早点</th>
+                    <th>晚点</th>
+                    <th>原因</th>
+                    <th>辆数</th>
+                    <th>吨数</th>
+                    <th>计长</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in signs)
+                {
+                    <tr>
+                        <td>@item.StationName</td>
+                        <td>@getTime(item.ArriveTime)</td>
+                        <td>@getTime(item.LeaveTime)</td>
+                        <td>@(item.EarlyMinutes == 0 ? string.Empty : item.EarlyMinutes.ToString())</td>
+                        <td>@(item.LateMinutes == 0 ? string.Empty : item.LateMinutes.ToString())</td>
+                        <td>@item.EarlyOrLateReason</td>
+                        <td>@(item.CarryingCapacity == null || item.CarryingCapacity == 0 ? string.Empty : item.CarryingCapacity.ToString())</td>
+                        <td>@(item.CarriageCount == null || item.CarryingCapacity == 0 ? string.Empty : item.CarriageCount.ToString())</td>
+                        <td>@(item.Length == null || item.CarryingCapacity == 0 ? string.Empty : item.Length.ToString())</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+    <!-- 运行及编组信息 -->
+    <!-- 退勤信息 -->
+    <div id="end" class="tab-pane fade in row">
+        <div class="panel col-md-2">
+            <div class="panel-heading">
+                <h3 class="panel-title">时间点</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row mb-10">
+                    <span>入本段时间：</span>
+                    <span>@dealDateTime(record.ArriveDepotTime1)</span>
+                </div>
+                <div class="row mb-10">
+                    <span>入外段时间：</span>
+                    <span>@dealDateTime(record.ArriveDepotTime2)</span>
+                </div>
+                <div class="row mb-10">
+                    <span>交车时间：</span>
+                    <span>@dealDateTime(record.GiveTrainTime)</span>
+                </div>
+                <div class="row mb-10">
+                    <span>退勤时间：</span>
+                    <span>@dealDateTime(record.RecordEndTime)</span>
+                </div>
+            </div>
+        </div>
+        <div class="panel col-md-2">
+            <div class="panel-heading">
+                <h3 class="panel-title">能源消耗</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row mb-10">
+                    <span>运转使用油/电量：</span>
+                    <span>@record.OperateConsume</span>
+                </div>
+                <div class="row mb-10">
+                    <span>段内打温时间：</span>
+                    <span>@record.StopConsume</span>
+                </div>
+                <div class="row mb-10">
+                    <span>接收量：</span>
+                    <span>@record.RecieveEnergy</span>
+                </div>
+                <div class="row mb-10">
+                    <span>交出量：</span>
+                    <span>@record.LeftEnergy</span>
+                </div>
+            </div>
+        </div>
+        <div class="panel col-md-2">
+            <div class="panel-heading">
+                <h3 class="panel-title">重联机车</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row mb-10">
+                    <span>机务段：</span>
+                    <span>@record.MultiLocoDepot</span>
+                </div>
+                <div class="row mb-10">
+                    <span>机车型号：</span>
+                    <span>@record.MultiLocoType</span>
+                </div>
+                <div class="row mb-10">
+                    <span>附挂区间：</span>
+                    <span>@record.MultiLocoSection</span>
+                </div>
+            </div>
+        </div>
+        <div class="panel col-md-2">
+            <div class="panel-heading">
+                <h3 class="panel-title">油脂消耗</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row mb-10">
+                    <span>机油：</span>
+                    <span>@record.EngineOil</span>
+                </div>
+                <div class="row mb-10">
+                    <span>风泵油：</span>
+                    <span>@record.AirCompressorOil</span>
+                </div>
+                <div class="row mb-10">
+                    <span>透平油：</span>
+                    <span>@record.TurbineOil</span>
+                </div>
+                <div class="row mb-10">
+                    <span>齿轮油：</span>
+                    <span>@record.GearOil</span>
+                </div>
+                <div class="row mb-10">
+                    <span>调速器油：</span>
+                    <span>@record.GovernorOil</span>
+                </div>
+                <div class="row mb-10">
+                    <span>其他油类：</span>
+                    <span>@record.OtherOil</span>
+                </div>
+                <div class="row mb-10">
+                    <span>棉丝：</span>
+                    <span>@record.Staple</span>
+                </div>
+            </div>
+        </div>
+        <div class="panel col-md-2">
+            <div class="panel-heading">
+                <h3 class="panel-title">退勤会</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row mb-10">
+                    <p>@record.EndSummary</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 退勤信息 -->
+
+</div>
+<!-- tab切换内容 -->

@@ -23,7 +23,7 @@ namespace Guoli.Bll
         {
             var model = new T();
             var type = model.GetType();
-            var dalFullName = string.Format("Guoli.Dal.{0}Dal", type.Name);
+            var dalFullName = $"Guoli.Dal.{type.Name}Dal";
 
             var assembly = Assembly.Load("Guoli.Dal");
             if (assembly == null)
@@ -34,7 +34,7 @@ namespace Guoli.Bll
             var dalInstance = (BaseDal<T>)assembly.CreateInstance(dalFullName);
             if (dalInstance == null)
             {
-                var msg = string.Format("创建{0}的实例失败", dalFullName);
+                var msg = $"创建{dalFullName}的实例失败";
                 throw new Exception(msg);
             }
 

@@ -115,12 +115,14 @@
     <Compile Include="Partital\ViewInstructorTempTakeBll.cs" />
     <Compile Include="Partital\ViewInstructorWifiRecordBll.cs" />
     <Compile Include="Partital\ViewPersonInfoBll.cs" />
+    <Compile Include="Partital\ViewSignPointBll.cs" />
     <Compile Include="Partital\ViewStationBll.cs" />
     <Compile Include="Partital\ViewTrainMomentBll.cs" />
     <Compile Include="Partital\ViewTrainNoLIneBll.cs" />
     <Compile Include="PersonInfoBll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemUserBll.cs" />
+    <Compile Include="ViewSignPointBll.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Guoli.Dal\Guoli.Dal.csproj">

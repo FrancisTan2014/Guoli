@@ -115,6 +115,7 @@
     <Compile Include="Partital\ViewInstructorTempTakeDal.cs" />
     <Compile Include="Partital\ViewInstructorWifiRecordDal.cs" />
     <Compile Include="Partital\ViewPersonInfoDal.cs" />
+    <Compile Include="Partital\ViewSignPointDal.cs" />
     <Compile Include="Partital\ViewStationDal.cs" />
     <Compile Include="Partital\ViewTrainMomentDal.cs" />
     <Compile Include="Partital\ViewTrainNoLIneBll.cs" />

@@ -20,6 +20,7 @@ namespace Guoli.Utilities.Helpers
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             MissingMemberHandling = MissingMemberHandling.Ignore,
             NullValueHandling = NullValueHandling.Ignore,
+            Error = (obj, args) => args.ErrorContext.Handled = true
             //Formatting = Formatting.Indented,
             //Converters = new List<JsonConverter> { new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" } }
         };

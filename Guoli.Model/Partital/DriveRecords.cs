@@ -41,7 +41,7 @@ namespace Guoli.Model
 		private DateTime _arrivedepottime1= Convert.ToDateTime("1900-01-01");
 		private DateTime _arrivedepottime2= Convert.ToDateTime("1900-01-01");
 		private DateTime _givetraintime= Convert.ToDateTime("1900-01-01");
-		private DateTime _recordendtime= Convert.ToDateTime("0.0");
+		private DateTime _recordendtime= Convert.ToDateTime("1900-01-01");
 		private decimal _operateconsume=0.0M;
 		private decimal _stopconsume=0.0M;
 		private decimal _recieveenergy=0.0M;

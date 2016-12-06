@@ -9,6 +9,8 @@ using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Enums;
 using Guoli.Utilities.Helpers;
+using NPOI.SS.Formula.Functions;
+using WebGrease.Css.Extensions;
 
 namespace Guoli.Admin.Controllers
 {
@@ -145,6 +147,101 @@ namespace Guoli.Admin.Controllers
             }
 
             return Json(ErrorModel.OperateFailed);
+        }
+
+        /// <summary>
+        /// 手账记录上传
+        /// </summary>
+        [HttpPost]
+        public JsonResult DrivePlanUpload(string json)
+        {
+            if (string.IsNullOrEmpty(json))
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            // 无论上传是一条记录还是多条记录
+            // 在此处都当做数组进行统一处理
+            json = json.Trim();
+            if (!json.StartsWith("[") && !json.EndsWith("]"))
+            {
+                json = $"[{json}]";
+            }
+            
+            var data = JsonHelper.Deserialize<DrivePlanUploadModel[]>(json);
+
+            var bll = new DriveRecordsBll();
+            var delegates = new Func<bool>[data.Length];
+
+            for (var i = 0; i < data.Length; i++)
+            {
+                MakeSureDatetimeHasLegalValue(data[i]);
+                delegates[i] = MakeInsertDelegate(data[i]);
+            }
+
+            if (bll.ExecuteTransation(delegates))
+            {
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            return Json(ErrorModel.OperateFailed);
+        }
+
+        private Func<bool> MakeInsertDelegate(DrivePlanUploadModel model)
+        {
+            var driveRecordBll = new DriveRecordsBll();
+            
+            return () =>
+            {
+                var inserted = driveRecordBll.Insert(model.DriveRecords);
+                if (inserted.Id > 0)
+                {
+                    model.DriveSignPoints.ForEach(item => item.DriveRecordId = inserted.Id);
+                    model.DriveTrainNoAndLines.ForEach(item => item.DriveRecordId = inserted.Id);
+                    model.TrainFormations.ForEach(item => item.DriveRecordId = inserted.Id);
+
+                    var signBll = new DriveSignPointBll();
+                    var trainBll = new DriveTrainNoAndLineBll();
+                    var formationsBll = new TrainFormationBll();
+
+                    signBll.BulkInsert(model.DriveSignPoints);
+                    trainBll.BulkInsert(model.DriveTrainNoAndLines);
+                    formationsBll.BulkInsert(model.TrainFormations);
+
+                    return true;
+                }
+
+                return false;
+            };
+        }
+
+        private void MakeSureDatetimeHasLegalValue(DrivePlanUploadModel model)
+        {
+            MakeSureDatetimeHasLegalValue(model.DriveRecords);
+            
+            model.DriveSignPoints.ForEach(MakeSureDatetimeHasLegalValue);
+            model.DriveTrainNoAndLines.ForEach(MakeSureDatetimeHasLegalValue);
+            model.TrainFormations.ForEach(MakeSureDatetimeHasLegalValue);
+        }
+
+        private void MakeSureDatetimeHasLegalValue(object instance)
+        {
+            var defaultDateTime = new DateTime(1970, 1, 1);
+            var typeofDatatime = typeof (DateTime);
+
+            var type = instance.GetType();
+
+            type.GetProperties().ForEach(property =>
+            {
+                if (property.PropertyType == typeofDatatime)
+                {
+                    var propValue = (DateTime) property.GetValue(instance, BindingFlags.GetProperty, null, null, null);
+                    if (propValue == DateTime.MinValue)
+                    {
+                        property.SetValue(instance, defaultDateTime, BindingFlags.SetProperty, null, null, null);
+                    }
+                }
+            });
         }
     }
 }

@@ -16,7 +16,7 @@
                     //aoData.push({ name: 'month', value: new Date().format('yyyy-MM') });
                     //aoData.push({ name: 'order', value: 'AnalysisStart' });
                 },
-                fields: ['DriverName', 'ViceDriverName', 'FullName', 'LineName', 'AttendTime', "Id"],
+                fields: ['DriverName', 'ViceDriverName', 'FullName', 'LineName', 'AttendTime', "AddTime", "Id"],
                 aoColumnDefs: [
                 {
                     aTargets: [4],
@@ -27,6 +27,13 @@
                 },
                 {
                     aTargets: [5],
+                    fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                        var date = common.processDate(sData);
+                        $(nTd).empty().append(date.format('yyyy-MM-dd HH:mm:ss'));
+                    }
+                },
+                {
+                    aTargets: [6],
                     bSortable: false,
                     /*
                      * 此方法在单元格被创建完时调用
@@ -38,7 +45,7 @@
                      *  iCol 表示本单元格的索引
                     */
                     fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).empty().append('<a role="button" tabindex="0" class="edit text-primary text-strong text-sm mr-10" href="/Instructor/AnalysisDetail?id={0}">查看详情</a>'.format(sData));
+                        $(nTd).empty().append('<a role="button" tabindex="0" class="edit text-primary text-strong text-sm mr-10" href="/Planner/Single?id={0}">查看详情</a>'.format(sData));
                     }
                 }]
             });

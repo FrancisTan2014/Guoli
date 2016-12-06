@@ -34,5 +34,23 @@ namespace Guoli.Admin.Controllers
 
             return Json(json);
         }
+
+        public ActionResult Single(int id)
+        {
+            var driveRecordBll = new ViewDriveRecordBll();
+            var driveRocord = driveRecordBll.QuerySingle(id);
+            if (driveRocord == null)
+            {
+                return RedirectToAction("Reports");
+            }
+            
+            var signPointBll = new ViewSignPointBll();
+            var signPoints = signPointBll.QueryList($"DriveRecordId={id}", null, null, "Sort").ToList();
+
+            ViewBag.Record = driveRocord;
+            ViewBag.Signs = signPoints;
+
+            return View();
+        }
     }
 }

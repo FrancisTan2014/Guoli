@@ -169,6 +169,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CommonApiModel.cs" />
+    <Compile Include="Models\DrivePlanUploadModel.cs" />
     <Compile Include="Models\GetListParams.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ErrorModel.cs" />
@@ -1279,6 +1280,7 @@
     <Content Include="Views\Instructor\Wifi.cshtml" />
     <Content Include="Views\Instructor\RouterDetail.cshtml" />
     <Content Include="Views\Planner\Reports.cshtml" />
+    <Content Include="Views\Planner\Single.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
