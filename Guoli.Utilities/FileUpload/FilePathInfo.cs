@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Web;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.Utilities.FileUpload
 {
@@ -96,7 +97,11 @@ namespace Guoli.Utilities.FileUpload
             OriginalFileName = fileName;
 
             var dir = relativeDirPath.Replace("~/", "/");
-            var rootAbPath = HttpContext.Current.Server.MapPath(dir);
+
+            //var rootAbPath = HttpContext.Current.Server.MapPath(dir);
+            // @FrancisTan 20170208
+            var rootAbPath = PathExtension.MapPath(dir);
+
             var dateDirName = DateTime.Now.ToString("yyyy-MM-dd");
             RootAbsolutePath = Path.Combine(rootAbPath, dateDirName);
             RootRelativeDir = Path.Combine(dir, dateDirName);

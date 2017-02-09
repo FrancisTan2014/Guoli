@@ -6,6 +6,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using Guoli.Admin.Models;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.Admin.Filters
 {
@@ -28,7 +29,10 @@ namespace Guoli.Admin.Filters
         {
             try
             {
-                var configPath = HttpContext.Current.Server.MapPath("/filter.config");
+                //var configPath = HttpContext.Current.Server.MapPath("/filter.config");
+                // @FrancisTan 20170208
+                var configPath = PathExtension.MapPath("/filter.config");
+                
                 FilterRoot = XElement.Load(configPath);
             }
             catch

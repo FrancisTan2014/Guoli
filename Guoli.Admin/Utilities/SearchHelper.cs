@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Guoli.Bll;
 using Guoli.Model;
+using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
 
 namespace Guoli.Admin.Utilities
@@ -17,8 +18,10 @@ namespace Guoli.Admin.Utilities
     public static class SearchHelper
     {
         private static bool _isTaskRunning = false;
-        private static readonly HttpContext Context = HttpContext.Current;
-        private static readonly string ExtractPath = Context.Server.MapPath("/_searchTemp"); // 临时解压路径
+        //private static readonly HttpContext Context = HttpContext.Current;
+        //private static readonly string ExtractPath = Context.Server.MapPath("/_searchTemp"); // 临时解压路径
+        // @FrancisTan 20170208
+        private static readonly string ExtractPath = PathExtension.MapPath("/_searchTemp"); // 临时解压路径
 
         /// <summary>
         /// 待执行的搜索队列，其中：
@@ -93,7 +96,11 @@ namespace Guoli.Admin.Utilities
             {
                 var keywordsBll = new TraficKeywordsBll();
                 var keywordsList = keywordsBll.QueryAll();
-                var zipPath = Context.Server.MapPath(file.FilePath);
+
+                //var zipPath = Context.Server.MapPath(file.FilePath);
+                // @FrancisTan 20170208
+                var zipPath = PathExtension.MapPath(file.FilePath);
+
                 FileHelper.ExtractZip(zipPath, ExtractPath);
 
                 foreach (var keywords in keywordsList)
@@ -123,7 +130,10 @@ namespace Guoli.Admin.Utilities
                 var fileList = fileBll.QueryList("IsDelete=0", new[] { "Id", "FilePath", "FileExtension" });
                 foreach (var file in fileList)
                 {
-                    var zipPath = Context.Server.MapPath(file.FilePath);
+                    //var zipPath = Context.Server.MapPath(file.FilePath);
+                    // @FrancisTan 20170208
+                    var zipPath = PathExtension.MapPath(file.FilePath);
+
                     FileHelper.ExtractZip(zipPath, ExtractPath);
 
                     var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);

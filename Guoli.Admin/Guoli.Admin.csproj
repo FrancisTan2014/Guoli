@@ -149,6 +149,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\TempTask.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AnnounceController.cs" />
     <Compile Include="Controllers\AppController.cs" />
@@ -1105,6 +1106,7 @@
     <None Include="bundleconfig.json" />
     <None Include="Properties\PublishProfiles\Guoli.Admin.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="keywords.txt" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <Content Include="Scripts\jquery-1.9.1.min.map" />

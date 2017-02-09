@@ -20,7 +20,26 @@ namespace Guoli.Utilities.Extensions
         /// <returns>返回给定路径所对应的绝对路径</returns>
         public static string MapPath(string relativePath)
         {
-            return HttpContext.Current.Server.MapPath(relativePath);
+            string result;
+
+            var server = HttpContext.Current?.Server;
+            if (server == null)
+            {
+                var dir = AppDomain.CurrentDomain.BaseDirectory;
+                var path = relativePath;
+                if (!path.StartsWith("/") && !path.StartsWith("\\"))
+                {
+                    path = $"\\{relativePath}";
+                }
+
+                result = dir + path;
+            }
+            else
+            {
+                result = server.MapPath(relativePath);
+            }
+
+            return result;
         }
     }
 }

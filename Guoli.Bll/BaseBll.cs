@@ -48,6 +48,16 @@ namespace Guoli.Bll
         }
 
         /// <summary>
+        /// 获取指定条件的数据的总条数
+        /// </summary>
+        /// <param name="condition">查询条件</param>
+        /// <returns>返回符合查询条件的数据总条数或者0</returns>
+        public int GetTotalCount(string condition = "")
+        {
+            return DalInstance.GetTotalCount(condition);
+        }
+
+        /// <summary>
         /// 向数据库中插入新的数据，插入成功会将新的主键id记录在实体中返回
         /// </summary>
         /// <param name="json">待插入的数据的json字符串表示</param>

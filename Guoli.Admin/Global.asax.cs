@@ -22,6 +22,9 @@ namespace Guoli.Admin
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // 运行需要在程序启动时运行的临时任务
+            TempTask.RunTempTasks();
         }
     }
 }

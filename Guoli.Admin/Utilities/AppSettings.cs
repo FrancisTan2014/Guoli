@@ -40,6 +40,11 @@ namespace Guoli.Admin.Utilities
         public static readonly string AnnounceFiles = ConfigurationManager.AppSettings["AnnounceFiles"];
 
         /// <summary>
+        /// added by @FrancisTan at 20170208 
+        /// </summary>
+        public static readonly string KeywordsFilePath = ConfigurationManager.AppSettings["KeywordsFilePath"];
+
+        /// <summary>
         /// 根据要保存的文件类型，返回对应的文件保存路径配置信息
         /// </summary>
         /// <param name="fileType">文件类型</param>

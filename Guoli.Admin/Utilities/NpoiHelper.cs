@@ -28,7 +28,10 @@ namespace Guoli.Admin.Utilities
         /// <returns></returns>
         public static object AnalysisExamQuestion(ExamFiles examFiles)
         {
-            var absolutePath = HttpContext.Current.Server.MapPath(examFiles.FilePath);
+            //var absolutePath = HttpContext.Current.Server.MapPath(examFiles.FilePath);
+            // @FrancisTan 20170208
+            var absolutePath = PathExtension.MapPath(examFiles.FilePath);
+
             try
             {
                 using (var fileStream = new FileStream(absolutePath, FileMode.Open, FileAccess.Read))

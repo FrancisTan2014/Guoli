@@ -389,8 +389,8 @@ namespace Guoli.Dal
         /// <returns>总数量</returns>
         public virtual int GetTotalCount(string whereStr = null)
         {
-            var cmdText = string.Format("SELECT COUNT(1) FROM {0} WHERE 1=1 {1}", TableName,
-                string.IsNullOrEmpty(whereStr) ? string.Empty : "AND" + whereStr);
+            var cmdText =
+                $"SELECT COUNT(1) FROM {TableName} WHERE 1=1 {(string.IsNullOrEmpty(whereStr) ? string.Empty : "AND" + whereStr)}";
             return (int) DbHelper.ExecuteScalar(ConnectionString, CommandType.Text, cmdText);
         }
 

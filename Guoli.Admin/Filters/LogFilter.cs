@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.Admin.Filters
 {
@@ -27,7 +28,10 @@ namespace Guoli.Admin.Filters
             }
             stringBuilder.AppendLine("===============================================\r\n");
 
-            var path = filterContext.HttpContext.Server.MapPath("/Log/App");
+            //var path = filterContext.HttpContext.Server.MapPath("/Log/App");
+            // @FrancisTan 20170208
+            var path = PathExtension.MapPath("/Log/App");
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
