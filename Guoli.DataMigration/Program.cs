@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
@@ -14,12 +11,21 @@ namespace Guoli.DataMigration
     {
         private static void Main(string[] args)
         {
-            LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
+            dynamic e = new System.Dynamic.ExpandoObject();
+            e.x = 6;
+            e.y = 7;
+            e.z = 8;
+            e.test = "Test";
 
-            RunProgramRunExample().GetAwaiter().GetResult();
-
-            Console.WriteLine("Press any key to close the application");
+            Console.WriteLine($"e.x = {e.x}, e.y = {e.y}, e.z = {e.z}, e.test = {e.test}");
             Console.ReadKey();
+
+            //LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
+
+            //RunProgramRunExample().GetAwaiter().GetResult();
+
+            //Console.WriteLine("Press any key to close the application");
+            //Console.ReadKey();
         }
 
         private static async Task RunProgramRunExample()

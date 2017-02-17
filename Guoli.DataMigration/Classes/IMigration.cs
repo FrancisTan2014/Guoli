@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guoli.DataMigration
+﻿namespace Guoli.DataMigration
 {
     /// <summary>
     /// 提供数据迁移的操作规范

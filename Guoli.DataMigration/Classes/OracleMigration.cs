@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Guoli.Admin.Utilities;
 using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Helpers;
 
-namespace Guoli.DataMigration.Classes
+namespace Guoli.DataMigration
 {
     /// <summary>
     /// 实现了数据迁移操作规范的抽象类
@@ -136,6 +134,7 @@ namespace Guoli.DataMigration.Classes
                             var success = SqlserverBaseBll.Update(sqlserverModel);
                             if (success)
                             {
+                                // 将数据更新同步到数据更新日志表中
                                 DataUpdateLog.SingleUpdate(SqlserverTableName, sqlserverModel.Id, DataUpdateType.Update);
                                 return true;
                             }
@@ -249,24 +248,32 @@ namespace Guoli.DataMigration.Classes
             {
                 dynamic sqlModel = MapEntity(model);
 
-                // 数据插入事务
-                Func<bool> importTransaction = () =>
+                if (sqlModel != null)
                 {
-                    var success = SqlserverBaseBll.Insert(sqlModel).Id > 0;
-                    if (success)
+                    // 数据插入事务
+                    Func<bool> importTransaction = () =>
                     {
-                        // 将数据库更新同步到app
-                        DataUpdateLog.SingleUpdate(SqlserverTableName, sqlModel.Id, DataUpdateType.Insert);
+                        var success = SqlserverBaseBll.Insert(sqlModel).Id > 0;
+                        if (success)
+                        {
+                            // 将数据库更新同步到app
+                            DataUpdateLog.SingleUpdate(SqlserverTableName, Convert.ToInt32(sqlModel.Id), DataUpdateType.Insert);
 
-                        // 更新主键关系
-                        return UpdatePrimaryRelation(model, sqlModel);
-                    }
+                            // 更新主键关系
+                            return UpdatePrimaryRelation(model, sqlModel);
+                        }
 
-                    return false;
-                };
+                        return false;
+                    };
 
-                // 执行事务
-                SqlserverBaseBll.ExecuteTransation(importTransaction);
+                    // 执行事务
+                    SqlserverBaseBll.ExecuteTransation(importTransaction);
+                }
+                else
+                {
+                    // 数据模型映射失败
+                    // 可能原因，与之相关的其他表数据不存在
+                }
             }
 
             // 将数据源的最大主键存入缓存中
@@ -315,6 +322,17 @@ namespace Guoli.DataMigration.Classes
                 item => item.OracleTableName == OracleTableName && item.OraclePrimaryId == oracleId);
 
             return cache?.SqlPrimaryId;
+        }
+
+        /// <summary>
+        /// 从主键对应关系的缓存中根据指定oracle表名及主键，查找与它对应的sqlserver表的关系信息
+        /// </summary>
+        /// <param name="oracleTableName">表示指定的oracle表名的字符串</param>
+        /// <param name="id">表示指定的oracle表的主键的字符串</param>
+        /// <returns>与指定表及主键对应的sqlserver表的关系信息或者Null</returns>
+        protected PrimaryIdRelation FindPrimaryIdRelation(string oracleTableName, string id)
+        {
+            return PrimaryIdCache.Find(item => item.OracleTableName == oracleTableName && item.OraclePrimaryId == id);
         }
     }
 }

@@ -71,7 +71,10 @@ namespace Guoli.Admin.Controllers
             {
                 // 第一次录入时将密码设置为工号后四位
                 var password = person.WorkNo.Substring(person.WorkNo.Length - 4);
-                person.Password = password.GetMd5();
+                // person.Password = password.GetMd5();
+                // @FrancisTan 修改于 2017-02-17 
+                // 目的是为了统一密码的生成，保证一致性
+                person.Password = EncryptHelper.EncryptPassword(password);
 
                 success = personBll.Insert(person).Id > 0;
             }

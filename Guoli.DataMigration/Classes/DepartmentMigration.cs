@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Guoli.Admin.Utilities;
-using Guoli.Bll;
-using Guoli.DataMigration.Classes;
 using Guoli.Model;
 using Guoli.Model.OracleModels;
 using Guoli.Utilities.Extensions;
@@ -16,9 +9,9 @@ namespace Guoli.DataMigration
     public class DepartmentMigration : OracleMigration<Y_JCYY_BASEDEPARTMENT, DepartInfo>
     {
         protected override string OracleTableName => nameof(Y_JCYY_BASEDEPARTMENT);
-        protected override string OracleTablePrimaryKeyName => "DEPTID";
+        protected override string OracleTablePrimaryKeyName => nameof(Y_JCYY_BASEDEPARTMENT.DEPTID);
         protected override string SqlserverTableName => nameof(DepartInfo);
-        protected override string SqlserverTablePrimaryKeyName => "Id";
+        protected override string SqlserverTablePrimaryKeyName => nameof(DepartInfo.Id);
 
         public DepartmentMigration()
         {

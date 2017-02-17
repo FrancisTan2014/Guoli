@@ -66,6 +66,7 @@
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\JqueryDataTableAjaxHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
+    <Compile Include="Helpers\PasswordHelper.cs" />
     <Compile Include="Helpers\RC4Helper.cs" />
     <Compile Include="Helpers\ReflectorHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />

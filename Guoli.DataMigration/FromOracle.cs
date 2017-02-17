@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guoli.DataMigration
+﻿namespace Guoli.DataMigration
 {
     /// <summary>
     /// 提供从运安数据库（Oracle）中导入数据的方法

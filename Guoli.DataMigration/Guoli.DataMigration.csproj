@@ -52,9 +52,10 @@
   <ItemGroup>
     <Compile Include="Classes\DepartmentMigration.cs" />
     <Compile Include="Classes\OracleMigration.cs" />
+    <Compile Include="Classes\StaffMigration.cs" />
     <Compile Include="FromOracle.cs" />
     <Compile Include="Classes\IMigration.cs" />
-    <Compile Include="PostMigragion.cs" />
+    <Compile Include="Classes\PostMigragion.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

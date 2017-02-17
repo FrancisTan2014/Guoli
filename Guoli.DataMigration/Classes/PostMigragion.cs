@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guoli.DataMigration.Classes;
 using Guoli.Model;
 using Guoli.Model.OracleModels;
 using Guoli.Utilities.Extensions;
@@ -13,9 +9,9 @@ namespace Guoli.DataMigration
     public class PostMigragion: OracleMigration<J_JCYY_BASEPOST, Posts>
     {
         protected override string OracleTableName => nameof(J_JCYY_BASEPOST);
-        protected override string OracleTablePrimaryKeyName => "POSTID";
+        protected override string OracleTablePrimaryKeyName => nameof(J_JCYY_BASEPOST.POSTID);
         protected override string SqlserverTableName => nameof(Posts);
-        protected override string SqlserverTablePrimaryKeyName => "Id";
+        protected override string SqlserverTablePrimaryKeyName => nameof(Posts.Id);
 
         protected override bool HasEdited(J_JCYY_BASEPOST oracleModel, Posts sqlserverModel)
         {

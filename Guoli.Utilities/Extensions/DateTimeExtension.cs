@@ -11,8 +11,8 @@ namespace Guoli.Utilities.Extensions
     public static class DateTimeExtension
     {
         /// <summary>
-        /// 将1900-01-01这一天做为时间的默认值
+        /// 将1900-01-01这一天做为时间的默认值，表示未知的时间
         /// </summary>
-        public static readonly DateTime DefaultValue = new DateTime(1900, 1, 1);
+        public static readonly DateTime UnknownDateTime = new DateTime(1900, 1, 1);
     }
 }
