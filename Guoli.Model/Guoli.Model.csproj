@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OracleModels\J_JCYY_BASEPOST.cs" />
+    <Compile Include="OracleModels\Y_JCYY_BASEDEPARTMENT.cs" />
     <Compile Include="Partital\AnnounceCommands.cs" />
     <Compile Include="Partital\Announcement.cs" />
     <Compile Include="Partital\BaseLine.cs" />
@@ -83,8 +85,10 @@
     <Compile Include="Partital\LineAnnounceCommands.cs" />
     <Compile Include="Partital\LineStations.cs" />
     <Compile Include="Partital\OperateLog.cs" />
+    <Compile Include="Partital\OracleTableMaxId.cs" />
     <Compile Include="Partital\PersonInfo.cs" />
     <Compile Include="Partital\Posts.cs" />
+    <Compile Include="Partital\PrimaryIdRelation.cs" />
     <Compile Include="Partital\TraficSearchText.cs" />
     <Compile Include="Partital\ViewBaseLine.cs" />
     <Compile Include="Partital\ViewDriveRecord.cs" />
@@ -126,9 +130,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="OracleModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

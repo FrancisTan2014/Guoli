@@ -67,6 +67,7 @@
     <Compile Include="Helpers\JqueryDataTableAjaxHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\RC4Helper.cs" />
+    <Compile Include="Helpers\ReflectorHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

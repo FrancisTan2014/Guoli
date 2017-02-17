@@ -50,6 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DepartmentMigration.cs" />
+    <Compile Include="Classes\OracleMigration.cs" />
+    <Compile Include="FromOracle.cs" />
+    <Compile Include="Classes\IMigration.cs" />
+    <Compile Include="PostMigragion.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -58,6 +63,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Guoli.Admin\Guoli.Admin.csproj">
+      <Project>{a0dc1c9a-738c-4209-8875-24fcee868481}</Project>
+      <Name>Guoli.Admin</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Guoli.Bll\Guoli.Bll.csproj">
       <Project>{be4ae0e1-efc2-4a7f-9d4d-590539144e0c}</Project>
       <Name>Guoli.Bll</Name>

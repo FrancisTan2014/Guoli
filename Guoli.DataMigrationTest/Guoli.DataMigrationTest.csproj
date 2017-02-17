@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AA8DD5F6-D322-43E5-A3B1-F620E6484F6A}</ProjectGuid>
+    <ProjectGuid>{0E4C1E23-9999-42D2-8989-74591C7419A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Guoli.UtilitiesTest</RootNamespace>
-    <AssemblyName>Guoli.UtilitiesTest</AssemblyName>
+    <RootNamespace>Guoli.DataMigrationTest</RootNamespace>
+    <AssemblyName>Guoli.DataMigrationTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,18 +62,26 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Extensions\PathExtentionsTest.cs" />
-    <Compile Include="Helpers\ReflectorHelperTest.cs" />
-    <Compile Include="Helpers\TestClass.cs" />
+    <Compile Include="DepartmentMigrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PostMigragionTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Guoli.Utilities\Guoli.Utilities.csproj">
-      <Project>{745f6e7c-1dc1-4288-804b-c68e2995f080}</Project>
-      <Name>Guoli.Utilities</Name>
+    <ProjectReference Include="..\Guoli.Bll\Guoli.Bll.csproj">
+      <Project>{be4ae0e1-efc2-4a7f-9d4d-590539144e0c}</Project>
+      <Name>Guoli.Bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Guoli.DataMigration\Guoli.DataMigration.csproj">
+      <Project>{a8aceab8-d819-4e13-b8da-06d707c59ece}</Project>
+      <Name>Guoli.DataMigration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Guoli.Model\Guoli.Model.csproj">
+      <Project>{3a39861f-daf5-4320-8154-3ff01eb56846}</Project>
+      <Name>Guoli.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using Guoli.Utilities.Helpers;
 
 namespace Guoli.Admin.Utilities
 {
@@ -20,20 +21,10 @@ namespace Guoli.Admin.Utilities
         /// <returns>继承自BaseBll类型的子类对象</returns>
         public static object GetBllInstance(string tableName)
         {
-            var assembly = Assembly.Load("Guoli.Bll");
-            if (assembly == null)
-            {
-                throw new Exception("未能加载程序集Guoli.Bll");
-            }
+            var assemblyName = "Guoli.Bll";
+            var fullName = $"{assemblyName}.{tableName}Bll";
 
-            var bllTypeName = string.Format("Guoli.Bll.{0}Bll", tableName);
-            var bllEntity = assembly.CreateInstance(bllTypeName);
-            if (bllEntity == null)
-            {
-                throw new Exception(string.Format("未能创建{0}类型的实例", bllTypeName));
-            }
-
-            return bllEntity;
+            return ReflectorHelper.GetInstance(assemblyName, fullName);
         }
     }
 }

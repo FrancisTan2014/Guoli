@@ -463,7 +463,7 @@ namespace Guoli.Dal
         {
             if (delegates == null)
             {
-                throw new ArgumentNullException("delegates");
+                throw new ArgumentNullException(nameof(delegates));
             }
 
             using (TransactionScope scope = new TransactionScope())

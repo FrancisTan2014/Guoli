@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDal.cs" />
+    <Compile Include="OracleDal\J_JCYY_BASEPOSTDal.cs" />
+    <Compile Include="OracleDal\Y_JCYY_BASEDEPARTMENTDal.cs" />
     <Compile Include="Partital\AnnounceCommandsDal.cs" />
     <Compile Include="Partital\AnnouncementDal.cs" />
     <Compile Include="Partital\BaseLineDal.cs" />
@@ -82,8 +84,10 @@
     <Compile Include="Partital\LineAnnounceCommandsDal.cs" />
     <Compile Include="Partital\LineStationsDal.cs" />
     <Compile Include="Partital\OperateLogDal.cs" />
+    <Compile Include="Partital\OracleTableMaxIdDal.cs" />
     <Compile Include="Partital\PersonInfoDal.cs" />
     <Compile Include="Partital\PostsDal.cs" />
+    <Compile Include="Partital\PrimaryIdRelationDal.cs" />
     <Compile Include="Partital\StationFilesDal.cs" />
     <Compile Include="Partital\SystemUserDal.cs" />
     <Compile Include="Partital\TraficFilesDal.cs" />

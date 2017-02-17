@@ -43,6 +43,8 @@
     <Compile Include="DalFactory.cs" />
     <Compile Include="ExceptionLogBll.cs" />
     <Compile Include="LoginResult.cs" />
+    <Compile Include="OracleBll\J_JCYY_BASEPOSTBll.cs" />
+    <Compile Include="OracleBll\Y_JCYY_BASEDEPARTMENTBll.cs" />
     <Compile Include="Partital\AnnounceCommandsBll.cs" />
     <Compile Include="Partital\AnnouncementBll.cs" />
     <Compile Include="Partital\BaseLineBll.cs" />
@@ -82,8 +84,10 @@
     <Compile Include="Partital\LineAnnounceCommandsBll.cs" />
     <Compile Include="Partital\LineStationsBll.cs" />
     <Compile Include="Partital\OperateLogBll.cs" />
+    <Compile Include="Partital\OracleTableMaxIdBll.cs" />
     <Compile Include="Partital\PersonInfoBll.cs" />
     <Compile Include="Partital\PostsBll.cs" />
+    <Compile Include="Partital\PrimaryIdRelationBll.cs" />
     <Compile Include="Partital\StationFilesBll.cs" />
     <Compile Include="Partital\SystemUserBll.cs" />
     <Compile Include="Partital\TraficFilesBll.cs" />

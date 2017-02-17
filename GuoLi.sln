@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.UtilitiesTest", "Guol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.DataMigration", "Guoli.DataMigration\Guoli.DataMigration.csproj", "{A8ACEAB8-D819-4E13-B8DA-06D707C59ECE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.AdminTest", "Guoli.AdminTest\Guoli.AdminTest.csproj", "{18FC0F33-50C5-4330-9DDF-C46DD62E472A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.DataMigrationTest", "Guoli.DataMigrationTest\Guoli.DataMigrationTest.csproj", "{0E4C1E23-9999-42D2-8989-74591C7419A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{A8ACEAB8-D819-4E13-B8DA-06D707C59ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8ACEAB8-D819-4E13-B8DA-06D707C59ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8ACEAB8-D819-4E13-B8DA-06D707C59ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18FC0F33-50C5-4330-9DDF-C46DD62E472A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18FC0F33-50C5-4330-9DDF-C46DD62E472A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18FC0F33-50C5-4330-9DDF-C46DD62E472A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18FC0F33-50C5-4330-9DDF-C46DD62E472A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E4C1E23-9999-42D2-8989-74591C7419A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E4C1E23-9999-42D2-8989-74591C7419A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E4C1E23-9999-42D2-8989-74591C7419A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E4C1E23-9999-42D2-8989-74591C7419A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
