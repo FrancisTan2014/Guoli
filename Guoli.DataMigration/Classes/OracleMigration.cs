@@ -60,7 +60,21 @@ namespace Guoli.DataMigration
         /// <summary>
         /// Sqlserver目标数据表对应的Bll层实例
         /// </summary>
-        protected BaseBll<TSqlserver> SqlserverBaseBll { get; set; } 
+        protected BaseBll<TSqlserver> SqlserverBaseBll { get; set; }
+
+        /// <summary>
+        /// 指示数据迁移程序是否需要从数据源中同步所有更改
+        /// 设置此标识的目的是针对那些数据量大，但时效性差的表
+        /// 以减少不必要的数据更新
+        /// </summary>
+        protected virtual bool NeedToUpdateAll => true;
+
+        /// <summary>
+        /// 指示数据迁移程序是否需要缓存数据源与目标数据表之间的主键关系
+        /// 设置此标识的目的是针对那些数据量大、时效性较差的表，减少缓存的数据量
+        /// 以便每次都能将缓存全部加载到内存中，避免出现内存溢出
+        /// </summary>
+        protected virtual bool NeedToCachePrimaryRelation => true;
 
         /// <summary>
         /// 构造函数，执行基类当中的初始化
@@ -100,9 +114,15 @@ namespace Guoli.DataMigration
             {
                 condition = $"to_number({OracleTablePrimaryKeyName})>'{maxId.MaxId}'";
             }
+            
+
 
             var newData = OracleBaseBll.QueryList(condition);
             ExecuteImport(newData);
+
+            // 将数据源的最大主键存入缓存中
+            var newMaxId = GetMaxId(newData)?.ToString();
+            UpdateMaxId(newMaxId);
         }
 
         /// <summary>
@@ -110,6 +130,11 @@ namespace Guoli.DataMigration
         /// </summary>
         public void UpdateEditedData()
         {
+            if (!NeedToUpdateAll)
+            {
+                return;
+            }
+
             // 获取关系缓存中与待更新表有关的数据
             var relations = PrimaryIdCache.Where(item => item.OracleTableName == OracleTableName);
             foreach (var relation in relations)
@@ -205,6 +230,11 @@ namespace Guoli.DataMigration
         /// <param name="sqlserverModel">sqlserver数据实体对象</param>
         protected bool UpdatePrimaryRelation(TOracle oracleModel, TSqlserver sqlserverModel)
         {
+            if (!NeedToCachePrimaryRelation)
+            {
+                return true;
+            }
+
             // 更新oracle与sqlserver对应表的主键关系，用作缓存
             var relationBll = new PrimaryIdRelationBll();
             var relation = new PrimaryIdRelation
@@ -275,10 +305,6 @@ namespace Guoli.DataMigration
                     // 可能原因，与之相关的其他表数据不存在
                 }
             }
-
-            // 将数据源的最大主键存入缓存中
-            var maxId = GetMaxId(oracleData)?.ToString();
-            UpdateMaxId(maxId);
         }
 
         /// <summary>

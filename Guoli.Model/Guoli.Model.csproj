@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OracleModels\J_JCYY_BASEPOST.cs" />
+    <Compile Include="OracleModels\VHISPLANINFO.cs" />
     <Compile Include="OracleModels\Y_JCYY_BASEDEPARTMENT.cs" />
     <Compile Include="OracleModels\Z_JCYY_BASEPERSONNEL.cs" />
     <Compile Include="Partital\AnnounceCommands.cs" />

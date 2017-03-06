@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BaseDal.cs" />
     <Compile Include="OracleDal\J_JCYY_BASEPOSTDal.cs" />
+    <Compile Include="OracleDal\VHISPLANINFODal.cs" />
     <Compile Include="OracleDal\Y_JCYY_BASEDEPARTMENTDal.cs" />
     <Compile Include="OracleDal\Z_JCYY_BASEPERSONNELDal.cs" />
     <Compile Include="Partital\AnnounceCommandsDal.cs" />

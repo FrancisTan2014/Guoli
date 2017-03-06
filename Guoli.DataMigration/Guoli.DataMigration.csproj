@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DepartmentMigration.cs" />
+    <Compile Include="Classes\DrivePlanMigration.cs" />
     <Compile Include="Classes\OracleMigration.cs" />
     <Compile Include="Classes\StaffMigration.cs" />
     <Compile Include="FromOracle.cs" />
