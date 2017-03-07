@@ -114,8 +114,6 @@ namespace Guoli.DataMigration
             {
                 condition = $"to_number({OracleTablePrimaryKeyName})>'{maxId.MaxId}'";
             }
-            
-
 
             var newData = OracleBaseBll.QueryList(condition);
             ExecuteImport(newData);

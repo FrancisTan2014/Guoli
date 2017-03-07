@@ -18,11 +18,11 @@ namespace Guoli.DbProvider
         {
             if (string.IsNullOrEmpty(connectionString))
             {
-                throw new ArgumentNullException("connectionString");
+                throw new ArgumentNullException(nameof(connectionString));
             }
             if (string.IsNullOrEmpty(tableName))
             {
-                throw new ArgumentNullException("tableName");
+                throw new ArgumentNullException(nameof(tableName));
             }
             if (table == null || table.Rows.Count == 0)
             {

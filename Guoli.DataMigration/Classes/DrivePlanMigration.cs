@@ -7,9 +7,9 @@ using Guoli.Model;
 using Guoli.Model.OracleModels;
 using Guoli.Utilities.Extensions;
 
-namespace Guoli.DataMigration.Classes
+namespace Guoli.DataMigration
 {
-    class DrivePlanMigration: OracleMigration<VHISPLANINFO, DrivePlan>
+    public class DrivePlanMigration: OracleMigration<VHISPLANINFO, DrivePlan>
     {
         protected override string OracleTableName => nameof(VHISPLANINFO);
         protected override string OracleTablePrimaryKeyName => nameof(VHISPLANINFO.ID);
@@ -40,7 +40,10 @@ namespace Guoli.DataMigration.Classes
                 StudentName = oracleEntity.HNAMES3 ?? string.Empty,
                 StudentNo = oracleEntity.WORKNO3 ?? string.Empty,
                 OtherName1 = oracleEntity.HNAMES4 ?? string.Empty,
-                OtherNo1 = oracleEntity.WORKNO4 ?? string.Empty
+                OtherNo1 = oracleEntity.WORKNO4 ?? string.Empty,
+                LineName = oracleEntity.LINENAME ?? string.Empty,
+                TrainCode = oracleEntity.TRAINCODE ?? string.Empty,
+                LocoType = oracleEntity.LOCOMOTIVE ?? string.Empty
             };
         }
 

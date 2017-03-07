@@ -155,7 +155,8 @@ namespace Guoli.Dal
 
             var propNames = string.Join(",", propNameList);
             var paramNames = string.Join(",", paraNameList);
-            var cmdText = string.Format("INSERT INTO {0}({1}) VALUES({2}) SELECT {3}=SCOPE_IDENTITY()", TableName, propNames, paramNames, outParamName);
+            var cmdText =
+                $"INSERT INTO {TableName}({propNames}) VALUES({paramNames}) SELECT {outParamName}=SCOPE_IDENTITY()";
 
             var count = DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText, sqlParamList.ToArray());
 
@@ -164,7 +165,7 @@ namespace Guoli.Dal
                 type.InvokeMember(primaryKeyProp.Name, BindingFlags.SetProperty, null, model,
                     new[] { outIdentity.Value });
             }
-
+            
             return model;
         }
 
@@ -232,7 +233,7 @@ namespace Guoli.Dal
             }
 
             var paramNames = string.Join(",", paraNameList);
-            var cmdText = string.Format("UPDATE {0} SET {1} WHERE {2}={3}", TableName, paramNames, PrimaryKeyName, primaryKeyValue);
+            var cmdText = $"UPDATE {TableName} SET {paramNames} WHERE {PrimaryKeyName}={primaryKeyValue}";
 
             return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText, sqlParamList.ToArray()) > 0;
         }
@@ -244,7 +245,7 @@ namespace Guoli.Dal
         /// <returns>操作成功返回<c>true</c>，否则返回<c>false</c></returns>
         public virtual bool Delete(object id)
         {
-            var cmdText = string.Format("DELETE {0} WHERE {1}={2}", TableName, PrimaryKeyName, id);
+            var cmdText = $"DELETE {TableName} WHERE {PrimaryKeyName}={id}";
 
             return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText) > 0;
         }
@@ -274,7 +275,7 @@ namespace Guoli.Dal
         /// <returns></returns>
         public virtual bool DeleteSoftly(object id, string softDeleteFieldName = "IsDelete")
         {
-            var cmdText = string.Format("UPDATE {0} SET {1}=1 WHERE {2}={3}", TableName, softDeleteFieldName, PrimaryKeyName, id);
+            var cmdText = $"UPDATE {TableName} SET {softDeleteFieldName}=1 WHERE {PrimaryKeyName}={id}";
 
             return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, cmdText) > 0;
         }
@@ -288,7 +289,7 @@ namespace Guoli.Dal
         public virtual T QuerySingle(object id, string[] queryFields = null)
         {
             var fieldStr = queryFields == null ? "*" : string.Join(",", queryFields);
-            var cmdText = string.Format("SELECT {0} FROM {1} WHERE {2}={3}", fieldStr, TableName, PrimaryKeyName, id);
+            var cmdText = $"SELECT {fieldStr} FROM {TableName} WHERE {PrimaryKeyName}={id}";
             var modelList = DbHelper.QueryModelFromDb<T>(ConnectionString, CommandType.Text, cmdText);
 
             return modelList.FirstOrDefault();
@@ -305,7 +306,7 @@ namespace Guoli.Dal
         {
             if (string.IsNullOrEmpty(whereStr))
             {
-                throw new ArgumentNullException("whereStr");
+                throw new ArgumentNullException(nameof(whereStr));
             }
 
             return QueryList(whereStr, queryFields, paramDic).FirstOrDefault();
@@ -365,11 +366,11 @@ namespace Guoli.Dal
         {
             if (pageIndex <= 0)
             {
-                throw new ArgumentOutOfRangeException("pageIndex");
+                throw new ArgumentOutOfRangeException(nameof(pageIndex));
             }
             if (pageSize <= 0)
             {
-                throw new ArgumentOutOfRangeException("pageSize");
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
             }
 
             var cmdText = PrepareSql(whereStr, fields, orderField, isDescending, pageIndex, pageSize);
@@ -400,7 +401,7 @@ namespace Guoli.Dal
         /// <returns>当前表的最大主键值</returns>
         public virtual object GetMaxId()
         {
-            var cmdText = string.Format("SELECT MAX(Id) FROM {0}", TableName);
+            var cmdText = $"SELECT MAX(Id) FROM {TableName}";
             var maxId = DbHelper.ExecuteScalar(ConnectionString, CommandType.Text, cmdText);
             if (maxId.Equals(DBNull.Value))
             {
@@ -418,7 +419,7 @@ namespace Guoli.Dal
         public virtual bool Exists(string condition)
         {
             condition = string.IsNullOrEmpty(condition) ? string.Empty : "AND " + condition;
-            var cmdText = string.Format("SELECT COUNT(1) FROM {0} WHERE 1=1 {1}", TableName, condition);
+            var cmdText = $"SELECT COUNT(1) FROM {TableName} WHERE 1=1 {condition}";
 
             var res = DbHelper.ExecuteScalar(ConnectionString, CommandType.Text, cmdText);
 
@@ -503,19 +504,19 @@ namespace Guoli.Dal
         private string PrepareSql(string whereStr, string[] fields, string orderField, bool isDescending, int pageIndex = 0, int pageSize = 0)
         {
             var selectFileds = fields == null ? "*" : string.Join(",", fields);
-            var orderStr = orderField == null ? string.Format("ORDER BY {0}", PrimaryKeyName)
-                : string.Format("ORDER BY {0} {1}", orderField, isDescending ? "DESC" : "ASC");
+            var orderStr = orderField == null ? $"ORDER BY {PrimaryKeyName}"
+                : $"ORDER BY {orderField} {(isDescending ? "DESC" : "ASC")}";
 
             if (!string.IsNullOrEmpty(whereStr))
             {
                 whereStr = whereStr.ToLower().Trim();
-                whereStr = string.Format("AND {0}", whereStr);
+                whereStr = $"AND {whereStr}";
             }
 
             string sql;
             if (pageIndex == 0 || pageSize == 0)
             {
-                sql = string.Format("SELECT {0} FROM {1} WHERE 1=1 {2} {3}", selectFileds, TableName, whereStr, orderStr);
+                sql = $"SELECT {selectFileds} FROM {TableName} WHERE 1=1 {whereStr} {orderStr}";
             }
             else
             {
