@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Quartz;
@@ -11,21 +12,12 @@ namespace Guoli.DataMigration
     {
         private static void Main(string[] args)
         {
-            dynamic e = new System.Dynamic.ExpandoObject();
-            e.x = 6;
-            e.y = 7;
-            e.z = 8;
-            e.test = "Test";
+            LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
 
-            Console.WriteLine($"e.x = {e.x}, e.y = {e.y}, e.z = {e.z}, e.test = {e.test}");
+            RunProgramRunExample().GetAwaiter().GetResult();
+
+            Console.WriteLine("Press any key to close the application");
             Console.ReadKey();
-
-            //LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
-
-            //RunProgramRunExample().GetAwaiter().GetResult();
-
-            //Console.WriteLine("Press any key to close the application");
-            //Console.ReadKey();
         }
 
         private static async Task RunProgramRunExample()
@@ -44,7 +36,7 @@ namespace Guoli.DataMigration
                 await scheduler.Start();
 
                 // define the job and tie it to our HelloJob class
-                IJobDetail job = JobBuilder.Create<HelloJob>()
+                IJobDetail job = JobBuilder.Create<ImportDataJob>()
                     .WithIdentity("job1", "group1")
                     .Build();
 
@@ -52,9 +44,10 @@ namespace Guoli.DataMigration
                 ITrigger trigger = TriggerBuilder.Create()
                     .WithIdentity("trigger1", "group1")
                     .StartNow()
+                    //.WithCronSchedule("40 08 17 * * ?")
                     .WithSimpleSchedule(x => x
-                        .WithIntervalInSeconds(1)
-                        .RepeatForever())
+                         .WithIntervalInHours(1)
+                         .RepeatForever())
                     .Build();
 
                 // Tell quartz to schedule the job using our trigger
@@ -99,11 +92,28 @@ namespace Guoli.DataMigration
         }
     }
 
-    public class HelloJob : IJob
+    public class ImportDataJob : IJob
     {
+        private readonly List<IMigration> _tasks = new List<IMigration>();
+
+        public ImportDataJob()
+        {
+            _tasks.Add(new DepartmentMigration());
+            _tasks.Add(new PostMigragion());
+            _tasks.Add(new StaffMigration());
+            _tasks.Add(new DrivePlanMigration());
+        }
+
         public async Task Execute(IJobExecutionContext context)
         {
-            await Console.Out.WriteLineAsync("Greetings from HelloJob!");
+            await Task.Factory.StartNew(() =>
+            {
+                _tasks.ForEach(task =>
+                {
+                    task.ImportNewData();
+                    task.UpdateEditedData();
+                });
+            });
         }
     }
 }

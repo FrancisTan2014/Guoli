@@ -14,6 +14,8 @@ namespace Guoli.DataMigrationTest
         [TestMethod]
         public void TestImportNewData()
         {
+            TestSuite.CleanTestDb();
+
             var importInstance = new DepartmentMigration();
             importInstance.ImportNewData();
 

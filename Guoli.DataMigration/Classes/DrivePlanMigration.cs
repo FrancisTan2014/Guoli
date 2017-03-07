@@ -49,7 +49,19 @@ namespace Guoli.DataMigration
 
         protected override object GetMaxId(IEnumerable<VHISPLANINFO> source)
         {
-            return source.Select(item => item.ID).Max();
+            return source.Select(item => item.MOBILENUMBER4.ToInt32()).Max();
+        }
+
+        protected override IEnumerable<VHISPLANINFO> GetDataFromSourdeDb(OracleTableMaxId maxId)
+        {
+            var type = typeof (VHISPLANINFO);
+            var specialColumn = "MOBILENUMBER4";
+            var selectColumns = string.Join(",", type.GetProperties().Select(p => p.Name))
+                .Replace(specialColumn, $"ROWNUM AS {specialColumn}");
+            var condition = maxId == null ? string.Empty : $"WHERE {specialColumn}>{maxId.MaxId}";
+            var sql = $"SELECT * FROM (SELECT {selectColumns} FROM {nameof(VHISPLANINFO)}) {condition}";
+
+            return OracleBaseBll.QueryBySql(sql);
         }
     }
 }

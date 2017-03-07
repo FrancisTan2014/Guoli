@@ -14,13 +14,15 @@ namespace Guoli.DataMigrationTest
     public class DrivePlanMigrationTest
     {
         [TestMethod]
-        public void TestImportNewData()
+        public void TestImportNewDataAsync()
         {
+            TestSuite.CleanTestDb();
+
             var instance = new DrivePlanMigration();
             instance.ImportNewData();
 
             var bll = new DrivePlanBll();
-            var list = bll.QueryList(null, new[] {"Id"});
+            var list = bll.QueryList(null, new[] { "Id" });
             list.Count().Should().Be(322513);
         }
     }

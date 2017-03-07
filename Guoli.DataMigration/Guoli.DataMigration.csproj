@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\CacheManager.cs" />
     <Compile Include="Classes\DepartmentMigration.cs" />
     <Compile Include="Classes\DrivePlanMigration.cs" />
     <Compile Include="Classes\OracleMigration.cs" />

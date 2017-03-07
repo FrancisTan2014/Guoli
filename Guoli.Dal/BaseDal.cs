@@ -492,6 +492,21 @@ namespace Guoli.Dal
         }
 
         /// <summary>
+        /// 执行指定的T-SQL命令，并将查询结果转换为类型T的实体集合返回
+        /// </summary>
+        /// <param name="sql">待执行的T-SQL命令字符串</param>
+        /// <returns><see cref="T"></see>的实体集合/></returns>
+        public IEnumerable<T> QueryBySql(string sql)
+        {
+            if (string.IsNullOrEmpty(sql))
+            {
+                throw new ArgumentNullException(nameof(sql));
+            }
+
+            return DbHelper.QueryModelFromDb<T>(ConnectionString, CommandType.Text, sql);
+        }
+
+        /// <summary>
         /// 为查询方法准备sql语句
         /// </summary>
         /// <param name="whereStr">查询的where条件（条件开头与结尾不需要带AND）</param>

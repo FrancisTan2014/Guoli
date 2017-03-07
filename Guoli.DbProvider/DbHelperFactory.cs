@@ -28,9 +28,9 @@ namespace Guoli.DbProvider
                 case DatabaseType.Oracle:
                     return new OracleHelper(dbType);
                 case DatabaseType.MySql:
-                    throw new ArgumentOutOfRangeException("dbType", dbType, "Mysql is not supported.");
+                    throw new ArgumentOutOfRangeException(nameof(dbType), dbType, "Mysql is not supported.");
                 default:
-                    throw new ArgumentOutOfRangeException("dbType", dbType, "Unsupported database type.");
+                    throw new ArgumentOutOfRangeException(nameof(dbType), dbType, "Unsupported database type.");
             }
         }
     }

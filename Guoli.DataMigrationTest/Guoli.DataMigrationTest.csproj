@@ -44,6 +44,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -67,6 +69,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PostMigragionTest.cs" />
     <Compile Include="StaffMigrationTest.cs" />
+    <Compile Include="TestSuite.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Guoli.Bll\Guoli.Bll.csproj">
@@ -76,6 +79,10 @@
     <ProjectReference Include="..\Guoli.DataMigration\Guoli.DataMigration.csproj">
       <Project>{a8aceab8-d819-4e13-b8da-06d707c59ece}</Project>
       <Name>Guoli.DataMigration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Guoli.DbProvider\Guoli.DbProvider.csproj">
+      <Project>{c363c115-7397-4727-8f95-397351b5450e}</Project>
+      <Name>Guoli.DbProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\Guoli.Model\Guoli.Model.csproj">
       <Project>{3a39861f-daf5-4320-8154-3ff01eb56846}</Project>

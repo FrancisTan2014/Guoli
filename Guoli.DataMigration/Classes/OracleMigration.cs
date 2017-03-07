@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Guoli.Admin.Utilities;
 using Guoli.Bll;
 using Guoli.Model;
@@ -18,19 +19,11 @@ namespace Guoli.DataMigration
     /// <typeparam name="TSqlserver">Sqlserver中目标数据表对应的实体类型</typeparam>
     /// <author>FrancisTan</author>
     /// <since>2017-02-10</since>
-    public abstract class OracleMigration<TOracle, TSqlserver>: IMigration
-        where TOracle: class,new()
-        where TSqlserver: class,new()
+    public abstract class OracleMigration<TOracle, TSqlserver> : IMigration
+        where TOracle : class, new()
+        where TSqlserver : class, new()
     {
-        /// <summary>
-        /// Oracle数据库表的最大Id缓存
-        /// </summary>
-        public static List<OracleTableMaxId> MaxIdCache { get; set; }
-
-        /// <summary>
-        /// Oracle数据库表Sql Server数据库表的主键对应关系缓存
-        /// </summary>
-        public static List<PrimaryIdRelation> PrimaryIdCache { get; set; } 
+        protected CacheManager CacheManager { get; set; }
 
         /// <summary>
         /// 将要做为数据源的Oracle数据库表名称
@@ -56,7 +49,7 @@ namespace Guoli.DataMigration
         /// Oracle数据源的Bll层实例
         /// </summary>
         protected BaseBll<TOracle> OracleBaseBll { get; set; }
-        
+
         /// <summary>
         /// Sqlserver目标数据表对应的Bll层实例
         /// </summary>
@@ -85,19 +78,6 @@ namespace Guoli.DataMigration
         }
 
         /// <summary>
-        /// 在基类第一次被使用到的时候从数据库中加载缓存信息
-        /// </summary>
-        static OracleMigration()
-        {
-            var maxIdBll = new OracleTableMaxIdBll();
-            var primaryIdBll = new PrimaryIdRelationBll();
-
-            var condition = "IsDelete=0";
-            MaxIdCache = maxIdBll.QueryList(condition).ToList();
-            PrimaryIdCache = primaryIdBll.QueryList(condition).ToList();
-        }
-
-        /// <summary>
         /// 实现导入新增数据，流程如下
         ///     1.从OracleTableMaxId表中获取上一次更新的最大Id
         ///     2.以最大Id为条件，去数据源中查询之后的新数据
@@ -107,20 +87,75 @@ namespace Guoli.DataMigration
         /// </summary>
         public void ImportNewData()
         {
-            // 构造查询条件
+            var maxId = CacheManager.MaxIdCache.SingleOrDefault(item => item.TableName == OracleTableName);
+            var newData = GetDataFromSourdeDb(maxId);
+            ExecuteImport(newData);
+
+            // 将数据源的最大主键存入缓存中，做为下次查询数据的条件
+            var newMaxId = GetMaxId(newData)?.ToString();
+            UpdateMaxId(newMaxId);
+        }
+
+        /// <summary>
+        /// 执行数据导入到具体表
+        /// </summary>
+        /// <param name="data">从Oracle数据库中获取到的新增数据集合</param>
+        protected virtual void ExecuteImport(IEnumerable<TOracle> data)
+        {
+            IList<TOracle> oracleData = data.ToList();
+            if (DataProcessEvent != null)
+            {
+                oracleData = DataProcessEvent(data);
+            }
+
+            foreach (var model in oracleData)
+            {
+                dynamic sqlModel = MapEntity(model);
+
+                if (sqlModel != null)
+                {
+                    // 数据插入事务
+                    Func<bool> importTransaction = () =>
+                    {
+                        var success = SqlserverBaseBll.Insert(sqlModel).Id > 0;
+                        if (success)
+                        {
+                                // 将数据库更新同步到app
+                                DataUpdateLog.SingleUpdate(SqlserverTableName, Convert.ToInt32(sqlModel.Id), DataUpdateType.Insert);
+
+                                // 更新主键关系
+                                return UpdatePrimaryRelation(model, sqlModel);
+                        }
+
+                        return false;
+                    };
+
+                    // 执行事务
+                    SqlserverBaseBll.ExecuteTransation(importTransaction);
+                }
+                else
+                {
+                    // 数据模型映射失败
+                    // 可能原因，与之相关的其他表数据不存在
+                }
+            }
+        }
+
+        /// <summary>
+        /// 从数据源中获取新增的数据，默认以主键Id大于缓存的最大Id为查询条件
+        /// 若子类需要以其它条件查询数据则可重写此方法
+        /// </summary>
+        /// <param name="maxId">包含上次查询的最大Id的<see cref="Guoli.Model.OracleTableMaxId"></see>实体对象/></param>
+        /// <returns>查询到的新增数据集合</returns>
+        protected virtual IEnumerable<TOracle> GetDataFromSourdeDb(OracleTableMaxId maxId)
+        {
             var condition = string.Empty;
-            var maxId = MaxIdCache.SingleOrDefault(item => item.TableName == OracleTableName);
             if (maxId != null)
             {
                 condition = $"to_number({OracleTablePrimaryKeyName})>'{maxId.MaxId}'";
             }
 
-            var newData = OracleBaseBll.QueryList(condition);
-            ExecuteImport(newData);
-
-            // 将数据源的最大主键存入缓存中
-            var newMaxId = GetMaxId(newData)?.ToString();
-            UpdateMaxId(newMaxId);
+            return OracleBaseBll.QueryList(condition);
         }
 
         /// <summary>
@@ -134,7 +169,7 @@ namespace Guoli.DataMigration
             }
 
             // 获取关系缓存中与待更新表有关的数据
-            var relations = PrimaryIdCache.Where(item => item.OracleTableName == OracleTableName);
+            var relations = CacheManager.PrimaryIdCache.Where(item => item.OracleTableName == OracleTableName);
             foreach (var relation in relations)
             {
                 // 逐条对比oracle与sqlserver中的数据有无变化
@@ -151,7 +186,7 @@ namespace Guoli.DataMigration
                     {
                         // 数据源中的数据被修改过
                         UpdateSqlserverModel(oracleModel, sqlserverModel);
-                        
+
                         Func<bool> updateTransaction = () =>
                         {
                             var success = SqlserverBaseBll.Update(sqlserverModel);
@@ -195,6 +230,8 @@ namespace Guoli.DataMigration
         /// </summary>
         private void BuildInstance()
         {
+            CacheManager = CacheManager.GetInstance();
+
             OracleBaseBll =
                 ReflectorHelper.GetInstance("Guoli.Bll", $"Guoli.Bll.{OracleTableName}Bll") as BaseBll<TOracle>;
 
@@ -247,7 +284,7 @@ namespace Guoli.DataMigration
             if (success)
             {
                 // 将新的主键关系加入缓存中
-                PrimaryIdCache.Add(relation);
+                CacheManager.PrimaryIdCache.Add(relation);
             }
 
             return success;
@@ -259,51 +296,6 @@ namespace Guoli.DataMigration
         /// <param name="source">从数据源中获取到的数据集合</param>
         /// <returns>返回获取到的最大主键值或者null</returns>
         protected abstract object GetMaxId(IEnumerable<TOracle> source);
-
-        /// <summary>
-        /// 执行数据导入到具体表
-        /// </summary>
-        /// <param name="data">从Oracle数据库中获取到的新增数据集合</param>
-        protected virtual void ExecuteImport(IEnumerable<TOracle> data)
-        {
-            IList<TOracle> oracleData = data.ToList();
-            if (DataProcessEvent != null)
-            {
-                oracleData = DataProcessEvent(data);
-            }
-
-            foreach (var model in oracleData)
-            {
-                dynamic sqlModel = MapEntity(model);
-
-                if (sqlModel != null)
-                {
-                    // 数据插入事务
-                    Func<bool> importTransaction = () =>
-                    {
-                        var success = SqlserverBaseBll.Insert(sqlModel).Id > 0;
-                        if (success)
-                        {
-                            // 将数据库更新同步到app
-                            DataUpdateLog.SingleUpdate(SqlserverTableName, Convert.ToInt32(sqlModel.Id), DataUpdateType.Insert);
-
-                            // 更新主键关系
-                            return UpdatePrimaryRelation(model, sqlModel);
-                        }
-
-                        return false;
-                    };
-
-                    // 执行事务
-                    SqlserverBaseBll.ExecuteTransation(importTransaction);
-                }
-                else
-                {
-                    // 数据模型映射失败
-                    // 可能原因，与之相关的其他表数据不存在
-                }
-            }
-        }
 
         /// <summary>
         /// 更新最大Id记录
@@ -331,7 +323,7 @@ namespace Guoli.DataMigration
             if (success)
             {
                 // 更新缓存
-                MaxIdCache.Add(maxModel);
+                CacheManager.MaxIdCache.Add(maxModel);
             }
         }
 
@@ -342,7 +334,7 @@ namespace Guoli.DataMigration
         /// <returns>对应的sqlserver表的主键</returns>
         protected string SearchId(string oracleId)
         {
-            var cache = PrimaryIdCache.Find(
+            var cache = CacheManager.PrimaryIdCache.Find(
                 item => item.OracleTableName == OracleTableName && item.OraclePrimaryId == oracleId);
 
             return cache?.SqlPrimaryId;
@@ -356,7 +348,7 @@ namespace Guoli.DataMigration
         /// <returns>与指定表及主键对应的sqlserver表的关系信息或者Null</returns>
         protected PrimaryIdRelation FindPrimaryIdRelation(string oracleTableName, string id)
         {
-            return PrimaryIdCache.Find(item => item.OracleTableName == oracleTableName && item.OraclePrimaryId == id);
+            return CacheManager.PrimaryIdCache.Find(item => item.OracleTableName == oracleTableName && item.OraclePrimaryId == id);
         }
     }
 }
