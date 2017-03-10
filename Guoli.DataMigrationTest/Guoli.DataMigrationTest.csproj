@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="DepartmentMigrationTest.cs" />
     <Compile Include="DrivePlanMigrationTest.cs" />
+    <Compile Include="OracleMigrationTaskTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PostMigragionTest.cs" />
     <Compile Include="StaffMigrationTest.cs" />

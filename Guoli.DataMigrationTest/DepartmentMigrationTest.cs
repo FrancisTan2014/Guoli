@@ -30,7 +30,7 @@ namespace Guoli.DataMigrationTest
             jnDepot?.ParentId.Should().Be(0);
 
             var jnyyc = departs.Find(d => d.DepartmentName == "集宁运用车间");
-            jnyyc.Should().NotBeNull();
+            jnyyc.Should().NotBeNull();                                                                                                                           
             jnyyc?.ParentId.Should().Be(jnDepot?.Id);
 
             var dbupdateLogBll = new DbUpdateLogBll();

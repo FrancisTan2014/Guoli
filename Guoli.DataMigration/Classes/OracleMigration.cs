@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Guoli.Admin.Utilities;
 using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Helpers;
+using log4net;
+using log4net.Config;
 
+[assembly: log4net.Config.XmlConfigurator(Watch = true, ConfigFile = "log4net.config")]
 namespace Guoli.DataMigration
 {
     /// <summary>
@@ -23,6 +28,8 @@ namespace Guoli.DataMigration
         where TOracle : class, new()
         where TSqlserver : class, new()
     {
+        protected ILog Logger { get; set; }
+
         protected CacheManager CacheManager { get; set; }
 
         /// <summary>
@@ -74,6 +81,10 @@ namespace Guoli.DataMigration
         /// </summary>
         protected OracleMigration()
         {
+            //var logCfg = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "\\log4net.config");
+            //XmlConfigurator.ConfigureAndWatch(logCfg);
+            Logger = LogManager.GetLogger(GetType());
+
             BuildInstance();
         }
 
@@ -87,13 +98,35 @@ namespace Guoli.DataMigration
         /// </summary>
         public void ImportNewData()
         {
-            var maxId = CacheManager.MaxIdCache.SingleOrDefault(item => item.TableName == OracleTableName);
-            var newData = GetDataFromSourdeDb(maxId);
-            ExecuteImport(newData);
+            try
+            {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
 
-            // 将数据源的最大主键存入缓存中，做为下次查询数据的条件
-            var newMaxId = GetMaxId(newData)?.ToString();
-            UpdateMaxId(newMaxId);
+                Logger.Info($"正在执行从表 {OracleTableName} 中导入最新数据");
+
+                var maxId = CacheManager.MaxIdCache.SingleOrDefault(item => item.TableName == OracleTableName);
+                Logger.Info($"从缓存中获取到的表 {OracleTableName} 的最大Id为 {maxId?.MaxId}");
+
+                var newData = GetDataFromSourdeDb(maxId).ToList();
+
+                Logger.Info($"从表 {OracleTableName} 获取到 {newData.Count} 条最新数据");
+
+                Logger.Info($"正在执行将 {newData.Count} 条新数据写入目标数据库");
+                ExecuteImport(newData);
+
+                // 将数据源的最大主键存入缓存中，做为下次查询数据的条件
+                var newMaxId = GetMaxId(newData)?.ToString();
+                Logger.Info($"正在执行将本次导入数据的最大Id {newMaxId} 写入缓存");
+                UpdateMaxId(newMaxId);
+
+                watch.Stop();
+                Logger.Info($"从表 {OracleTableName} 中导入新数据结束，用时 {watch.Elapsed}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"在执行从表 {OracleTableName} 中导入最新数据时发生异常", ex);
+            }
         }
 
         /// <summary>
@@ -163,51 +196,78 @@ namespace Guoli.DataMigration
         /// </summary>
         public void UpdateEditedData()
         {
-            if (!NeedToUpdateAll)
+            try
             {
-                return;
-            }
+                var watch = new Stopwatch();
+                watch.Start();
 
-            // 获取关系缓存中与待更新表有关的数据
-            var relations = CacheManager.PrimaryIdCache.Where(item => item.OracleTableName == OracleTableName);
-            foreach (var relation in relations)
-            {
-                // 逐条对比oracle与sqlserver中的数据有无变化
-                dynamic oracleModel = OracleBaseBll.QuerySingle((object)relation.OraclePrimaryId);
-                dynamic sqlserverModel = SqlserverBaseBll.QuerySingle((object)relation.SqlPrimaryId);
+                var counter = 0;
 
-                if (oracleModel == null)
+                #region 执行数据同步
+                Logger.Info($"正在执行同步表 {OracleTableName} 中被更新过的数据");
+                if (!NeedToUpdateAll)
                 {
-                    // 数据源中该数据被删除，目前暂时忽略
+                    Logger.Info($"由于表 {OracleTableName} 配置了 {nameof(NeedToUpdateAll)} 的值为false，因此跳过同步数据操作");
+                    return;
                 }
-                else
-                {
-                    if (HasEdited(oracleModel, sqlserverModel))
-                    {
-                        // 数据源中的数据被修改过
-                        UpdateSqlserverModel(oracleModel, sqlserverModel);
 
-                        Func<bool> updateTransaction = () =>
+                // 获取关系缓存中与待更新表有关的数据
+                Logger.Info($"正在执行从缓存中获取与表 {OracleTableName} 所对应的主键关系");
+                var relations = CacheManager.PrimaryIdCache.Where(item => item.OracleTableName == OracleTableName);
+
+                Logger.Info("正在执行逐条对比源数据与目标数据的差异性");
+
+                foreach (var relation in relations)
+                {
+                    // 逐条对比oracle与sqlserver中的数据有无变化
+                    dynamic oracleModel = OracleBaseBll.QuerySingle((object)relation.OraclePrimaryId);
+                    dynamic sqlserverModel = SqlserverBaseBll.QuerySingle((object)relation.SqlPrimaryId);
+
+                    if (oracleModel == null)
+                    {
+                        // 数据源中该数据被删除，目前暂时忽略
+                    }
+                    else
+                    {
+                        if (HasEdited(oracleModel, sqlserverModel))
                         {
-                            var success = SqlserverBaseBll.Update(sqlserverModel);
-                            if (success)
+                            // 数据源中的数据被修改过
+                            UpdateSqlserverModel(oracleModel, sqlserverModel);
+
+                            Func<bool> updateTransaction = () =>
                             {
-                                // 将数据更新同步到数据更新日志表中
-                                DataUpdateLog.SingleUpdate(SqlserverTableName, sqlserverModel.Id, DataUpdateType.Update);
-                                return true;
+                                var success = SqlserverBaseBll.Update(sqlserverModel);
+                                if (success)
+                                {
+                                    // 将数据更新同步到数据更新日志表中
+                                    DataUpdateLog.SingleUpdate(SqlserverTableName, Convert.ToInt32(sqlserverModel.Id), DataUpdateType.Update);
+                                    return true;
+                                }
+
+                                return false;
+                            };
+
+                            // 执行数据同步
+                            var syncSuccess = SqlserverBaseBll.ExecuteTransation(updateTransaction);
+                            if (syncSuccess)
+                            {
+                                counter++;
                             }
 
-                            return false;
-                        };
+                        } // end if
 
-                        // 执行数据同步
-                        SqlserverBaseBll.ExecuteTransation(updateTransaction);
+                    } // end else
 
-                    } // end if
+                } // end foreach
+                #endregion
 
-                } // end else
-
-            } // end foreach
+                watch.Stop();
+                Logger.Info($"本次同步数据结束，共检查 {relations.Count()} 条数据，其中有 {counter} 条数据被更新，共耗时 {watch.Elapsed}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"在执行同步表 {OracleTableName} 的数据更新时发生异常", ex);
+            }
         }
 
         /// <summary>

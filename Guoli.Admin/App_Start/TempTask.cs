@@ -24,6 +24,7 @@ namespace Guoli.Admin
             Task.Factory.StartNew(() =>
             {
                 AddSearchKeywords();
+
             });
         }
 

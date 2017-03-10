@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.AdminTest", "Guoli.Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.DataMigrationTest", "Guoli.DataMigrationTest\Guoli.DataMigrationTest.csproj", "{0E4C1E23-9999-42D2-8989-74591C7419A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.WinService", "Guoli.WinService\Guoli.WinService.csproj", "{9AF89F90-8310-417E-877C-4C47ECF1F760}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{0E4C1E23-9999-42D2-8989-74591C7419A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E4C1E23-9999-42D2-8989-74591C7419A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E4C1E23-9999-42D2-8989-74591C7419A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AF89F90-8310-417E-877C-4C47ECF1F760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AF89F90-8310-417E-877C-4C47ECF1F760}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AF89F90-8310-417E-877C-4C47ECF1F760}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AF89F90-8310-417E-877C-4C47ECF1F760}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
