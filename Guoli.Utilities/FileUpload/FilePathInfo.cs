@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Web;
 using Guoli.Utilities.Extensions;
 
@@ -63,10 +64,10 @@ namespace Guoli.Utilities.FileUpload
         /// 通过指定参数创建实例对象
         /// </summary>
         /// <param name="fileName">图片文件名称</param>
-        /// <param name="relativeDirPath">文件存储于服务器的目录的相对路径</param>
-        public FilePathInfo(string fileName, string relativeDirPath)
+        /// <param name="dirPath">文件存储于服务器的目录的相对或者绝对路径</param>
+        public FilePathInfo(string fileName, string dirPath)
         {
-            Init(fileName, 0, relativeDirPath, false);
+            Init(fileName, 0, dirPath, false);
         }
 
         /// <summary>
@@ -74,10 +75,10 @@ namespace Guoli.Utilities.FileUpload
         /// </summary>
         /// <param name="fileName">图片文件名称</param>
         /// <param name="fileSize">文件大小，以KB为单位</param>
-        /// <param name="relativeDirPath">文件存储于服务器的目录的相对路径</param>
-        public FilePathInfo(string fileName, long fileSize, string relativeDirPath)
+        /// <param name="dirPath">文件存储于服务器的目录的相对或者绝对路径</param>
+        public FilePathInfo(string fileName, long fileSize, string dirPath)
         {
-            Init(fileName, fileSize, relativeDirPath, false);
+            Init(fileName, fileSize, dirPath, false);
         }
 
         /// <summary>
@@ -85,22 +86,29 @@ namespace Guoli.Utilities.FileUpload
         /// </summary>
         /// <param name="fileName">图片文件名称</param>
         /// <param name="fileSize">文件大小，以KB为单位</param>
-        /// <param name="relativeDirPath">文件存储于服务器的目录的相对路径</param>
+        /// <param name="dirPath">文件存储于服务器的目录的相对或者绝对路径</param>
         /// <param name="keepOriginalName">是否保留原文件名（若为false，则使用guid命名）</param>
-        public FilePathInfo(string fileName, long fileSize, string relativeDirPath, bool keepOriginalName)
+        public FilePathInfo(string fileName, long fileSize, string dirPath, bool keepOriginalName)
         {
-            Init(fileName, fileSize, relativeDirPath, keepOriginalName);
+            Init(fileName, fileSize, dirPath, keepOriginalName);
         }
 
-        private void Init(string fileName, long fileSize, string relativeDirPath, bool keepOriginalName)
+        private void Init(string fileName, long fileSize, string dirPath, bool keepOriginalName)
         {
             OriginalFileName = fileName;
 
-            var dir = relativeDirPath.Replace("~/", "/");
+            var dir = dirPath.Replace("~/", "/");
 
             //var rootAbPath = HttpContext.Current.Server.MapPath(dir);
             // @FrancisTan 20170208
-            var rootAbPath = PathExtension.MapPath(dir);
+            //var rootAbPath = PathExtension.MapPath(dir);
+            // @FrancisTan 2017-03-31 支持以绝对路径作为参数
+            var rootAbPath = dirPath;
+            if (!Regex.IsMatch(dirPath, "^[A-Za-z]:"))
+            {
+                // 将相对路径映射成绝对路径
+                rootAbPath = PathExtension.MapPath(dir);
+            }
 
             var dateDirName = DateTime.Now.ToString("yyyy-MM-dd");
             RootAbsolutePath = Path.Combine(rootAbPath, dateDirName);

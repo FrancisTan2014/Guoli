@@ -21,12 +21,7 @@ namespace Guoli.Utilities.Helpers
         /// <exception cref="ArgumentNullException"></exception>
         public static string EncryptPassword(string password)
         {
-            if (string.IsNullOrEmpty(password))
-            {
-                throw new ArgumentNullException(nameof(password));
-            }
-
-            return password.GetMd5();
+            return password?.GetMd5();
         }
     }
 }

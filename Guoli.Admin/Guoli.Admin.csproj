@@ -1283,6 +1283,7 @@
     <Content Include="Views\Instructor\RouterDetail.cshtml" />
     <Content Include="Views\Planner\Reports.cshtml" />
     <Content Include="Views\Planner\Single.cshtml" />
+    <Content Include="Tutorials\product-delivery-doc.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
