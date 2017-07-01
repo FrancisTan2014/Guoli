@@ -193,8 +193,9 @@
                 }
 
                 if (!json.PhotoPath) {
-                    common.alert('请上传照片');
-                    return;
+                    json.PhotoPath = '';
+                    //common.alert('请上传照片');
+                    //return;
                 }
 
                 common.showLoading();

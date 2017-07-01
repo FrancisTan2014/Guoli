@@ -201,25 +201,32 @@ namespace Guoli.Admin.Utilities
                 var maxQuestionId = (int)questionBll.GetMaxId();
                 var maxAnswerId = (int)answerBll.GetMaxId();
 
-                foreach (var keyPair in list)
+                try
                 {
-                    var question = keyPair.Key;
-                    var answers = keyPair.Value;
-                    question.ExamFileId = examFiles.Id;
+                    foreach (var keyPair in list)
+                    {
+                        var question = keyPair.Key;
+                        var answers = keyPair.Value;
+                        question.ExamFileId = examFiles.Id;
 
-                    // 将问题与答案放到事务中一起插入，保证数据的准确性
-                    questionBll.ExecuteTransation(() => {                        
-                        questionBll.Insert(question);
-                        if (question.Id > 0)
-                        {
-                            answers.ForEach(answer => answer.QuestionId = question.Id);
-                            answerBll.BulkInsert(answers);
+                        // 将问题与答案放到事务中一起插入，保证数据的准确性
+                        questionBll.ExecuteTransation(() => {
+                            questionBll.Insert(question);
+                            if (question.Id > 0)
+                            {
+                                answers.ForEach(answer => answer.QuestionId = question.Id);
+                                answerBll.BulkInsert(answers);
 
-                            return true;
-                        }
+                                return true;
+                            }
 
-                        return false;
-                    });
+                            return false;
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
                 }
 
                 // 数据库更新记录上传

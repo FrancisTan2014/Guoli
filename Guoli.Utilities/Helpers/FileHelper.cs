@@ -14,6 +14,22 @@ namespace Guoli.Utilities.Helpers
     public static class FileHelper
     {
         /// <summary>
+        /// 对写文件的简单封装
+        /// </summary>
+        /// <param name="path">要写入的文件绝对路径（不存在会自动创建）</param>
+        /// <param name="txt">待写入的文本</param>
+        public static void Write(string path, string txt)
+        {
+            using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                using (var writer = new StreamWriter(fs))
+                {
+                    writer.Write(txt);
+                }
+            }
+        }
+
+        /// <summary>
         /// 将指定目录压缩为zip包
         /// </summary>
         /// <param name="zipFilePath">zip文件绝对路径</param>

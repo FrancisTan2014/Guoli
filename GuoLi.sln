@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.Model", "Guoli.Model\Guoli.Model.csproj", "{3A39861F-DAF5-4320-8154-3FF01EB56846}"
 EndProject
@@ -26,6 +26,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.DataMigrationTest", "Guoli.DataMigrationTest\Guoli.DataMigrationTest.csproj", "{0E4C1E23-9999-42D2-8989-74591C7419A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.WinService", "Guoli.WinService\Guoli.WinService.csproj", "{9AF89F90-8310-417E-877C-4C47ECF1F760}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.Import", "Guoli.Import\Guoli.Import.csproj", "{76439C14-1888-4BA0-AC5C-0B6E9E1A5FF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guoli.Import.Test", "Guoli.Import.Test\Guoli.Import.Test.csproj", "{3EC0ADF6-0EB2-46B5-8178-75A802342C81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +85,14 @@ Global
 		{9AF89F90-8310-417E-877C-4C47ECF1F760}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AF89F90-8310-417E-877C-4C47ECF1F760}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AF89F90-8310-417E-877C-4C47ECF1F760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76439C14-1888-4BA0-AC5C-0B6E9E1A5FF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76439C14-1888-4BA0-AC5C-0B6E9E1A5FF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76439C14-1888-4BA0-AC5C-0B6E9E1A5FF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76439C14-1888-4BA0-AC5C-0B6E9E1A5FF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EC0ADF6-0EB2-46B5-8178-75A802342C81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EC0ADF6-0EB2-46B5-8178-75A802342C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EC0ADF6-0EB2-46B5-8178-75A802342C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC0ADF6-0EB2-46B5-8178-75A802342C81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

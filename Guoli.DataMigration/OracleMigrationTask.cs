@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Guoli.DataMigration.Classes;
 using Guoli.Utilities.Helpers;
+using System.IO;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.DataMigration
 {
@@ -52,12 +54,20 @@ namespace Guoli.DataMigration
         /// </summary>
         public static void ExecuteDataSynchronization()
         {
-            var tasks = GetSyncTasks();
-            tasks.ForEach(task =>
+            try
             {
-                task.ImportNewData();
-                task.UpdateEditedData();
-            });
+                var tasks = GetSyncTasks();
+                tasks.ForEach(task =>
+                {
+                    task.ImportNewData();
+                    task.UpdateEditedData();
+                });
+            }
+            catch (Exception ex)
+            {
+                var logPath = PathExtension.MapPath("service.log");
+                FileHelper.Write(logPath, ex.ToString());
+            }
         }
     }
 }

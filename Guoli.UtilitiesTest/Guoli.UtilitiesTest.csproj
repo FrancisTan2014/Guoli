@@ -65,6 +65,7 @@
     <Compile Include="Extensions\PathExtentionsTest.cs" />
     <Compile Include="Helpers\ReflectorHelperTest.cs" />
     <Compile Include="Helpers\TestClass.cs" />
+    <Compile Include="Helpers\PinyinHelperTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

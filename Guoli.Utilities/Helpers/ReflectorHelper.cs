@@ -72,5 +72,24 @@ namespace Guoli.Utilities.Helpers
 
             return prop?.GetValue(instance, BindingFlags.GetProperty, null, null, CultureInfo.CurrentCulture);
         }
+
+        /// <summary>
+        /// 执行指定类型的任意级别（static、public、private）的静态方法，并返回结果
+        /// </summary>
+        /// <param name="type">待执行的类型</param>
+        /// <param name="methodName">待执行的方法名称</param>
+        /// <param name="parameters">方法需要的参数集合</param>
+        /// <returns>执行的结果</returns>
+        public static object RunStaticMethod(Type type, string methodName, params object[] parameters)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            var method = type.GetMethod(methodName, flags);
+            return method.Invoke(null, flags, null, parameters, null);
+        }
     }
 }

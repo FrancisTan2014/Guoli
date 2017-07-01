@@ -22,7 +22,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
-    <TypeScriptToolsVersion>2.0</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1284,6 +1284,7 @@
     <Content Include="Views\Planner\Reports.cshtml" />
     <Content Include="Views\Planner\Single.cshtml" />
     <Content Include="Tutorials\product-delivery-doc.md" />
+    <Content Include="Templates\exam-file.xls" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
