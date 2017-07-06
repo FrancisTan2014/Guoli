@@ -141,6 +141,74 @@ namespace Guoli.Import
         }
 
         /// <summary>
+        /// 按照一定格式从指定的<see cref="ISheet"/>对象中提取信息
+        /// 并创建<see cref="TimeTable"/>对象返回
+        /// </summary>
+        /// <param name="sheet">将作为数据源的<see cref="ISheet"/>对象</param>
+        /// <returns><see cref="TimeTable"/>对象</returns>
+        private static TimeTable GetTimeTable(ISheet sheet)
+        {
+            var timeTable = new TimeTable();
+
+            // 从第五行第一个单元格中提取车次、线路信息
+            var fifthRow = sheet.GetRow(4);
+            timeTable.TrainNo = GetTrainNo(fifthRow);
+            timeTable.Line = GetLine(fifthRow);
+
+            // 判断是否是动车时刻表，若是，则将所有单元格索引+1
+            InitialCellIndexs(timeTable.TrainNo.Code);
+
+            // 判断车次方向，若是上行，则将表格从后往前循环
+            // 反之，则从前往后循环（从索引6开始）
+            var isUpword = IsUpward(timeTable.TrainNo.FullName);
+            var start = isUpword ? sheet.LastRowNum : STARTINDEX;
+            var end = isUpword ? STARTINDEX : sheet.LastRowNum;
+
+            // 循环表格，提取信息到timeTable对象中
+            // 每次循环读取两行数据，index相应的加/减2
+            // 循环结束条件为：当前读取到的车站名称与区段结束车站名称相同
+            Func<int, int> getNextIndex = i => isUpword ? i - 1 : i + 1; // 此方法用于处理索引的递增或者递减
+            var loopIsEnd = false;
+            var index = start;
+            while (!loopIsEnd)
+            {
+                var stationRow = sheet.GetRow(index);
+                index = getNextIndex(index);
+
+                // 若读取到的是空行，则跳过继续读取下一行
+                if (!IsEmptyRow(stationRow))
+                {
+                    var speedRow = sheet.GetRow(index);
+                    index = getNextIndex(index);
+
+                    // 将读取两行数据：
+                    //  第一行数据中包含车站名称、发车时间以及到达时间
+                    //  第二行数据中包含区间运行时间， 区间平均速度以及区间停车时间
+                    var moment = GetTrainMoment(stationRow, speedRow);
+                    if (moment != null)
+                    {
+                        var station = GetStation(stationRow);
+                        timeTable.Stations.Add(station);
+                        timeTable.Moments.Add(moment);
+
+                        if (station.StationName == timeTable.TrainNo.LastStation)
+                        {
+                            loopIsEnd = true; // 循环结束
+                        }
+                    }
+                }
+
+                // 防止死循环的情况发生
+                if (stationRow == null)
+                {
+                    loopIsEnd = true; // 循环结束
+                }
+            }
+
+            return timeTable;
+        }
+
+        /// <summary>
         /// 将从excel表格中提取出的<see cref="TimeTable"/>对象写入数据库
         /// </summary>
         /// <param name="table">待处理的列表时刻表</param>
@@ -271,9 +339,10 @@ namespace Guoli.Import
 
             stations.ForEach(s =>
             {
-                if (_stationCaches.Exists(item => item.StationName == s.StationName))
+                var temp = _stationCaches.Find(item => item.StationName == s.StationName);
+                if (temp != null)
                 {
-                    newStations.Add(s);
+                    newStations.Add(temp);
                 }
                 else
                 {
@@ -286,74 +355,6 @@ namespace Guoli.Import
             });
 
             return newStations;
-        }
-
-        /// <summary>
-        /// 按照一定格式从指定的<see cref="ISheet"/>对象中提取信息
-        /// 并创建<see cref="TimeTable"/>对象返回
-        /// </summary>
-        /// <param name="sheet">将作为数据源的<see cref="ISheet"/>对象</param>
-        /// <returns><see cref="TimeTable"/>对象</returns>
-        private static TimeTable GetTimeTable(ISheet sheet)
-        {
-            var timeTable = new TimeTable();
-
-            // 从第五行第一个单元格中提取车次、线路信息
-            var fifthRow = sheet.GetRow(4);
-            timeTable.TrainNo = GetTrainNo(fifthRow);
-            timeTable.Line = GetLine(fifthRow);
-
-            // 判断是否是动车时刻表，若是，则将所有单元格索引+1
-            InitialCellIndexs(timeTable.TrainNo.Code);
-
-            // 判断车次方向，若是上行，则将表格从后往前循环
-            // 反之，则从前往后循环（从索引6开始）
-            var isUpword = IsUpward(timeTable.TrainNo.FullName);
-            var start = isUpword ? sheet.LastRowNum : STARTINDEX;
-            var end = isUpword ? STARTINDEX : sheet.LastRowNum;
-
-            // 循环表格，提取信息到timeTable对象中
-            // 每次循环读取两行数据，index相应的加/减2
-            // 循环结束条件为：当前读取到的车站名称与区段结束车站名称相同
-            Func<int, int> getNextIndex = i => isUpword ? i - 1 : i + 1; // 此方法用于处理索引的递增或者递减
-            var loopIsEnd = false;
-            var index = start;
-            while (!loopIsEnd)
-            {
-                var stationRow = sheet.GetRow(index);
-                index = getNextIndex(index);
-
-                // 若读取到的是空行，则跳过继续读取下一行
-                if (!IsEmptyRow(stationRow))
-                {
-                    var speedRow = sheet.GetRow(index);
-                    index = getNextIndex(index);
-
-                    // 将读取两行数据：
-                    //  第一行数据中包含车站名称、发车时间以及到达时间
-                    //  第二行数据中包含区间运行时间， 区间平均速度以及区间停车时间
-                    var moment = GetTrainMoment(stationRow, speedRow);
-                    if (moment != null)
-                    {
-                        var station = GetStation(stationRow);
-                        timeTable.Stations.Add(station);
-                        timeTable.Moments.Add(moment);
-
-                        if (station.StationName == timeTable.TrainNo.LastStation)
-                        {
-                            loopIsEnd = true; // 循环结束
-                        }
-                    }
-                }
-
-                // 防止死循环的情况发生
-                if (stationRow == null)
-                {
-                    loopIsEnd = true; // 循环结束
-                }
-            }
-
-            return timeTable;
         }
 
         /// <summary>

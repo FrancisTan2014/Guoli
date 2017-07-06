@@ -36,6 +36,8 @@ namespace Guoli.Import
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     TimeTableImporter.Execute(ofd.FileName);
+
+                    MessageBox.Show(@"导入成功！");
                 }
             }
         }

@@ -9,6 +9,7 @@ using Guoli.Utilities.Extensions;
 
 namespace Guoli.Admin.Filters
 {
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public class LogFilter : ActionFilterAttribute
     {
