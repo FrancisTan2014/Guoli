@@ -183,7 +183,7 @@ namespace Guoli.Admin.Controllers
             var success = departBll.DeleteSoftly(id);
             if (success)
             {
-                DataUpdateLog.SingleUpdate(typeof(DepartInfo).Name, id, DataUpdateType.Update);
+                DataUpdateLog.SingleUpdate(typeof(DepartInfo).Name, id, DataUpdateType.Delete);
 
                 return Json(ErrorModel.OperateSuccess);
             }

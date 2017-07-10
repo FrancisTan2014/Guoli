@@ -92,7 +92,7 @@ namespace Guoli.Admin.Controllers
 
             if (success)
             {
-                DataUpdateLog.SingleUpdate(typeof(TraficFiles).Name, id, DataUpdateType.Update);
+                DataUpdateLog.SingleUpdate(typeof(TraficFiles).Name, id, DataUpdateType.Delete);
 
                 DeleteSearchResult(1, id);
 
