@@ -33,6 +33,7 @@
         initUploadify: function() {
             var _this = this;
             _this.$uploadify = common.uploadify('#uploadify', {
+                swf: '/Scripts/plugins/jquery.uploadify/uploadify.swf',
                 uploader: '/Files/AddFiles',
                 queueSizeLimit: 10,
                 fileSizeLimit: '1024MB',

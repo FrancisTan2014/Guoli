@@ -26,5 +26,21 @@ namespace Guoli.Admin
             // 运行需要在程序启动时运行的临时任务
             //TempTask.RunTempTasks();
         }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            //var ctx = HttpContext.Current;
+            //if (ctx.Request.HttpMethod == "OPTIONS")
+            //{
+            //    ctx.Response.AddHeader("Access-Control-Allow-Origin", "*");
+            //    ctx.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+            //    ctx.Response.AddHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            //}
+
+            if (Request.Headers.AllKeys.Contains("Origin") && Request.HttpMethod == "OPTIONS")
+            {
+                Response.Flush();
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace Guoli.Admin.Models
                 };
             }
         }
-        
+
         /// <summary>
         /// 输入有误
         /// </summary>
@@ -43,16 +43,14 @@ namespace Guoli.Admin.Models
             }
         }
 
-        public static object LoginSuccess
+        public static object LoginSuccess(object data)
         {
-            get
+            return new
             {
-                return new
-                {
-                    code = 102,
-                    msg = "登录成功"
-                };
-            }
+                code = 102,
+                msg = "登录成功",
+                data
+            };
         }
 
         /// <summary>
@@ -124,7 +122,7 @@ namespace Guoli.Admin.Models
             {
                 return new
                 {
-                    code = 107, 
+                    code = 107,
                     msg = "数据插入成功"
                 };
             }
@@ -156,7 +154,7 @@ namespace Guoli.Admin.Models
             {
                 return new
                 {
-                    code = 109, 
+                    code = 109,
                     msg = "未能查询到指定信息"
                 };
             }
@@ -176,7 +174,7 @@ namespace Guoli.Admin.Models
                 };
             }
         }
-        
+
         /// <summary>
         /// 操作失败
         /// </summary>

@@ -1,8 +1,10 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using Guoli.Admin.Models;
 using Guoli.Bll;
 using Guoli.Utilities.Helpers;
 using CookieNames = Guoli.Admin.Utilities.CookieNames;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.Admin.Controllers
 {
@@ -53,7 +55,11 @@ namespace Guoli.Admin.Controllers
                 // 记录管理员id
                 CookieHelper.Set(CookieNames.LoginUserId, userId.ToString());
 
-                return Json(ErrorModel.LoginSuccess);
+                //====================================
+                //2017-08-04 为使用vue做的后台生成token
+                var token = $"{userId}:{DateTime.Now.Timestamp()}";
+
+                return Json(ErrorModel.LoginSuccess(token));
             }
 
             return Json(ErrorModel.InputError);

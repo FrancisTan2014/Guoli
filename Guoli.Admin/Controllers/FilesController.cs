@@ -77,7 +77,8 @@ namespace Guoli.Admin.Controllers
                 {
                     msg = ErrorModel.OperateSuccess,
                     data = uploadRes,
-                    fileId = fileModel.Id
+                    fileId = fileModel.Id,
+                    fileModel
                 });
             }
 
@@ -103,10 +104,10 @@ namespace Guoli.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddDirectory()
+        public JsonResult AddDirectory(string dir)
         {
-            var json = Request["directory"];
-            var model = JsonHelper.Deserialize<TraficFileType>(json);
+            //var json = Request["directory"];
+            var model = JsonHelper.Deserialize<TraficFileType>(dir);
 
             if (model == null)
             {
@@ -261,6 +262,80 @@ namespace Guoli.Admin.Controllers
                     });
             }
             
+        }
+
+        //===========================================================
+        // 2017-08-04 为vue重构的后台增加接口
+
+        /// <summary>
+        /// 文件或者目录重命名
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="type">
+        ///     1 为目录重命名
+        ///     2 为文件重命名
+        /// </param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult Rename(int id, string name, int type)
+        {
+            bool success = false;
+
+            if (type == 1)
+            {
+                var folderBll = new TraficFileTypeBll();
+                success = folderBll.Update(new TraficFileType { Id = id, TypeName = name }, new string[] { nameof(TraficFileType.TypeName) });
+            }
+            else if (type == 2)
+            {
+                var fileBll = new TraficFilesBll();
+                success = fileBll.Update(new TraficFiles { Id = id, FileName = name }, new string[] { nameof(TraficFiles.FileName) });
+            }
+
+            if (success)
+            {
+                var table = type == 1 ? nameof(TraficFileType) : nameof(TraficFiles);
+                DataUpdateLog.SingleUpdate(table, id, DataUpdateType.Update);
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            return Json(ErrorModel.OperateFailed);
+        }
+
+        /// <summary>
+        /// 删除文件或目录
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="type">
+        ///     1 删除目录
+        ///     2 删除文件
+        /// </param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult Delete(int id, int type)
+        {
+            bool success = false;
+
+            if (type == 1)
+            {
+                var folderBll = new TraficFileTypeBll();
+                success = folderBll.Delete(id);
+            }
+            else if (type == 2)
+            {
+                var fileBll = new TraficFilesBll();
+                success = fileBll.DeleteSoftly(id);
+            }
+
+            if (success)
+            {
+                var table = type == 1 ? nameof(TraficFileType) : nameof(TraficFiles);
+                DataUpdateLog.SingleUpdate(table, id, DataUpdateType.Delete);
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            return Json(ErrorModel.OperateFailed);
         }
     }
 }

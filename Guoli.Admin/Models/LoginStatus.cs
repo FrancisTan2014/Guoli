@@ -5,6 +5,8 @@ using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
 using CookieNames = Guoli.Admin.Utilities.CookieNames;
 using SessionNames = Guoli.Admin.Utilities.SessionNames;
+using System.Text.RegularExpressions;
+using System;
 
 namespace Guoli.Admin.Models
 {
@@ -15,6 +17,8 @@ namespace Guoli.Admin.Models
     /// <since>2016-07-14</since>
     public class LoginStatus
     {
+        private const int LoginExpireDays = 7;
+
         /// <summary>
         /// 在session中记录当前用户已登录
         /// </summary>
@@ -37,7 +41,7 @@ namespace Guoli.Admin.Models
         public static void WriteCookie(int userId)
         {
             var encryptId = userId.ToString();
-            var expire = 7*24*60*60; // 7天
+            var expire = LoginExpireDays * 24*60*60; 
 
             CookieHelper.Set(CookieNames.LoginCookie, encryptId, expire);
         }
@@ -67,16 +71,55 @@ namespace Guoli.Admin.Models
         /// <returns>返回表示是否已登录的布尔值</returns>
         public static bool IsLogin()
         {
-            var session = SessionHelper.Get(SessionNames.LoginSession);
-            if (null != session && session.Equals(true))
+            var ctx = HttpContext.Current;
+            if (ctx != null)
             {
-                return true;
-            }
+                var token = ctx.Request["token"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    // 验证跨域请求token是否合法
+                    return IsTokenLegal(token);
+                }
+                else
+                {
+                    // 验证本地请求是否已登录
+                    var session = SessionHelper.Get(SessionNames.LoginSession);
+                    if (null != session && session.Equals(true))
+                    {
+                        return true;
+                    }
 
-            var userId = GetLoginId();
-            if (userId > 0)
+                    var userId = GetLoginId();
+                    if (userId > 0)
+                    {
+                        return true;
+                    }
+                }                
+            }            
+
+            return false;
+        }
+
+        /// <summary>
+        /// 验证登录token是否合法
+        ///     1. 验证时间戳是否过期
+        ///     2. 验证UserId是否大于零
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static bool IsTokenLegal(string token)
+        {
+            var pattern = @"^(\d+):(\d+)$";
+            var match = Regex.Match(token, pattern);
+            if (match.Success)
             {
-                return true;
+                var userId = Convert.ToInt32(match.Groups[1].Value);
+                var timestamp = Convert.ToInt64(match.Groups[2].Value);
+                var expires = LoginExpireDays * 24 * 3600 * 1000;
+                if (DateTime.Now.Timestamp() - timestamp <= expires)
+                {
+                    return userId > 0;
+                }
             }
 
             return false;
