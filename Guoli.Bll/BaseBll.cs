@@ -327,7 +327,7 @@ namespace Guoli.Bll
         /// <returns>返回查询到的实体集合</returns>
         public IEnumerable<T> QueryPageList(int pageIndex, int pageSize, string condition, string orderField, bool isDescending, out int totalCount)
         {
-            totalCount = DalInstance.GetTotalCount();
+            totalCount = DalInstance.GetTotalCount(condition);
 
             return QueryPageList(pageIndex, pageSize, condition, null, null, orderField, isDescending);
         }

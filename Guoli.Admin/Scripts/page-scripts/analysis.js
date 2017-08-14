@@ -38,7 +38,8 @@
                      *  iCol 表示本单元格的索引
                     */
                     fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                        $(nTd).empty().append('<a role="button" tabindex="0" class="edit text-primary text-strong text-sm mr-10" href="/Instructor/AnalysisDetail?id={0}">查看详情</a>'.format(sData));
+                        //$(nTd).empty().append('<a role="button" tabindex="0" class="edit text-primary text-strong text-sm mr-10" href="/Instructor/AnalysisDetail?id={0}">查看详情</a>'.format(sData));
+                        $(nTd).empty().append('<a role="button" tabindex="0" class="edit text-primary text-strong text-sm mr-10" href="http://192.168.0.108:8080/#/analysis-prev?id = { 0}">查看详情</a>'.format(sData));
                     }
                 }]
             });

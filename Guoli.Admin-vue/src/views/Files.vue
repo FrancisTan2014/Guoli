@@ -196,7 +196,7 @@ export default {
 
           let m = this.newFormModel;
           let model = { TypeName: m.name, ParentId: this.curParentId };
-          server.post('/Files/AddDirectory', { dir: JSON.stringify(model) }, this)
+          server.post('/Files/AddDirectory', { directory: JSON.stringify(model) }, this)
             .then(res => {
               this.newFormLoading = false;
               NProgress.done();

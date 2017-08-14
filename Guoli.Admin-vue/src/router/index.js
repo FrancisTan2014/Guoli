@@ -5,7 +5,10 @@ import NotFound from '@/views/NotFound'
 import Forbidden from '@/views/Forbidden'
 import Files from '@/views/Files'
 import Login from '@/views/Login'
-import Take from '@/views/Take'
+import Take from '@/views/instructor/Take'
+import TakePrev from '@/views/instructor/TakePrev'
+import AnalysisPrev from '@/views/instructor/AnalysisPrev'
+import ViewInstructorAnalysis from '@/views/instructor/ViewInstructorAnalysis'
 
 Vue.use(Router)
 
@@ -41,15 +44,18 @@ export default new Router({
       children: [
         {
           path: '/temptake',
-          name: '工作记录',
-          component: Take,
+          name: '日常工作记录',
+          component: ViewInstructorAnalysis,
           iconCls: 'el-icon-menu',
           children: [
-            { path: '/temptake', name: '添乘信息单', component: Take }
+            { path: '/temptake', name: '添乘信息单', component: Take },
+            { path: '/analysis', name: '监控分析单', component: ViewInstructorAnalysis },
           ]
         }
       ]
     },
+    { path: '/temptake-prev', name: '添乘信息单打印预览', component: TakePrev, hidden:true },
+    { path: '/analysis-prev', name: '监控分析单打印预览', component: AnalysisPrev, hidden:true },
     {
       path: '/login',
       name: '登录',

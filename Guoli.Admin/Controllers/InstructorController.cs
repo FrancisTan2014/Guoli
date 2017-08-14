@@ -12,6 +12,8 @@ using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
 using WebGrease.Css.Extensions;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace Guoli.Admin.Controllers
 {
@@ -86,6 +88,86 @@ namespace Guoli.Admin.Controllers
                 });
 
             return Json(json);
+        }
+
+        [HttpPost]
+        public JsonResult GetListForVue(string json)
+        {
+            var param = JsonHelper.Deserialize<JObject>(json);
+            var page = param.Value<int>("page");
+            var size = param.Value<int>("size");
+            var order = param.Value<string>("order"); // 排序字段
+            var desc = param.Value<bool>("desc"); // 是否降序
+            var table = param.Value<string>("table");
+            var conditions = param.Value<JObject>("conditions");
+            var query = BuildQueryCondition(conditions);
+
+            var bll = BllFactory.GetBllInstance(table);
+            if (bll != null)
+            {
+                var type = bll.GetType();
+
+                var arguments = new object[] { page, size, query, order, desc, 0 };
+                var list = type.InvokeMember("QueryPageList", BindingFlags.InvokeMethod, null, bll,
+                                arguments);
+
+                return Json(ErrorModel.GetDataSuccess(new {
+                    total = (int)arguments[5],
+                    list
+                }));
+            }
+
+            return Json(ErrorModel.GetDataFailed);
+        }
+
+        private string BuildQueryCondition(JObject conditions)
+        {
+            var list = new List<string>();
+            foreach (var item in conditions)
+            {
+                var type = item.Value.Value<string>("type");                
+                
+                if (type == "between")
+                {
+                    var value = item.Value.Value<JToken>("value")?.ToArray();
+                    if (null != value && value.Length == 2)
+                    {
+                        var first = value[0].ToString().Trim();
+                        var last = value[1].ToString().Trim();
+                        if (first != "null" && first != ""
+                            && last != "null" && last != "")
+                        {
+                            list.Add($"({item.Key} BETWEEN '{first}' AND '{last}')");
+                        }
+                    }
+                }
+                else
+                {
+                    var value = item.Value.Value<string>("value");
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        switch (type)
+                        {
+                            case "equal":
+                                list.Add($"({item.Key}='{value}')");
+                                break;
+                            case "like":
+                                list.Add($"({item.Key} LIKE '%{value}%')");
+                                break;
+                            case "gt":
+                                list.Add($"({item.Key}>'{value}')");
+                                break;
+                            case "lt":
+                                list.Add($"({item.Key}<'{value}')");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
+            return string.Join(" AND ", list);
         }
 
         [HttpPost]

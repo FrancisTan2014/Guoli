@@ -104,10 +104,10 @@ namespace Guoli.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddDirectory(string dir)
+        public JsonResult AddDirectory(string directory)
         {
             //var json = Request["directory"];
-            var model = JsonHelper.Deserialize<TraficFileType>(dir);
+            var model = JsonHelper.Deserialize<TraficFileType>(directory);
 
             if (model == null)
             {
