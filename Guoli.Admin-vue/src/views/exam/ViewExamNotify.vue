@@ -45,6 +45,7 @@
       <el-table-column label="操作" min-width="120">
         <template scope="scope">
           <el-button type="text" @click="showEditDialog(scope.row)">修改</el-button>
+          <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -63,7 +64,8 @@
     </el-col>
 
     <!-- 添加考试通知弹窗 -->
-    <el-dialog :title="editFormModel.Id > 0 ? '修改考试通知' : '发布考试通知'" :visible="notifyDialogVisible">
+    <el-dialog :title="editFormModel.Id > 0 ? '修改考试通知' : '发布考试通知'" :visible="notifyDialogVisible"
+      :before-close="() => {notifyDialogVisible=false}">
 
       <el-form ref="editForm" :model="editFormModel" label-width="120px" :rules="editFormRules" @submit.native.prevent="handleAddFile">
 
@@ -339,6 +341,22 @@ export default {
       });
 
       this.notifyDialogVisible = true;
+    },
+
+    // 删除考试通知
+    handleDelete: function (model) {
+      this.$confirm('您确定要删除此考试通知吗？')
+        .then(() => {
+          server.post('/Exam/DeleteNotify', { id: model.Id }, this)
+            .then(res => {
+              if (res.code === 100) {
+                this.$message({ type: 'success', message: '删除成功(:=' });
+                this.load();
+              } else {
+                this.$message({ type: 'error', message: '删除失败，请稍后重试(:=' });
+              }
+            });
+        }).catch(() => { /* 取消 */ })
     }
   },
 

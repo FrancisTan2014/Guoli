@@ -37,6 +37,7 @@
       <el-table-column label="操作" min-width="120">
         <template scope="scope">
           <el-button type="text" @click="showEditForm(scope.row)">修改</el-button>
+          <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -55,7 +56,7 @@
     </el-col>
 
     <!-- 弹窗 -->
-    <el-dialog title="发布新公告" :visible="dialogVisible">
+    <el-dialog title="发布新公告" :visible="dialogVisible" :before-close="reset">
 
       <el-form ref="editForm" :model="editFormModel" :rules="editFormRules" label-width="120px">
 
@@ -91,7 +92,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="reset">取 消</el-button>
         <el-button type="primary" @click="handleEdit" :loading="editFormLoading">确 定</el-button>
       </div>
 
@@ -180,6 +181,14 @@ export default {
       this.page = page;
     },
 
+    reset: function (done) {
+      this.$refs.editForm.resetFields();
+      this.dialogVisible = false;
+      if (typeof done === 'function') {
+        done();
+      }
+    },
+
     showEditForm: function (model) {
       this.editFormModel = clone(model);
       this.dialogVisible = true;
@@ -216,6 +225,21 @@ export default {
             });
         }
       });
+    },
+
+    handleDelete: function (row) {
+      this.$confirm('您确定要删除此公告吗？')
+        .then(() => {
+          server.post('/Announce/Delete', { id: row.Id }, this)
+            .then(res => {
+              if (res.code === 100) {
+                this.$message({ type: 'success', message: '删除成功(:=' });
+                this.load();
+              } else {
+                this.$message({ type: 'error', message: '删除失败，请稍后重试(:=' });
+              }
+            });
+        }).catch(() => { /* 取消 */ });
     }
   },
 

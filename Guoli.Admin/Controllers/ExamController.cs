@@ -59,6 +59,18 @@ namespace Guoli.Admin.Controllers
             return Json(ErrorModel.OperateFailed);
         }
 
+        [HttpPost]
+        public JsonResult DeleteNotify(int id)
+        {
+            var bll = new ExamNotifyBll();
+            var success = bll.ExecuteTransation(
+                () => bll.Delete(id),
+                () => DataUpdateLog.SingleUpdate(nameof(ExamNotify), id, DataUpdateType.Delete)
+            );
+
+            return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+        }
+
         /// <summary>
         /// 更新考试通知
         /// </summary>
