@@ -32,6 +32,11 @@ namespace Guoli.Admin.Controllers
             return Json(ErrorModel.GetDataSuccess(list));
         }
 
+        /// <summary>
+        /// 添加考试通知
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
         [HttpPost]
         public JsonResult SaveNotify(string json)
         {
@@ -52,6 +57,29 @@ namespace Guoli.Admin.Controllers
             }
 
             return Json(ErrorModel.OperateFailed);
+        }
+
+        /// <summary>
+        /// 更新考试通知
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult UpdateNotify(string json)
+        {
+            var model = JsonHelper.Deserialize<ExamNotify>(json);
+            if (null != model)
+            {
+                var bll = new ExamNotifyBll();
+                var success = bll.ExecuteTransation(
+                    () => bll.Update(model),
+                    () => DataUpdateLog.SingleUpdate(nameof(ExamNotify), model.Id, DataUpdateType.Update)
+                );
+
+                return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+            }
+
+            return Json(ErrorModel.InputError);
         }
 
         [HttpPost]

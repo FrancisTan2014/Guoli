@@ -25,19 +25,51 @@
 
       <!-- menu start -->
       <aside>
-        <el-menu :default-active="$route.path" class="el-menu-vertical-demo" theme="dark" unique-opened router>
-          <el-submenu :key="index" :index="index+''" v-for="(item,index) in $router.options.routes" v-if="showOrNot(item)">
+        <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
 
-            <el-menu-item v-for="child in item.children" :key="child.path" :index="child.path" v-if="showOrNot(child) && !child.children">{{ item.name }}</el-menu-item>
+          <!-- 一级菜单 -->
+          <template v-for="item in menus">
 
-            <template slot="title">
-              <i :class="item.iconCls"></i>{{item.name}}</template>
-            <el-submenu v-for="child in item.children" :key="child.name" :index="child.path" v-if="showOrNot(child) && child.children">
-              <template slot="title">
-              <i :class="child.iconCls"></i>{{child.name}}</template>
-              <el-menu-item v-for="grand in child.children" :key="grand.name" :index="grand.path" v-if="showOrNot(grand)">{{grand.name}}</el-menu-item>
-            </el-submenu>
-          </el-submenu>
+            <!-- 二级菜单 -->
+            <template v-if="item.subs">
+
+              <el-submenu :index="item.index">
+                  <template slot="title">
+                        <i :class="item.icon"></i>{{ item.title }}</template>
+
+                <!-- 三级菜单 -->
+                <template v-for="(child, i) in item.subs">
+
+                  <template v-if="child.subs">
+                    <el-submenu :index="child.index">
+                      <template slot="title">
+                        <i :class="child.icon"></i>{{ child.title }}</template>
+                      <el-menu-item v-for="(grand, j) in child.subs" :key="j" :index="grand.index">{{ grand.title }}
+                      </el-menu-item>
+                    </el-submenu>
+                  </template>
+                  <template v-else>
+                    <el-menu-item :index="child.index">{{ child.title }}</el-menu-item>
+                  </template>
+
+                </template>
+                <!-- 三级菜单 -->
+
+              </el-submenu>
+
+            </template>
+            <template v-else>
+
+              <el-menu-item :index="item.index">
+                <i :class="item.icon"></i>{{ item.title }}
+              </el-menu-item>
+
+            </template>
+            <!-- 二级菜单 -->
+
+          </template>
+          <!-- 一级菜单 -->
+
         </el-menu>
       </aside>
       <!-- menu end -->
@@ -49,7 +81,7 @@
             <!--<strong class="title">{{$route.name}}</strong>-->
             <el-breadcrumb separator="/" class="breadcrumb-inner">
               <el-breadcrumb-item v-for="item in $route.matched" :key="item.name">
-                {{ item.name }}
+                {{ item.desc }}
               </el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
@@ -77,7 +109,73 @@ export default {
       // isSuperAdminLogin: store.isSuperAdminLogin(),
 
       sysUserPhoto: '',
-      sysUserName: ''
+      sysUserName: '',
+
+      menus: [
+        {
+          icon: 'el-icon-menu',
+          index: '1',
+          title: '行车资料',
+          subs: [
+            { index: 'files', title: '文件管理' }
+          ]
+        },
+
+        {
+          icon: 'el-icon-menu',
+          index: '2',
+          title: '指导司机',
+          subs: [
+            {
+              index: '2-1',
+              title: '工作记录',
+              icon: 'el-icon-menu',
+              subs: [
+                { index: 'keyperson', title: '关键人管理' },
+                { index: 'temptake', title: '添乘信息单' },
+                { index: 'analysis', title: '监控分析单' },
+                { index: 'check', title: '抽查信息单' },
+                { index: 'repair', title: '机破临修记录' },
+                { index: 'quality', title: '机车质量登记' },
+                { index: 'good', title: '防止事故及好人好事记录' },
+                { index: 'peccany', title: '违章违纪记录' },
+                { index: 'teach', title: '授课培训记录' },
+                { index: 'plan', title: '工作总结计划' },
+                { index: 'accept', title: '标准化验收' },
+              ]
+            }
+          ]
+        },
+
+        {
+          icon: 'el-icon-menu',
+          index: '3',
+          title: '司机手账',
+          subs: [
+            { index: 'drive', title: '司机报单' }
+          ]
+        },
+
+        {
+          icon: 'el-icon-menu',
+          index: '4',
+          title: '考试管理',
+          subs: [
+            { index: 'examlib', title: '题库管理' },
+            { index: 'examnotify', title: '考试通知' },
+            { index: 'examresult', title: '考试结果' },
+          ]
+        },
+        {
+          icon: 'el-icon-menu',
+          index: '5',
+          title: '通知公告',
+          subs: [
+            { index: 'announce', title: '公告管理' }
+          ]
+        },
+
+      ]
     };
   }, // end data()
 
@@ -93,8 +191,15 @@ export default {
         local.removeItem('token');
         this.$router.push('/login');
       });
-    }
+    },
+
   }, // end methods
+
+  computed: {
+    onRoutes: function () {
+      this.$route.path.replace('/', '');
+    }
+  },
 
   mounted() {
     // let user = store.getLoginUser();

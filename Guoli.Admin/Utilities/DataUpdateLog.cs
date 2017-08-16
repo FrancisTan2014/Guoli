@@ -25,7 +25,7 @@ namespace Guoli.Admin.Utilities
         /// <param name="tableName">目标表格名称</param>
         /// <param name="id">当前更新这条记录的主键</param>
         /// <param name="updateType">更新类型枚举</param>
-        public static void SingleUpdate(string tableName, int id, DataUpdateType updateType)
+        public static bool SingleUpdate(string tableName, int id, DataUpdateType updateType)
         {
             var updateModel = new DbUpdateLog
             {
@@ -35,7 +35,7 @@ namespace Guoli.Admin.Utilities
                 UpdateTime = DateTime.Now
             };
 
-            UpdateBll.Insert(updateModel);
+            return UpdateBll.Insert(updateModel).Id > 0;
         }
 
         /// <summary>

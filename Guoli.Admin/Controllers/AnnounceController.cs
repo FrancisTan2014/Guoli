@@ -94,5 +94,22 @@ namespace Guoli.Admin.Controllers
 
             return Json(ErrorModel.OperateFailed);
         }
+
+        [HttpPost]
+        public JsonResult Delete(int id)
+        {
+            var bll = new AnnouncementBll();
+            var success = bll.ExecuteTransation(
+                () => bll.Delete(id),
+                () => DataUpdateLog.SingleUpdate(nameof(Announcement), id, DataUpdateType.Delete)
+            );
+
+            if (success)
+            {
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            return Json(ErrorModel.OperateFailed);
+        }
     }
 }
