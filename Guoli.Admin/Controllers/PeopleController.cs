@@ -164,6 +164,29 @@ namespace Guoli.Admin.Controllers
         }
 
         [HttpPost]
+        public JsonResult AddOrUpdateDepart(DepartInfo depart)
+        {
+            if (depart != null)
+            {
+                var bll = new DepartInfoBll();
+                if (bll.Exists($"DepartmentName='{depart.DepartmentName}' AND IsDelete=0"))
+                {
+                    return Json(ErrorModel.ExistSameItem);
+                }
+
+                var updateType = depart.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
+                var success = bll.ExecuteTransation(
+                    () => depart.Id == 0 ? bll.Insert(depart).Id > 0 : bll.Update(depart),
+                    () => DataUpdateLog.SingleUpdate(nameof(DepartInfo), depart.Id, updateType)
+                );
+
+                return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+            }
+
+            return Json(ErrorModel.InputError);
+        }
+
+        [HttpPost]
         public JsonResult DeleteDepart(int id)
         {
             var personBll = new PersonInfoBll();

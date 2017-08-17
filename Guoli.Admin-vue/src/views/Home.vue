@@ -115,19 +115,26 @@ export default {
         {
           icon: 'el-icon-menu',
           index: '1',
+          title: '部门人员',
+          subs: [
+            { index: 'depart', title: '部门管理' }
+          ]
+        },
+        {
+          icon: 'el-icon-menu',
+          index: '2',
           title: '行车资料',
           subs: [
             { index: 'files', title: '文件管理' }
           ]
         },
-
         {
           icon: 'el-icon-menu',
-          index: '2',
+          index: '3',
           title: '指导司机',
           subs: [
             {
-              index: '2-1',
+              index: '3-1',
               title: '工作记录',
               icon: 'el-icon-menu',
               subs: [
@@ -149,7 +156,7 @@ export default {
 
         {
           icon: 'el-icon-menu',
-          index: '3',
+          index: '4',
           title: '司机手账',
           subs: [
             { index: 'drive', title: '司机报单' }
@@ -158,7 +165,7 @@ export default {
 
         {
           icon: 'el-icon-menu',
-          index: '4',
+          index: '5',
           title: '考试管理',
           subs: [
             { index: 'examlib', title: '题库管理' },
@@ -168,7 +175,7 @@ export default {
         },
         {
           icon: 'el-icon-menu',
-          index: '5',
+          index: '6',
           title: '通知公告',
           subs: [
             { index: 'announce', title: '公告管理' }
@@ -176,7 +183,7 @@ export default {
         },
         {
           icon: 'el-icon-menu',
-          index: '6',
+          index: '7',
           title: '系统',
           subs: [
             { index: 'account', title: '账户管理' },

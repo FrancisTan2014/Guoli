@@ -6,6 +6,9 @@ import Forbidden from '@/views/Forbidden'
 import Files from '@/views/Files'
 import Login from '@/views/Login'
 
+// 部门人员
+import ViewDepartInfo from '@/views/personnel/ViewDepartInfo'
+
 // 指导司机
 import Take from '@/views/instructor/Take'
 import TakePrev from '@/views/instructor/TakePrev'
@@ -44,6 +47,15 @@ export default new Router({
   // mode: 'history',
   routes: [
     { path: '/', name: 'home', desc: '首页', component: Home },
+    {
+      path: '/',
+      name: 'personnel',
+      desc: '部门人员',
+      component: Home,
+      children: [
+        { path: '/depart', name: 'depart', desc: '部门管理', component: ViewDepartInfo }
+      ]
+    },
     {
       path: '/',
       name: 'resources',

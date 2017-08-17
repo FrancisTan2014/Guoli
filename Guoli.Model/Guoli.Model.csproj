@@ -93,6 +93,7 @@
     <Compile Include="Partital\PrimaryIdRelation.cs" />
     <Compile Include="Partital\TraficSearchText.cs" />
     <Compile Include="Partital\ViewBaseLine.cs" />
+    <Compile Include="Partital\ViewDepartInfo.cs" />
     <Compile Include="Partital\ViewDriveRecord.cs" />
     <Compile Include="Partital\ViewExamFiles.cs" />
     <Compile Include="Partital\ViewExamNotify.cs" />

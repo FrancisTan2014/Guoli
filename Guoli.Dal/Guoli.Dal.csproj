@@ -107,6 +107,7 @@
     <Compile Include="Partital\TrainNoDal.cs" />
     <Compile Include="Partital\TrainNoLineDal.cs" />
     <Compile Include="Partital\ViewBaseLineDal.cs" />
+    <Compile Include="Partital\ViewDepartInfoDal.cs" />
     <Compile Include="Partital\ViewDriveRecordDal.cs" />
     <Compile Include="Partital\ViewExamFilesDal.cs" />
     <Compile Include="Partital\ViewExamNotifyDal.cs" />

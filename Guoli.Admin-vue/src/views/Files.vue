@@ -8,7 +8,7 @@
         <el-breadcrumb separator=">" class="file-path">
           <el-breadcrumb-item v-for="folder in pathStack" :key="folder.Id" @click.native="breadClick(folder)">{{ folder.TypeName }}</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-button class="btn-add" size="small" type="primary" icon="plus" @click.native="newFolder">新建文件夹</el-button>
+        <el-button class="btn-add" size="small" type="primary" icon="plus" @click.native="newFolder">新建目录</el-button>
         <el-button class="btn-add" size="small" type="primary" icon="plus" v-if="curParentId > 0" @click.native="addFiles">添加文件</el-button>
       </el-col>
     </el-row>
