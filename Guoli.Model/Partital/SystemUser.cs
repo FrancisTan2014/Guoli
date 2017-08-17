@@ -32,7 +32,7 @@ namespace Guoli.Model
         private string _name;
         private int _departmentid = 0;
         private string _departmentname = "";
-        private DateTime _createtime;
+        private DateTime _createtime = DateTime.Now;
         private int _creatorid;
         private bool _isdelete;
         /// <summary>

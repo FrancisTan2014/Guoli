@@ -174,6 +174,15 @@ export default {
             { index: 'announce', title: '公告管理' }
           ]
         },
+        {
+          icon: 'el-icon-menu',
+          index: '6',
+          title: '系统',
+          subs: [
+            { index: 'account', title: '账户管理' },
+            { index: 'log', title: '操作日志' },
+          ]
+        },
 
       ]
     };

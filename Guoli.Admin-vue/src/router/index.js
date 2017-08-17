@@ -32,6 +32,10 @@ import ViewExamFiles from '@/views/exam/ViewExamFiles'
 // 通知公告
 import Announcement from '@/views/notify/Announcement'
 
+// 权限管理
+import SystemUser from '@/views/system/SystemUser'
+import ViewOperateLog from '@/views/system/ViewOperateLog'
+
 Vue.use(Router)
 
 export default new Router({
@@ -101,11 +105,12 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'notify',
-      desc: '通知公告',
+      name: 'system',
+      desc: '系统',
       component: Home,
       children: [
-
+        { path: '/account', name: 'account', desc: '账户管理', component: SystemUser },
+        { path: '/log', name: 'log', desc: '操作日志', component: ViewOperateLog },
       ]
     },
     {

@@ -110,6 +110,7 @@
     <Compile Include="Partital\ViewInstructorTeach.cs" />
     <Compile Include="Partital\ViewInstructorTempTake.cs" />
     <Compile Include="Partital\ViewInstructorWifiRecord.cs" />
+    <Compile Include="Partital\ViewOperateLog.cs" />
     <Compile Include="Partital\ViewPersonInfo.cs" />
     <Compile Include="Partital\ViewSignPoint.cs" />
     <Compile Include="Partital\ViewStation.cs" />

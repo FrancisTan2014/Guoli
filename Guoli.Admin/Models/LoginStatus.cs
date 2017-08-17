@@ -55,12 +55,20 @@ namespace Guoli.Admin.Models
         }
 
         /// <summary>
-        /// 从cookie中获取当前登录用户id
+        /// 从cookie或token中获取当前登录用户id
         /// </summary>
         /// <returns>当前登录管理员id</returns>
         public static int GetLoginId()
         {
             var encryptId = CookieHelper.Get(CookieNames.LoginCookie);
+            if (string.IsNullOrEmpty(encryptId))
+            {
+                int userId;
+                var token = HttpContext.Current.Request["token"];
+                IsTokenLegal(token, out userId);
+
+                return userId;
+            }
 
             return encryptId.ToInt32();
         }
@@ -77,8 +85,9 @@ namespace Guoli.Admin.Models
                 var token = ctx.Request["token"];
                 if (!string.IsNullOrEmpty(token))
                 {
+                    int userId;
                     // 验证跨域请求token是否合法
-                    return IsTokenLegal(token);
+                    return IsTokenLegal(token, out userId);
                 }
                 else
                 {
@@ -107,13 +116,15 @@ namespace Guoli.Admin.Models
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static bool IsTokenLegal(string token)
+        public static bool IsTokenLegal(string token, out int userId)
         {
+            userId = 0;
+
             var pattern = @"^(\d+):(\d+)$";
             var match = Regex.Match(token, pattern);
             if (match.Success)
             {
-                var userId = Convert.ToInt32(match.Groups[1].Value);
+                userId = Convert.ToInt32(match.Groups[1].Value);
                 var timestamp = Convert.ToInt64(match.Groups[2].Value);
                 var expires = LoginExpireDays * 24 * 3600 * 1000;
                 if (DateTime.Now.Timestamp() - timestamp <= expires)

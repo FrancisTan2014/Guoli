@@ -166,6 +166,7 @@
     <Compile Include="Controllers\LineController.cs" />
     <Compile Include="Controllers\PeopleController.cs" />
     <Compile Include="Controllers\PlannerController.cs" />
+    <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Filters\AppSignatureFilter.cs" />
     <Compile Include="Filters\Authority.cs" />
     <Compile Include="Filters\AuthorityFilter.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Utilities\DataUpdateLog.cs" />
     <Compile Include="Utilities\DataUpdateType.cs" />
     <Compile Include="Utilities\NpoiHelper.cs" />
+    <Compile Include="Utilities\OperateLogBllExt.cs" />
     <Compile Include="Utilities\RequestHelper.cs" />
     <Compile Include="Utilities\SearchHelper.cs" />
     <Compile Include="Utilities\SessionNames.cs" />
