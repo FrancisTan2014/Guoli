@@ -127,6 +127,8 @@
     <Compile Include="Partital\ViewPersonInfoDal.cs" />
     <Compile Include="Partital\ViewSignPointDal.cs" />
     <Compile Include="Partital\ViewStationDal.cs" />
+    <Compile Include="Partital\ViewTraficFilesDal.cs" />
+    <Compile Include="Partital\ViewTraficFileTypeDal.cs" />
     <Compile Include="Partital\ViewTrainMomentDal.cs" />
     <Compile Include="Partital\ViewTrainNoLIneBll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

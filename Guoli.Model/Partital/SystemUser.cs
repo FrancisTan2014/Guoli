@@ -23,74 +23,92 @@ namespace Guoli.Model
 	[Serializable]
 	public partial class SystemUser
 	{
-		public SystemUser()
-		{}
-		#region Model
-		private int _id;
-		private string _account;
-		private string _password;
-		private string _name;
-		private DateTime _createtime;
-		private int _creatorid;
-		private bool _isdelete;
-		/// <summary>
-		/// 主键
-		/// </summary>
-		public int Id
-		{
-			set{ _id=value;}
-			get{return _id;}
-		}
-		/// <summary>
-		/// 账号
-		/// </summary>
-		public string Account
-		{
-			set{ _account=value;}
-			get{return _account;}
-		}
-		/// <summary>
-		/// 密码
-		/// </summary>
-		public string Password
-		{
-			set{ _password=value;}
-			get{return _password;}
-		}
-		/// <summary>
-		/// 姓名
-		/// </summary>
-		public string Name
-		{
-			set{ _name=value;}
-			get{return _name;}
-		}
-		/// <summary>
-		/// 创建时间
-		/// </summary>
-		public DateTime CreateTime
-		{
-			set{ _createtime=value;}
-			get{return _createtime;}
-		}
-		/// <summary>
-		/// 创建者
-		/// </summary>
-		public int CreatorId
-		{
-			set{ _creatorid=value;}
-			get{return _creatorid;}
-		}
-		/// <summary>
-		/// 删除标识
-		/// </summary>
-		public bool IsDelete
-		{
-			set{ _isdelete=value;}
-			get{return _isdelete;}
-		}
-		#endregion Model
+        public SystemUser()
+        { }
+        #region Model
+        private int _id;
+        private string _account;
+        private string _password;
+        private string _name;
+        private int _departmentid = 0;
+        private string _departmentname = "";
+        private DateTime _createtime;
+        private int _creatorid;
+        private bool _isdelete;
+        /// <summary>
+        /// 主键
+        /// </summary>
+        public int Id
+        {
+            set { _id = value; }
+            get { return _id; }
+        }
+        /// <summary>
+        /// 账号
+        /// </summary>
+        public string Account
+        {
+            set { _account = value; }
+            get { return _account; }
+        }
+        /// <summary>
+        /// 密码
+        /// </summary>
+        public string Password
+        {
+            set { _password = value; }
+            get { return _password; }
+        }
+        /// <summary>
+        /// 姓名
+        /// </summary>
+        public string Name
+        {
+            set { _name = value; }
+            get { return _name; }
+        }
+        /// <summary>
+        /// 部门Id
+        /// </summary>
+        public int DepartmentId
+        {
+            set { _departmentid = value; }
+            get { return _departmentid; }
+        }
+        /// <summary>
+        /// 部门名称
+        /// </summary>
+        public string DepartmentName
+        {
+            set { _departmentname = value; }
+            get { return _departmentname; }
+        }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime
+        {
+            set { _createtime = value; }
+            get { return _createtime; }
+        }
+        /// <summary>
+        /// 创建者
+        /// </summary>
+        public int CreatorId
+        {
+            set { _creatorid = value; }
+            get { return _creatorid; }
+        }
+        /// <summary>
+        /// 删除标识
+        /// </summary>
+        public bool IsDelete
+        {
+            set { _isdelete = value; }
+            get { return _isdelete; }
+        }
+        #endregion Model
 
-	}
+    }
 }
 

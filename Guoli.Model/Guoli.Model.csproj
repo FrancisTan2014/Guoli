@@ -113,6 +113,8 @@
     <Compile Include="Partital\ViewPersonInfo.cs" />
     <Compile Include="Partital\ViewSignPoint.cs" />
     <Compile Include="Partital\ViewStation.cs" />
+    <Compile Include="Partital\ViewTraficFiles.cs" />
+    <Compile Include="Partital\ViewTraficFileType.cs" />
     <Compile Include="Partital\ViewTrainMoment.cs" />
     <Compile Include="Partital\ViewTrainNoLIne.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

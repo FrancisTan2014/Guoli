@@ -123,6 +123,8 @@
     <Compile Include="Partital\ViewPersonInfoBll.cs" />
     <Compile Include="Partital\ViewSignPointBll.cs" />
     <Compile Include="Partital\ViewStationBll.cs" />
+    <Compile Include="Partital\ViewTraficFilesBll.cs" />
+    <Compile Include="Partital\ViewTraficFileTypeBll.cs" />
     <Compile Include="Partital\ViewTrainMomentBll.cs" />
     <Compile Include="Partital\ViewTrainNoLIneBll.cs" />
     <Compile Include="PersonInfoBll.cs" />
