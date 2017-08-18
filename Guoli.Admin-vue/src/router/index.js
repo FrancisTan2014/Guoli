@@ -8,6 +8,7 @@ import Login from '@/views/Login'
 
 // 部门人员
 import ViewDepartInfo from '@/views/personnel/ViewDepartInfo'
+import Posts from '@/views/personnel/Posts'
 
 // 指导司机
 import Take from '@/views/instructor/Take'
@@ -53,7 +54,8 @@ export default new Router({
       desc: '部门人员',
       component: Home,
       children: [
-        { path: '/depart', name: 'depart', desc: '部门管理', component: ViewDepartInfo }
+        { path: '/depart', name: 'depart', desc: '部门管理', component: ViewDepartInfo },
+        { path: '/post', name: 'post', desc: '职务管理', component: Posts },
       ]
     },
     {

@@ -117,7 +117,8 @@ export default {
           index: '1',
           title: '部门人员',
           subs: [
-            { index: 'depart', title: '部门管理' }
+            { index: 'depart', title: '部门管理' },
+            { index: 'post', title: '职务管理' },
           ]
         },
         {

@@ -212,7 +212,35 @@ namespace Guoli.Admin.Controllers
             }
 
             return Json(ErrorModel.OperateFailed);
-        } 
+        }
+        #endregion
+
+        #region 职务管理
+
+        [HttpPost]
+        public JsonResult AddOrUpdatePost(Posts model)
+        {
+            if (model != null)
+            {
+                var bll = new PostsBll();
+                if (bll.Exists($"PostName='{model.PostName}' AND IsDelete=0"))
+                {
+                    return Json(ErrorModel.ExistSameItem);
+                }
+
+                var isUpdate = model.Id > 0;
+                var updateType = isUpdate ? DataUpdateType.Update : DataUpdateType.Insert;
+                var success = bll.ExecuteTransation(
+                    () => isUpdate ? bll.Update(model) : bll.Insert(model).Id > 0,
+                    () => DataUpdateLog.SingleUpdate(nameof(Posts), model.Id, updateType)
+                );
+
+                return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+            }
+
+            return Json(ErrorModel.InputError);
+        }
+
         #endregion
     }
 }
