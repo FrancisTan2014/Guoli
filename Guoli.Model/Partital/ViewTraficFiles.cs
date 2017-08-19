@@ -23,6 +23,8 @@ namespace Guoli.Model
         private long _filesize;
         private int _id;
         private bool _isdelete;
+        private int _typeid;
+        private string _typename;
         private string _departmentname;
         private string _creatorname;
         /// <summary>
@@ -96,6 +98,22 @@ namespace Guoli.Model
         {
             set { _isdelete = value; }
             get { return _isdelete; }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int TypeId
+        {
+            set { _typeid = value; }
+            get { return _typeid; }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string TypeName
+        {
+            set { _typename = value; }
+            get { return _typename; }
         }
         /// <summary>
         /// 

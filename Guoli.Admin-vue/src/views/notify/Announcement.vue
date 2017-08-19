@@ -179,6 +179,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     },
 
     reset: function (done) {

@@ -64,8 +64,7 @@
     </el-col>
 
     <!-- 添加考试通知弹窗 -->
-    <el-dialog :title="editFormModel.Id > 0 ? '修改考试通知' : '发布考试通知'" :visible="notifyDialogVisible"
-      :before-close="() => {notifyDialogVisible=false}">
+    <el-dialog :title="editFormModel.Id > 0 ? '修改考试通知' : '发布考试通知'" :visible="notifyDialogVisible" :before-close="() => {notifyDialogVisible=false}">
 
       <el-form ref="editForm" :model="editFormModel" label-width="120px" :rules="editFormRules" @submit.native.prevent="handleAddFile">
 
@@ -232,6 +231,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     },
 
     // 加载考试题库，作为考试题库中的级联选择器的数据源

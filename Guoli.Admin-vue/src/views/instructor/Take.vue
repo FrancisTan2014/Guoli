@@ -161,6 +161,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     },
 
     detailPreview: function (index, row) {

@@ -8,7 +8,7 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="conditions" @submit.native.prevent="load">
-                
+
 
                 <el-form-item>
                             <el-input v-model="conditions.FullName.value" placeholder="车次"></el-input>
@@ -41,27 +41,27 @@
             <el-table-column prop="DriverName"
                                 label="司机"
                                 :formatter="DriverNameFormatter"
-                                
+
                                 ></el-table-column>
             <el-table-column prop="ViceDriverName"
                                 label="副司机"
                                 :formatter="ViceDriverNameFormatter"
-                                
+
                                 ></el-table-column>
             <el-table-column prop="FullName"
                                 label="车次"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="LineName"
                                 label="运行线路"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="LocomotiveType"
                                 label="机车型号"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="AttendTime"
                                 label="出勤时间"
@@ -81,7 +81,7 @@
 
             <el-table-column label="操作" min-width="120">
                 <template scope="scope">
-                    
+
                 </template>
             </el-table-column>
 
@@ -100,14 +100,14 @@
         </el-col>
 
         <!-- 弹窗 -->
-        
+
 
     </section>
 </template>
 <script>
-    
+
     import moment from 'moment';
-    
+
     import server from '@/store/server';
     import { timepickerOptions } from '@/utils';
 
@@ -181,6 +181,7 @@ return d.format('YYYY-MM-DD HH:mm'); },
 
             handlePageChange: function (page) {
                 this.page = page;
+                this.load();
             }
         },
 

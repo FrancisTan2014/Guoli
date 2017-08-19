@@ -540,5 +540,20 @@ namespace Guoli.Dal
 
             return sql;
         }
+
+        /// <summary>
+        /// 执行指定的sql命令，并返回受影响行数
+        /// </summary>
+        /// <param name="sql">待执行的sql命令</param>
+        /// <returns>受影响行数</returns>
+        public int ExecuteSql(string sql)
+        {
+            if (string.IsNullOrEmpty(sql))
+            {
+                throw new ArgumentNullException(nameof(sql));
+            }
+
+            return DbHelper.ExecuteNonQuery(ConnectionString, CommandType.Text, sql);
+        }
     }
 }

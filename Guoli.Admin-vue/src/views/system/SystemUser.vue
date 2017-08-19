@@ -221,6 +221,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     },
 
     accountChange: function (value) {

@@ -61,8 +61,7 @@
     </el-col>
 
     <!-- 添加题库弹窗 -->
-    <el-dialog title="添加题库" :visible="addDialogVisible"
-      :before-close="() => {addDialogVisible=false}">
+    <el-dialog title="添加题库" :visible="addDialogVisible" :before-close="() => {addDialogVisible=false}">
 
       <el-form ref="addForm" :model="addFormModel" label-width="120px" :rules="addFormRules" @submit.native.prevent="handleAddFile">
 
@@ -101,8 +100,7 @@
     </el-dialog>
 
     <!-- 添加分类弹窗 -->
-    <el-dialog title="添加分类" :visible="typeDialogVisible"
-      :before-close="() => {typeDialogVisible=false}">
+    <el-dialog title="添加分类" :visible="typeDialogVisible" :before-close="() => {typeDialogVisible=false}">
 
       <el-form ref="typeForm" :model="typeFormModel" label-width="120px" :rules="typeFormRules">
         <el-form-item label="分类名称：" prop="TypeName">
@@ -206,6 +204,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     },
 
     handleDownloadUrl: function (path) {

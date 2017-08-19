@@ -8,7 +8,7 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="conditions" @submit.native.prevent="load">
-                
+
 
                 <el-form-item>
                             <el-input v-model="conditions.Name.value" placeholder="指导司机"></el-input>
@@ -34,33 +34,33 @@
 
             <el-table-column prop="Name"
                                 label="指导司机"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="DepartmentName"
                                 label="所属单位"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="DriverName"
                                 label="责任司机"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="GoodJobType"
                                 label="性质"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="GeneralSituation"
                                 label="概况"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="WriteDate"
                                 label="登记时间"
                                 :formatter="WriteDateFormatter"
-                                
+
                                 ></el-table-column>
 
 
@@ -79,14 +79,14 @@
         </el-col>
 
         <!-- 弹窗 -->
-        
+
 
     </section>
 </template>
 <script>
-    
+
     import moment from 'moment';
-    
+
     import server from '@/store/server';
     import { timepickerOptions } from '@/utils';
 
@@ -144,6 +144,7 @@ return d.format('YYYY-MM-DD'); },
 
             handlePageChange: function (page) {
                 this.page = page;
+                this.load();
             }
         },
 

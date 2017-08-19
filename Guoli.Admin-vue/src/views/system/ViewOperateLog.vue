@@ -10,12 +10,12 @@
       <el-form :inline="true" :model="conditions" @submit.native.prevent="load">
 
         <el-form-item>
-          <el-select v-model="conditions.TargetTable.value" placeholder="日志类别">
+          <el-select v-model="conditions.TargetTable.value" placeholder="日志类别" clearable>
             <el-option v-for="item in TargetTableSelectData" :key="item.key" :label="item.key" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-select v-model="conditions.OperateType.value" placeholder="操作类型">
+          <el-select v-model="conditions.OperateType.value" placeholder="操作类型" clearable>
             <el-option v-for="item in OperateTypeSelectData" :key="item.key" :label="item.key" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
@@ -41,11 +41,11 @@
 
       <el-table-column type="index" width="80" label="序号"></el-table-column>
 
+      <el-table-column prop="Name" label="操作人"></el-table-column>
+      <el-table-column prop="Account" label="登录账户"></el-table-column>
       <el-table-column prop="LogContent" label="操作日志" min-width="250"></el-table-column>
       <el-table-column prop="OperateType" label="操作类型" :formatter="OperateTypeFormatter"></el-table-column>
       <el-table-column prop="TargetTable" label="日志分类" :formatter="TargetTableFormatter"></el-table-column>
-      <el-table-column prop="Name" label="操作人"></el-table-column>
-      <el-table-column prop="Account" label="登录账户"></el-table-column>
       <el-table-column prop="DepartmentName" label="所属部门"></el-table-column>
       <el-table-column prop="OperateTime" label="操作时间" :formatter="OperateTimeFormatter"></el-table-column>
 
@@ -135,6 +135,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     }
   },
 

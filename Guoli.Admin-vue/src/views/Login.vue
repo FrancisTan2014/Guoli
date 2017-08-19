@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="loginUser" :rules="validator" ref="loginUser" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+  <el-form :model="loginUser" :rules="validator" ref="loginUser" label-position="left" label-width="0px" class="demo-ruleForm login-container" @submit.native.prevent="login">
     <h3 class="title">系统登录</h3>
     <el-form-item prop="Account">
       <el-input type="text" v-model="loginUser.Account" auto-complete="off" placeholder="账号"></el-input>
@@ -63,7 +63,9 @@
                   type: 'error'
                 });
               } else {
-                local.setItem('token', data);
+                let { token, user } = data;
+                local.setItem('token', token);
+                local.setItem('user', user);
 
                 let _this = this;
                 _this.$notify({

@@ -49,19 +49,29 @@ namespace Guoli.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult PersonEdit()
+        public JsonResult PersonEdit(PersonInfo person)
         {
-            var json = Request["model"];
-            var person = JsonHelper.Deserialize<PersonInfo>(json);
-
             if (person == null)
             {
                 return Json(ErrorModel.InputError);
             }
-            
-            var dbUpdateType = person.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
 
             var personBll = new PersonInfoBll();
+            // 验证工号重复性
+            var condition = person.Id > 0
+                ? $"WorkNo='{person.WorkNo}' AND Id<>{person.Id} AND IsDelete=0"
+                : $"WorkNo='{person.WorkNo}' AND IsDelete=0";
+            if (personBll.Exists(condition))
+            {
+                return Json(ErrorModel.ExistSameItem);
+            }
+
+            // 获取姓名的简拼
+            person.Spell = PinyinHelper.GetInitials(person.Name).ToLower();
+            person.UpdateTime = DateTime.Now;
+
+            var dbUpdateType = person.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
+
             var success = false;
             if (person.Id > 0)
             {

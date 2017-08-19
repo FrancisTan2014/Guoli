@@ -100,14 +100,14 @@ let timepickerOptions = {
 
 // 处理由C#后台传过来的时间
 let convertCSharpTime = csharpTime => {
-    let time = csharpTime || '';
-    let timestamp = /\/Date\((\d+)\)\//.exec(time);
-    if (timestamp != null) {
-      return new Date(timestamp[1] - 0);
-    }
-
-    return null;
+  let time = csharpTime || '';
+  let timestamp = /\/Date\((\d+)\)\//.exec(time);
+  if (timestamp != null) {
+    return new Date(timestamp[1] - 0);
   }
+
+  return null;
+};
 
 export {
   rules,

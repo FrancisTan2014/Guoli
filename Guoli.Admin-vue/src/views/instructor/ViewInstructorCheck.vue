@@ -8,7 +8,7 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="conditions" @submit.native.prevent="load">
-                
+
 
                 <el-form-item>
                             <el-input v-model="conditions.Name.value" placeholder="指导司机"></el-input>
@@ -44,27 +44,27 @@
 
             <el-table-column prop="Name"
                                 label="指导司机"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="DepartmentName"
                                 label="所属单位"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="Location"
                                 label="抽查地点"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="CheckType"
                                 label="抽查类型"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="ProblemCount"
                                 label="发现问题个数"
-                                
+
                                 sortable
                                 ></el-table-column>
             <el-table-column prop="StartTime"
@@ -89,14 +89,14 @@
         </el-col>
 
         <!-- 弹窗 -->
-        
+
 
     </section>
 </template>
 <script>
-    
+
     import moment from 'moment';
-    
+
     import server from '@/store/server';
     import { timepickerOptions } from '@/utils';
 
@@ -153,6 +153,7 @@
 
             handlePageChange: function (page) {
                 this.page = page;
+                this.load();
             }
         },
 

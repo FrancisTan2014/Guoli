@@ -34,6 +34,7 @@ namespace Guoli.Model
         private string _departmentname = "";
         private DateTime _createtime = DateTime.Now;
         private int _creatorid;
+        private bool _issuper;
         private bool _isdelete;
         /// <summary>
         /// 主键
@@ -98,6 +99,14 @@ namespace Guoli.Model
         {
             set { _creatorid = value; }
             get { return _creatorid; }
+        }
+        /// <summary>
+        /// 是否超级管理员
+        /// </summary>
+        public bool IsSuper
+        {
+            set { _issuper = value; }
+            get { return _issuper; }
         }
         /// <summary>
         /// 删除标识

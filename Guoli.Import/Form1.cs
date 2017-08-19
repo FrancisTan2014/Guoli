@@ -55,8 +55,14 @@ namespace Guoli.Import
         /// </summary>
         private void btnAdmin_Click(object sender, EventArgs e)
         {
-            var admin = new SystemUser { Account = "admin", CreateTime = DateTime.Now, CreatorId = 0, Name = "Administrator", Password = "123456".GetMd5() };
+            var admin = new SystemUser { Account = "admin", CreateTime = DateTime.Now, CreatorId = 0, IsSuper = true, Name = "Administrator", Password = "123456".GetMd5() };
             var bll = new SystemUserBll();
+            if (bll.Exists("Account='admin' OR IsSuper=1"))
+            {
+                MessageBox.Show("管理员账号已存在(:=");
+                return;
+            }
+
             var success = bll.Insert(admin).Id > 0;
             if (success)
             {

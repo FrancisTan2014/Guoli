@@ -32,11 +32,13 @@ namespace Guoli.Admin.Controllers
         public JsonResult AddFiles()
         {
             var typeId = Request["typeId"].ToInt32();
-            if (typeId == 0)
+            var departId = Request["depart"].ToInt32();
+            if (typeId == 0 || departId == 0)
             {
                 return Json(new { msg = ErrorModel.InputError });
             }
 
+            // 将文件保存到本地
             var uploadRes = UploadHelper.FileUpload();
             var filePathInfo = uploadRes as FilePathInfo;
             if (filePathInfo == null)
@@ -53,21 +55,32 @@ namespace Guoli.Admin.Controllers
                 return Json(ErrorModel.FileExists);
             }
 
+            var loginUser = LoginStatus.GetLoginId();
             var fileModel = new TraficFiles
             {
                 FileExtension = filePathInfo.FileExtension,
                 FileName = filePathInfo.OriginalFileName,
                 FilePath = filePathInfo.FileRelativePath,
                 FileSize = filePathInfo.FileSize,
-                TypeId = typeId
+                TypeId = typeId,
+                CreatorId = loginUser,
+                DepartmentId = departId
             };
 
-            fileBll.Insert(fileModel);
+            var logBll = new OperateLogBll();
+            var dirBll = new TraficFileTypeBll();
+            var dir = dirBll.QuerySingle(typeId);
+            var log = $"在目录[{dir.TypeName}]下添加了文件《{filePathInfo.OriginalFileName}》";
 
-            if (fileModel.Id > 0)
+            // 执行插入操作、数据库更新日志插入操作以及后台操作日志插入操作
+            var success = fileBll.ExecuteTransation(
+                () => fileBll.Insert(fileModel).Id > 0,
+                () => DataUpdateLog.SingleUpdate(nameof(TraficFiles), fileModel.Id, DataUpdateType.Insert),
+                () => logBll.Add(nameof(TraficFiles), fileModel.Id, DataUpdateType.Insert, loginUser, log)
+            );
+
+            if (success)
             {
-                DataUpdateLog.SingleUpdate(typeof(TraficFiles).Name, fileModel.Id, DataUpdateType.Insert);
-
                 if (filePathInfo.FileExtension.ToLower() == ".zip")
                 {
                     SearchHelper.AddSearchTask(1, fileModel.Id);
@@ -106,7 +119,6 @@ namespace Guoli.Admin.Controllers
         [HttpPost]
         public JsonResult AddDirectory(string directory)
         {
-            //var json = Request["directory"];
             var model = JsonHelper.Deserialize<TraficFileType>(directory);
 
             if (model == null)
@@ -116,22 +128,35 @@ namespace Guoli.Admin.Controllers
 
             var dirBll = new TraficFileTypeBll();
             // 验证目录是否重名
-            var condition = $"ParentId={model.ParentId} AND TypeName='{model.TypeName}'";
+            var condition = $"ParentId={model.ParentId} AND TypeName='{model.TypeName}' AND IsDelete=0";
             if (dirBll.Exists(condition))
             {
                 return Json(ErrorModel.DirectoryExists);
             }
 
-            dirBll.Insert(model);
-
+            // 准备数据库操作事务
+            var updateType = model.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
+            var log = $"添加了目录[{model.TypeName}]";
+            Func<bool> doAddOrUpdate = () => dirBll.Insert(model).Id > 0;
             if (model.Id > 0)
             {
-                DataUpdateLog.SingleUpdate(typeof(TraficFileType).Name, model.Id, DataUpdateType.Insert);
-
-                return Json(ErrorModel.AddDataSuccess(model.Id));
+                var viewDirBll = new ViewTraficFileTypeBll();
+                var origin = viewDirBll.QuerySingle(model.Id);
+                var newDepartName = new DepartInfoBll().QuerySingle(model.DepartmentId, new[] { nameof(DepartInfo.DepartmentName) }).DepartmentName;
+                log = $"将目录由[{origin.TypeName}-{origin.DepartmentName}-{(origin.IsPublic ? "公共文件夹" : "私有文件夹")}]更新为[{model.TypeName}-{newDepartName}-{(model.IsPublic ? "公共文件夹" : "私有文件夹")}]";
+                doAddOrUpdate = () => dirBll.Update(model);
             }
 
-            return Json(ErrorModel.OperateFailed);
+            // 执行事务
+            var loginUser = LoginStatus.GetLoginId();
+            var logBll = new OperateLogBll();
+            var success = dirBll.ExecuteTransation(
+                doAddOrUpdate,
+                () => DataUpdateLog.SingleUpdate(nameof(TraficFileType), model.Id, updateType),
+                () => logBll.Add(nameof(TraficFileType), model.Id, updateType, loginUser, log)
+            );
+
+            return Json(success ? ErrorModel.AddDataSuccess(model.Id) : ErrorModel.OperateFailed);
         }
 
         [HttpPost]
@@ -163,10 +188,10 @@ namespace Guoli.Admin.Controllers
         [HttpPost]
         public JsonResult GetDirecAndFiles()
         {
-            var directoryBll = new TraficFileTypeBll();
-            var directories = directoryBll.QueryAll();
+            var directoryBll = new ViewTraficFileTypeBll();
+            var directories = directoryBll.QueryList("IsDelete=0");
 
-            var fileBll = new TraficFilesBll();
+            var fileBll = new ViewTraficFilesBll();
             var files = fileBll.QueryList("IsDelete=0");
 
             return Json(ErrorModel.GetDataSuccess(new
@@ -247,12 +272,12 @@ namespace Guoli.Admin.Controllers
             }
 
             var resultBll = new TraficSearchResultBll();
-            var list = resultBll.QueryList(condition, new[] {"Id"}).ToList();
+            var list = resultBll.QueryList(condition, new[] { "Id" }).ToList();
             if (list.Any())
             {
                 var idList = list.Select(item => item.Id);
-                var tableName = typeof (TraficSearchResult).Name;
-                
+                var tableName = typeof(TraficSearchResult).Name;
+
                 resultBll.ExecuteTransation(
                     () => resultBll.Delete(condition),
                     () =>
@@ -261,7 +286,7 @@ namespace Guoli.Admin.Controllers
                         return true;
                     });
             }
-            
+
         }
 
         //===========================================================
@@ -278,29 +303,21 @@ namespace Guoli.Admin.Controllers
         /// </param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult Rename(int id, string name, int type)
+        public JsonResult Rename(int id, string name)
         {
-            bool success = false;
+            var viewFileBll = new ViewTraficFilesBll();
+            var fileBll = new TraficFilesBll();
+            var logBll = new OperateLogBll();
 
-            if (type == 1)
-            {
-                var folderBll = new TraficFileTypeBll();
-                success = folderBll.Update(new TraficFileType { Id = id, TypeName = name }, new string[] { nameof(TraficFileType.TypeName) });
-            }
-            else if (type == 2)
-            {
-                var fileBll = new TraficFilesBll();
-                success = fileBll.Update(new TraficFiles { Id = id, FileName = name }, new string[] { nameof(TraficFiles.FileName) });
-            }
+            var origin = viewFileBll.QuerySingle(id);
+            var log = $"将目录[{origin.TypeName}]下的文件[{origin.FileName}]重命名为[{name}]";
+            var success = fileBll.ExecuteTransation(
+                () => fileBll.Update(new TraficFiles { Id = id, FileName = name }, new string[] { nameof(TraficFiles.FileName) }),
+                () => DataUpdateLog.SingleUpdate(nameof(TraficFiles), id, DataUpdateType.Update),
+                () => logBll.Add(nameof(TraficFiles), id, DataUpdateType.Update, LoginStatus.GetLoginId(), log)
+            );
 
-            if (success)
-            {
-                var table = type == 1 ? nameof(TraficFileType) : nameof(TraficFiles);
-                DataUpdateLog.SingleUpdate(table, id, DataUpdateType.Update);
-                return Json(ErrorModel.OperateSuccess);
-            }
-
-            return Json(ErrorModel.OperateFailed);
+            return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
         }
 
         /// <summary>
@@ -319,23 +336,116 @@ namespace Guoli.Admin.Controllers
 
             if (type == 1)
             {
-                var folderBll = new TraficFileTypeBll();
-                success = folderBll.Delete(id);
+                success = DeleteDirectoryAndChildren(id);
             }
             else if (type == 2)
             {
-                var fileBll = new TraficFilesBll();
-                success = fileBll.DeleteSoftly(id);
+                var fileBll = new ViewTraficFilesBll();
+                var file = fileBll.QuerySingle(id);
+                if (file == null)
+                {
+                    success = false;
+                }
+                else
+                {
+                    var log = $"删除了目录[{file.TypeName}]下的文件《{file.FileName}》";
+                    var logBll = new OperateLogBll();
+                    success = fileBll.ExecuteTransation(
+                        () => fileBll.DeleteSoftly(id),
+                        () => DataUpdateLog.SingleUpdate(nameof(TraficFiles), id, DataUpdateType.Delete),
+                        () => logBll.Add(nameof(TraficFiles), id, DataUpdateType.Delete, LoginStatus.GetLoginId(), log)
+                    );
+                }
             }
 
             if (success)
             {
-                var table = type == 1 ? nameof(TraficFileType) : nameof(TraficFiles);
-                DataUpdateLog.SingleUpdate(table, id, DataUpdateType.Delete);
                 return Json(ErrorModel.OperateSuccess);
             }
 
             return Json(ErrorModel.OperateFailed);
+        }
+
+        /// <summary>
+        /// 删除目录，将在事务环境中执行以下操作
+        ///  1. 删除此目录及所有子目录
+        ///  2. 删除此目录及所有子目录下的文件
+        ///  3. 删除此与此目录下所有文件关联的关键字搜索结果数据
+        ///  4. 将操作同步到DbUpdateLog表中
+        ///  5. 将操作日志记录到OperateLog表中
+        /// </summary>
+        /// <param name="id">待删除的目录Id</param>
+        /// <returns></returns>
+        private bool DeleteDirectoryAndChildren(int id)
+        {
+            var dirBll = new TraficFileTypeBll();
+            var dirList = dirBll.QueryList("IsDelete=0", new[] { nameof(TraficFileType.Id), nameof(TraficFileType.ParentId), nameof(TraficFileType.TypeName) }).ToList();
+            var deleteDir = dirList.Find(dir => dir.Id == id);
+            if (deleteDir == null)
+            {
+                return false;
+            }
+
+            var fileBll = new TraficFilesBll();
+            var fileList = fileBll.QueryList("IsDelete=0", new[] { nameof(TraficFiles.Id), nameof(TraficFiles.TypeId) }).ToList();
+
+            // 所有待删除的目录Id
+            var dirDeleteIdList = new List<int> { id };
+            FindChildDirIds(dirList, id, dirDeleteIdList);
+
+            // 所有待删除的文件Id
+            var fileDeleteIdList = fileList.Where(file => dirDeleteIdList.Contains(file.TypeId)).Select(file => file.Id).ToList();
+
+            // 所有待删除的搜索结果Id
+            var searchBll = new TraficSearchResultBll();
+            var searchSql = $"TraficFileId IN({string.Join(",", fileDeleteIdList.Count == 0 ? new List<int> { 0 } : fileDeleteIdList)})"; // 不能让sql语句中IN()中的字符串为空
+            var searchIdList = searchBll.QueryList(searchSql, new[] { nameof(TraficSearchResult.Id) })
+                .Select(item => item.Id).ToList();
+
+            // 操作日志
+            var log = $"删除了目录[{deleteDir.TypeName}]及其所有的子目录和子文件";
+
+            // 准备sql语句
+            var dirDeleteSql = $"UPDATE TraficFileType SET IsDelete=1 WHERE Id IN({string.Join(",", dirDeleteIdList)})";
+            var fileDeleteSql = $"UPDATE TraficFiles SET IsDelete=1 WHERE Id IN({string.Join(",", fileDeleteIdList)})";
+            var searchDeleteSql = $"DELETE FROM TraficSearchResult WHERE TraficFileId IN({string.Join(",", fileDeleteIdList)})";
+
+            // 准备执行委托
+            var logBll = new OperateLogBll();
+            var loginUser = LoginStatus.GetLoginId();
+            Func<bool> deleteDirs = () => dirBll.ExecuteSql(dirDeleteSql) == dirDeleteIdList.Count;
+            Func<bool> deleteFiles = () => fileDeleteIdList.Count == 0 ? true : fileBll.ExecuteSql(fileDeleteSql) == fileDeleteIdList.Count;
+            Func<bool> deleleSearch = () => searchIdList.Count == 0 ? true : searchBll.ExecuteSql(searchDeleteSql) == searchIdList.Count;
+            Func<bool> insertDirUpdateLog = () => { DataUpdateLog.BulkUpdate(nameof(TraficFileType), dirDeleteIdList, DataUpdateType.Delete); return true; };
+            Func<bool> insertFileUpdateLog = () => { DataUpdateLog.BulkUpdate(nameof(TraficFiles), fileDeleteIdList, DataUpdateType.Delete); return true; };
+            Func<bool> insertSearchUpdateLog = () => { DataUpdateLog.BulkUpdate(nameof(TraficSearchResult), searchIdList, DataUpdateType.Delete); return true; };
+            Func<bool> insertOperateLog = () => logBll.Add(nameof(TraficFileType), id, DataUpdateType.Delete, loginUser, log);
+
+            // 执行事务
+            var success = dirBll.ExecuteTransation(
+                deleteDirs,
+                deleteFiles,
+                deleleSearch,
+                insertDirUpdateLog,
+                insertFileUpdateLog,
+                insertSearchUpdateLog,
+                insertOperateLog
+            );
+
+            return success;
+        }
+
+        private void FindChildDirIds(List<TraficFileType> dirList, int parent, List<int> result)
+        {
+            var children = dirList.Where(item => item.ParentId == parent).ToList();
+            if (children.Count > 0)
+            {
+                children.ForEach(item =>
+                {
+                    result.Add(item.Id);
+                    FindChildDirIds(dirList, item.Id, result);
+                });
+            }
         }
     }
 }

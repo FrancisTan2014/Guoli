@@ -58,8 +58,10 @@ namespace Guoli.Admin.Controllers
                 //====================================
                 //2017-08-04 为使用vue做的后台生成token
                 var token = $"{userId}:{DateTime.Now.Timestamp()}";
-
-                return Json(ErrorModel.LoginSuccess(token));
+                var user = systemUserBll.QuerySingle(userId);
+                user.Password = "";
+                
+                return Json(ErrorModel.LoginSuccess(new { token, user }));
             }
 
             return Json(ErrorModel.InputError);

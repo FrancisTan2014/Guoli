@@ -50,7 +50,9 @@
     </el-col>
 
     <!-- 弹窗 -->
-    <el-dialog title="添加部门" :visible="editFormVisible" :before-close="() => editFormVisible = false">
+    <el-dialog :title="editFormModel.Id > 0 ? '修改部门名称' : '添加部门'" :visible="editFormVisible" :before-close="() => editFormVisible = false">
+
+      <el-alert title="关于选择上级部门的操作问题" type="info" description="当您看到输入框已经出现文字，表明您已经选择成功了。如：鼠标滑过集宁机务段，则集宁机务段已经选择成功了，这时您如果不想再选择集宁机务段下面的车间，则只需要鼠标点击空白区域，即可进行其他操作。" show-icon style="margin-bottom: 30px;"></el-alert>
 
       <el-form ref="editForm" :model="editFormModel" :rules="editFormRules" label-width="120px">
 
@@ -178,6 +180,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     },
 
     findParents: function (array, id, result) {

@@ -19,7 +19,6 @@ namespace Guoli.Admin.Utilities
         {
             var userBll = new SystemUserBll();
             var user = userBll.QuerySingle(systemUserId);
-            log = $"[姓名：{user.Name}][账号：{user.Account}] {log}";
 
             var model = new OperateLog
             {

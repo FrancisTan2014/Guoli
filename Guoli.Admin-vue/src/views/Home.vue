@@ -10,8 +10,7 @@
       <el-col :span="4" class="userinfo">
         <el-dropdown trigger="click">
           <span class="el-dropdown-link userinfo-inner">
-            <img :src="sysUserPhoto" v-if="!!sysUserPhoto" />
-            <img src="../assets/logo.png" v-if="!sysUserPhoto" /> {{sysUserName || '管理员'}}</span>
+            <img src="../assets/logo.png" /> {{ user.Name }}</span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -34,8 +33,8 @@
             <template v-if="item.subs">
 
               <el-submenu :index="item.index">
-                  <template slot="title">
-                        <i :class="item.icon"></i>{{ item.title }}</template>
+                <template slot="title">
+                  <i :class="item.icon"></i>{{ item.title }}</template>
 
                 <!-- 三级菜单 -->
                 <template v-for="(child, i) in item.subs">
@@ -108,17 +107,17 @@ export default {
     return {
       // isSuperAdminLogin: store.isSuperAdminLogin(),
 
-      sysUserPhoto: '',
-      sysUserName: '',
+      user: {},
 
       menus: [
         {
           icon: 'el-icon-menu',
           index: '1',
-          title: '部门人员',
+          title: '人员管理',
           subs: [
             { index: 'depart', title: '部门管理' },
             { index: 'post', title: '职务管理' },
+            { index: 'staff', title: '员工管理' },
           ]
         },
         {
@@ -205,7 +204,7 @@ export default {
       this.$confirm('确认退出吗？', '提示', {
         // type: 'warning'
       }).then(() => {
-        local.removeItem('token');
+        local.logout();
         this.$router.push('/login');
       });
     },
@@ -219,14 +218,10 @@ export default {
   },
 
   mounted() {
-    // let user = store.getLoginUser();
-    // if (user && user.Id > 0) {
-    //   let account = store.getLoginAccount();
-    //   this.sysUserName = user.Name || account;
-    //   if (!!user.HeadPortraitPath) {
-    //     this.sysUserPhoto = config.fileServer + user.HeadPortraitPath;
-    //   }
-    // }
+    this.user = local.getItem('user');
+    if (!this.user) {
+      this.$router.push({ name: 'login', params: { back: this.$route.path }});
+    }
   } // end mounted
 };
 </script>

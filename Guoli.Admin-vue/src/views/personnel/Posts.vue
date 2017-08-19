@@ -132,6 +132,7 @@ export default {
 
     handlePageChange: function (page) {
       this.page = page;
+      this.load();
     },
 
     showAddForm: function () {

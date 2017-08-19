@@ -8,7 +8,7 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="conditions" @submit.native.prevent="load">
-                
+
 
                 <el-form-item>
                             <el-input v-model="conditions.Name.value" placeholder="指导司机"></el-input>
@@ -34,43 +34,43 @@
 
             <el-table-column prop="Name"
                                 label="指导司机"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="DepartmentName"
                                 label="所属单位"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="LocomotiveType"
                                 label="机车型号"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="TrainCode"
                                 label="车次"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="DriverName"
                                 label="司机"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="MaintenanceStatus"
                                 label="保养状态"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="Score"
                                 label="评定成绩"
-                                
+
                                 sortable
                                 ></el-table-column>
             <el-table-column prop="RegistDate"
                                 label="登记时间"
                                 :formatter="RegistDateFormatter"
-                                
+
                                 ></el-table-column>
 
 
@@ -89,14 +89,14 @@
         </el-col>
 
         <!-- 弹窗 -->
-        
+
 
     </section>
 </template>
 <script>
-    
+
     import moment from 'moment';
-    
+
     import server from '@/store/server';
     import { timepickerOptions } from '@/utils';
 
@@ -154,6 +154,7 @@ return d.format('YYYY-MM-DD'); },
 
             handlePageChange: function (page) {
                 this.page = page;
+                this.load();
             }
         },
 

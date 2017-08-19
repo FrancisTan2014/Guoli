@@ -374,6 +374,16 @@ namespace Guoli.Bll
         public IEnumerable<T> QueryBySql(string sql)
         {
             return DalInstance.QueryBySql(sql);
-        } 
+        }
+
+        /// <summary>
+        /// 执行指定的sql命令，并返回受影响行数
+        /// </summary>
+        /// <param name="sql">待执行的sql命令</param>
+        /// <returns>受影响行数</returns>
+        public int ExecuteSql(string sql)
+        {
+            return DalInstance.ExecuteSql(sql);
+        }
     }
 }
