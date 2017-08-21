@@ -31,6 +31,7 @@ namespace Guoli.Model
 		private DateTime _writedate;
 		private int _driverid;
 		private string _drivername;
+        private string _driverpostname;
 		private string _goodjobtype;
 		private string _generalsituation;
 		private string _suggests;
@@ -80,6 +81,14 @@ namespace Guoli.Model
 			set{ _drivername=value;}
 			get{return _drivername;}
 		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DriverPostName
+        {
+            set { _driverpostname = value; }
+            get { return _driverpostname; }
+        }
 		/// <summary>
 		/// 
 		/// </summary>

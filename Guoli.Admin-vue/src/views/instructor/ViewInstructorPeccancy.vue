@@ -17,12 +17,13 @@
                             <el-input v-model="conditions.DriverName.value" placeholder="责任司机"></el-input>
                 </el-form-item>
                 <el-form-item>
-                            <el-date-picker v-model="conditions.WriteDate.value" type="daterange" placeholder="登记日期" align="right">
+                            <el-date-picker v-model="conditions.WriteDate.value" type="daterange" placeholder="日期" align="right">
                             </el-date-picker>
                 </el-form-item>
 
                 <el-form-item>
                     <el-button type="primary" v-on:click="load" icon="search">查询</el-button>
+                    <el-button type="primary" v-on:click="print">打印</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -32,18 +33,18 @@
 
             <el-table-column type="index" width="80" label="序号"></el-table-column>
 
-            <el-table-column prop="Name"
-                                label="指导司机"
-
-
-                                ></el-table-column>
-            <el-table-column prop="DepartmentName"
-                                label="所属单位"
-
-
+            <el-table-column prop="WriteDate"
+                                label="日期"
+                                :formatter="WriteDateFormatter"
+                                sortable
                                 ></el-table-column>
             <el-table-column prop="DriverName"
-                                label="责任司机"
+                                label="姓名"
+
+
+                                ></el-table-column>
+            <el-table-column prop="DriverPostName"
+                                label="职务"
 
 
                                 ></el-table-column>
@@ -56,10 +57,20 @@
                                 label="概况"
 
 
-                                ></el-table-column>
-            <el-table-column prop="WriteDate"
-                                label="登记日期"
-                                :formatter="WriteDateFormatter"
+                                min-width="180"></el-table-column>
+            <el-table-column prop="Analysis"
+                                label="分析情况"
+
+
+                                min-width="180"></el-table-column>
+            <el-table-column prop="Suggests"
+                                label="处理意见"
+
+
+                                min-width="180"></el-table-column>
+            <el-table-column prop="Name"
+                                label="指导司机"
+
 
                                 ></el-table-column>
 
@@ -135,16 +146,15 @@
                 });
             },
 
-						WriteDateFormatter: function(row) { let d = moment(row.WriteDate);
-if (d.year() === 1900) {
-	return '';
-}
-
-return d.format('YYYY-MM-DD'); },
+						WriteDateFormatter: function(row) { return moment(row.WriteDate).format('YYYY-MM-DD'); },
 
             handlePageChange: function (page) {
                 this.page = page;
                 this.load();
+            },
+
+            print: function () {
+              this.$router.push({ name: 'peccany-prev', params: { data: this.data }});
             }
         },
 

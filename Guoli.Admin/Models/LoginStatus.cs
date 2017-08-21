@@ -120,6 +120,11 @@ namespace Guoli.Admin.Models
         {
             userId = 0;
 
+            if (string.IsNullOrEmpty(token))
+            {
+                return false;
+            }
+
             var pattern = @"^(\d+):(\d+)$";
             var match = Regex.Match(token, pattern);
             if (match.Success)

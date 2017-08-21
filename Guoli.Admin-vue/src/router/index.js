@@ -13,8 +13,6 @@ import ViewPersonInfo from '@/views/personnel/ViewPersonInfo'
 
 // 指导司机
 import Take from '@/views/instructor/Take'
-import TakePrev from '@/views/instructor/TakePrev'
-import AnalysisPrev from '@/views/instructor/AnalysisPrev'
 import ViewInstructorAnalysis from '@/views/instructor/ViewInstructorAnalysis'
 import ViewInstructorCheck from '@/views/instructor/ViewInstructorCheck'
 import ViewInstructorRepair from '@/views/instructor/ViewInstructorRepair'
@@ -25,6 +23,15 @@ import ViewInstructorPeccancy from '@/views/instructor/ViewInstructorPeccancy'
 import ViewInstructorTeach from '@/views/instructor/ViewInstructorTeach'
 import ViewInstructorPlan from '@/views/instructor/ViewInstructorPlan'
 import ViewInstructorAccept from '@/views/instructor/ViewInstructorAccept'
+
+// 指导司机工作记录预览
+import TakePrev from '@/views/instructor/preview/TakePrev'
+import AnalysisPrev from '@/views/instructor/preview/AnalysisPrev'
+import KeyPersonPrev from '@/views/instructor/preview/KeyPersonPrev'
+import PeccanyPrev from '@/views/instructor/preview/PeccanyPrev'
+import GooPrev from '@/views/instructor/preview/GooPrev'
+import QualityPrev from '@/views/instructor/preview/QualityPrev'
+
 
 // 司机手账
 import ViewDriveRecord from '@/views/driver/ViewDriveRecord'
@@ -82,9 +89,13 @@ export default new Router({
         { path: '/check', name: 'check', desc: '抽查信息单', component: ViewInstructorCheck },
         { path: '/repair', name: 'repair', desc: '机破临修记录', component: ViewInstructorRepair },
         { path: '/keyperson', name: 'keyperson', desc: '关键人管理', component: ViewInstructorKeyPerson },
+        { path: '/keyperson-prev', name: 'keyperson-prev', desc: '关键人管理打印预览', component: KeyPersonPrev, hidder: true },
         { path: '/quality', name: 'quality', desc: '机车质量登记', component: ViewInstructorLocoQuality },
+        { path: '/quality-prev', name: 'quality-prev', desc: '违章违纪记录打印预览', component: QualityPrev, hidder: true },
         { path: '/good', name: 'good', desc: '防止事故及好人好事记录', component: ViewInstructorGoodJob },
+        { path: '/good-prev', name: 'good-prev', desc: '防止事故及好人好事记录打印预览', component: GooPrev, hidder: true },
         { path: '/peccany', name: 'peccany', desc: '违章违纪记录', component: ViewInstructorPeccancy },
+        { path: '/peccany-prev', name: 'peccany-prev', desc: '违章违纪记录打印预览', component: PeccanyPrev, hidder: true },
         { path: '/teach', name: 'teach', desc: '授课培训记录', component: ViewInstructorTeach },
         { path: '/plan', name: 'plan', desc: '工作总结计划', component: ViewInstructorPlan },
         { path: '/accept', name: 'accept', desc: '标准化验收', component: ViewInstructorAccept },

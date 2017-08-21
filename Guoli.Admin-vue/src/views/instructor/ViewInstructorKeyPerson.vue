@@ -42,7 +42,11 @@
       <el-table-column prop="ConfirmDate" label="确定日期" :formatter="ConfirmDateFormatter"></el-table-column>
       <el-table-column prop="ExpectRemoveTime" label="预计解除日期" :formatter="ExpectRemoveTimeFormatter"></el-table-column>
       <el-table-column prop="ActualRemoveTime" label="实际解除日期" :formatter="ActualRemoveTimeFormatter"></el-table-column>
-
+      <el-table-column label="操作" min-width="150">
+        <template scope="scope">
+          <el-button size="small" type="text" @click="detailPreview(scope.$index, scope.row)">查看详情</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!--分页工具条-->
@@ -126,7 +130,11 @@ export default {
     handlePageChange: function (page) {
       this.page = page;
       this.load();
-    }
+    },
+
+    detailPreview: function (index, row) {
+      this.$router.push({ path: '/keyperson-prev?id=' + row.Id, params: { data: row } });
+    },
   },
 
   mounted() {
