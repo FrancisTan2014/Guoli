@@ -1,7 +1,7 @@
 import axios from 'axios';
 import local from './local';
 
-let base = 'http://192.168.0.100:8002';
+let base = 'http://192.168.3.126:8002';
 // let base = 'http://localhost:56147';
 
 /**
