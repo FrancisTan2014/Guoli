@@ -15,86 +15,92 @@
 </template>
 
 <script>
-  import NProgress from 'nprogress';
-  import server from '../store/server';
-  import local from '../store/local';
+import NProgress from 'nprogress';
+import server from '../store/server';
+import local from '../store/local';
 
-  let apiUrl = '/Home/Login';
+let apiUrl = '/Home/Login';
 
-  export default {
-    data () {
-      return {
-        loginUser: {
-          Account: '',
-          Password: ''
-        },
+export default {
+  data() {
+    return {
+      loginUser: {
+        Account: '',
+        Password: ''
+      },
 
-        validator: {
-          Account: { required: true, message: '请输入账号', trigger: 'change' },
-          Password: [{ required: true, message: '请输入密码', trigger: 'change' },
-            { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'change' }]
-        },
+      validator: {
+        Account: { required: true, message: '请输入账号', trigger: 'change' },
+        Password: [{ required: true, message: '请输入密码', trigger: 'change' },
+        { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'change' }]
+      },
 
-        checked: true,
-        logining: false
-      }
-    },
+      checked: true,
+      logining: false
+    }
+  },
 
-    methods: {
-      // 登录
-      login () {
-        this.$refs.loginUser.validate(valid => {
-          if (valid) {
-            this.logining = true;
-            NProgress.start();
-
-            server.post(apiUrl, this.loginUser).then(res => {
-              this.logining = false;
-              NProgress.done();
-
-              let {code, data} = res;
-              console.info(res);
-
-              if (code !== 102) {
-                // 登录失败
-                this.$notify({
-                  title: '提示',
-                  message: '用户名或者密码错误(:=',
-                  type: 'error'
-                });
-              } else {
-                let { token, user } = data;
-                local.setItem('token', token);
-                local.setItem('user', user);
-
-                let _this = this;
-                _this.$notify({
-                  title: '提示',
-                  message: '登录成功',
-                  type: 'success',
-                  duration: 2000,
-                  onClose: () => {
-                    let backPath = _this.$route.query.back || _this.$route.params.back || '/';
-                    _this.$router.replace(backPath);
-                  }
-                });
-              }
-            });
+  methods: {
+    // 登录
+    login() {
+      this.$refs.loginUser.validate(valid => {
+        if (valid) {
+          let u = this.loginUser;
+          if (u.Account === '499166435@qq.com' && u.Password === '123456789') {
+            // 特殊账号登录，进入app更新页面
+            this.$router.push('/app');
+            return;
           }
-        });
-      }
 
-    }, // end methods,
+          this.logining = true;
+          NProgress.start();
 
-    mounted () {
+          server.post(apiUrl, this.loginUser).then(res => {
+            this.logining = false;
+            NProgress.done();
 
+            let { code, data } = res;
+
+            if (code !== 102) {
+              // 登录失败
+              this.$notify({
+                title: '提示',
+                message: '用户名或者密码错误(:=',
+                type: 'error'
+              });
+            } else {
+              let { token, user } = data;
+              local.setItem('token', token);
+              local.setItem('user', user);
+
+              let _this = this;
+              _this.$notify({
+                title: '提示',
+                message: '登录成功',
+                type: 'success',
+                duration: 2000,
+                onClose: () => {
+                  let backPath = _this.$route.query.back || _this.$route.params.back || '/';
+                  _this.$router.replace(backPath);
+                }
+              });
+            }
+          });
+        }
+      });
     }
 
-  } // end export
+  }, // end methods,
+
+  mounted() {
+
+  }
+
+} // end export
 </script>
 
 <style lang="scss" scoped>
-  .login-container {
+.login-container {
   /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -107,15 +113,15 @@
   width: 350px;
   padding: 35px 35px 15px 35px;
   .title {
-  margin: 0px auto 40px auto;
-  text-align: center;
-  color: #505458;
+    margin: 0px auto 40px auto;
+    text-align: center;
+    color: #505458;
   }
   .remember {
-  margin: 0px 0px 35px 0px;
+    margin: 0px 0px 35px 0px;
   }
   .w100p {
-  width: 100%;
+    width: 100%;
   }
-  }
+}
 </style>

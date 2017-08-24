@@ -50,6 +50,7 @@
     <Compile Include="OracleModels\Z_JCYY_BASEPERSONNEL.cs" />
     <Compile Include="Partital\AnnounceCommands.cs" />
     <Compile Include="Partital\Announcement.cs" />
+    <Compile Include="Partital\AppUpdate.cs" />
     <Compile Include="Partital\BaseLine.cs" />
     <Compile Include="Partital\BaseStation.cs" />
     <Compile Include="Partital\DbUpdateLog.cs" />

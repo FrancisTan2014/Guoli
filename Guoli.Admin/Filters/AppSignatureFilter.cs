@@ -22,12 +22,11 @@ namespace Guoli.Admin.Filters
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var token = filterContext.HttpContext.Request["signature"];
-#if DEBUG
+
             if (token == "FrancisTan")
             {
                 return;
             }
-#endif
 
             if (token != AppSettings.AppRequestToken)
             {

@@ -11,6 +11,8 @@ using Guoli.Utilities.Enums;
 using Guoli.Utilities.Helpers;
 using NPOI.SS.Formula.Functions;
 using WebGrease.Css.Extensions;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Guoli.Admin.Controllers
 {
@@ -18,8 +20,43 @@ namespace Guoli.Admin.Controllers
     [AppSignatureFilter]
     public class AppController : Controller
     {
-        //
-        // GET: /App/
+        public JsonResult Upgrade(string version)
+        {
+            var latest = new AppUpdateBll().QueryAll().LastOrDefault();
+            if (latest == null)
+            {
+                return Json(ErrorModel.AppNotUpgraded);
+            }
+
+            if (string.IsNullOrEmpty(version))
+            {
+                // 版本号为空且数据库不为空，则返回最新版本信息
+                return Json(ErrorModel.AppUpgraded(latest));
+            }
+
+            // 验证版本号格式
+            if (!Regex.IsMatch(version, @"^\d+\.\d+\.\d+\.\d+$"))
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            try
+            {                
+                if (version != latest.Version)
+                {
+                    // 版本号与最新发布的版本号不一致
+                    // 说明发布了最新版本
+                    return Json(ErrorModel.AppUpgraded(latest));
+                }
+
+                return Json(ErrorModel.AppNotUpgraded);
+            }
+            catch (Exception ex)
+            {
+                ExceptionLogBll.ExceptionPersistence(nameof(AppController), nameof(AppController), ex);
+                return Json(ErrorModel.InputError);
+            }
+        }
 
         /// <summary>
         /// APP通用数据访问接口（CRUD）

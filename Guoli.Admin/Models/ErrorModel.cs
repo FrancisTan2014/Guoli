@@ -291,5 +291,28 @@ namespace Guoli.Admin.Models
             code = 120,
             msg = "当前目录下已存在同名文件，无法上传"
         };
+
+        /// <summary>
+        /// 发现新版本App（121）
+        /// </summary>
+        public static object AppUpgraded(object data)
+        {
+            return new
+            {
+                code = 121,
+                msg = "发现新版本App",
+                data = data
+            };
+        }
+
+        /// <summary>
+        /// App无更新（122）
+        /// </summary>
+        public static object AppNotUpgraded => new
+        {
+            code = 122,
+            msg = "App无更新"
+        };
+
     }
 }

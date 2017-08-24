@@ -47,6 +47,7 @@ import Announcement from '@/views/notify/Announcement'
 // 权限管理
 import SystemUser from '@/views/system/SystemUser'
 import ViewOperateLog from '@/views/system/ViewOperateLog'
+import AppUpdate from '@/views/system/AppUpdate'
 
 Vue.use(Router)
 
@@ -138,6 +139,7 @@ export default new Router({
       children: [
         { path: '/account', name: 'account', desc: '账户管理', component: SystemUser },
         { path: '/log', name: 'log', desc: '操作日志', component: ViewOperateLog },
+        { path: '/app', name: 'app', desc: 'app更新', component: AppUpdate }
       ]
     },
     {

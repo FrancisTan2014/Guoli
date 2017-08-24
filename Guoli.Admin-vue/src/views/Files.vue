@@ -31,7 +31,7 @@
           <i class="folder-img fa fa-folder-o" aria-hidden="true"></i>
           <div class="file-info">
             <span class="file-name">{{ folder.TypeName }}</span>
-            <span class="file-time">{{ `${folder.DepartmentName}-${folder.CreatorName}` }}</span>
+            <span class="file-time">{{ `${folder.DepartmentName || ''}-${folder.CreatorName || ''}` }}</span>
             <span class="file-time">{{ folder.CreateTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
           </div>
           <div class="file-shadow">
@@ -297,16 +297,18 @@ export default {
                 this.$message({ type: 'success', message: successMsg });
                 this.newFormVisible = false;
 
+                let departName = _.find(this.departs, item => item.Id === model.DepartmentId).DepartmentName;
                 if (model.Id > 0) {
                   // 将更新同步到本地
                   origin.TypeName = model.TypeName;
                   origin.IsPublic = model.IsPublic;
                   origin.DepartmentId = model.DepartmentId;
-                  origin.DepartmentName = _.find(this.departs, item => item.Id === model.DepartmentId).DepartmentName;
+                  origin.DepartmentName = departName;
                 } else {
                   // 将添加的目录同步到本地
                   // 避免重新从服务器加载
                   model.Id = id;
+                  model.DepartmentName = departName;
                   this.addLocal(model, 1);
                 }
               } else {

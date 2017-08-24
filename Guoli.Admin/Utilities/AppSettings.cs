@@ -44,6 +44,8 @@ namespace Guoli.Admin.Utilities
         /// </summary>
         public static readonly string KeywordsFilePath = ConfigurationManager.AppSettings["KeywordsFilePath"];
 
+        public static readonly string ApkFiles = ConfigurationManager.AppSettings["ApkFiles"];
+
         /// <summary>
         /// 根据要保存的文件类型，返回对应的文件保存路径配置信息
         /// </summary>
@@ -63,6 +65,8 @@ namespace Guoli.Admin.Utilities
                     return ExamFiles;
                 case 5:
                     return AnnounceFiles;
+                case 6:
+                    return ApkFiles;
                 default:
                     return string.Empty;
             }
