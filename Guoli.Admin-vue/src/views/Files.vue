@@ -12,7 +12,9 @@
 
         <el-button class="btn-right" size="small" type="primary" icon="plus" @click.native="newFolder">新建目录</el-button>
         <el-button class="btn-right" size="small" type="primary" icon="plus" v-if="curParentId > 0" @click.native="addFiles">添加文件</el-button>
-        <el-button class="btn-right info" style="margin-right: 16px;" type="text" v-if="curParentId > 0">当前目录{{ curDirectory.IsPublic ? '是公共目录' : `由${curDirectory.DepartmentName}负责` }}</el-button>
+        <el-button class="btn-right info" style="margin-right: 16px;" type="text" v-if="curParentId > 0">
+          当前目录{{ curDirectory.IsPublic ? '是公共目录' : `由${curDirectory.DepartmentName}负责` }}
+        </el-button>
       </el-col>
     </el-row>
 
@@ -26,7 +28,7 @@
       </el-col>
 
       <!-- 文件夹 -->
-      <el-col :span="3" v-for="folder in curDirs" :key="folder.Id" @click.native="openFolder(folder)">
+      <el-col :span="4" v-for="folder in curDirs" :key="folder.Id" @click.native="openFolder(folder)">
         <div class="folder">
           <i class="folder-img fa fa-folder-o" aria-hidden="true"></i>
           <div class="file-info">
@@ -46,13 +48,13 @@
 
       <!-- 文件 -->
       <transition name="fade" v-for="file in curFiles" :key="file.Id">
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="folder">
             <i class="folder-img" :class="getFileIconClass(file.FileExtension)" aria-hidden="true"></i>
             <div class="file-info">
               <span class="file-name">{{ file.FileName }}</span>
-            <span class="file-time">{{ `${file.DepartmentName}-${file.CreatorName}` }}</span>
-            <span class="file-time">{{ file.AddTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
+              <span class="file-time">{{ `${file.DepartmentName}-${file.CreatorName}` }}</span>
+              <span class="file-time">{{ file.AddTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
             </div>
             <div class="file-shadow">
               <p>
@@ -99,9 +101,16 @@
         </el-form-item>
 
         <el-form-item prop="isPublic" label="公开性：" v-if="user.IsSuper && curParentId === 0">
-          <el-radio-group v-model.number="newFormModel.isPublic">
+          <el-radio-group v-model.number="newFormModel.isPublic" @change="onPublicChange">
             <el-radio-button :label="false">私有文件夹</el-radio-button>
             <el-radio-button :label="true">公共文件夹</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item prop="hidden" label="是否仅本部门可见：" v-if="user.IsSuper && curParentId === 0 && !newFormModel.isPublic">
+          <el-radio-group v-model.number="newFormModel.hidden">
+            <el-radio-button :label="true">是</el-radio-button>
+            <el-radio-button :label="false">否</el-radio-button>
           </el-radio-group>
         </el-form-item>
 
@@ -149,7 +158,7 @@ export default {
       // 新建文件夹表单数据
       newFormVisible: false,
       newFormLoading: false,
-      newFormModel: { name: '', depart: [], isPublic: false },
+      newFormModel: { name: '', depart: [], isPublic: false, hidden: false },
       newFormRules: {
         name: [rules.required, rules.getMaxRule(50)],
         depart: [{ required: true, type: 'array', message: '请选择责任部门', trigger: 'change' }]
@@ -166,7 +175,7 @@ export default {
   }, // end data()
 
   methods: {
-    loadFiles: function () {
+    loadFiles: function() {
       this.isFileLoading = true;
       NProgress.start();
 
@@ -177,24 +186,22 @@ export default {
       });
     },
 
-    getCurrentFiles: function () {
+    getCurrentFiles: function() {
       let _this = this;
       _this.curDirs = _this.data.directories.filter((item, index) => item.ParentId === _this.curParentId);
       _this.curFiles = _this.data.files.filter((item, index) => item.TypeId === _this.curParentId);
     },
 
-    openFolder: function (folder) {
+    openFolder: function(folder) {
       this.curParentId = folder.Id;
       this.curDirectory = folder;
 
       this.getCurrentFiles();
       this.pathStack.push(folder);
-
-      console.info(this.curFiles);
     },
 
     // 文件路径点击事件
-    pathClick: function (folder) {
+    pathClick: function(folder) {
       let p = this.pathStack;
       for (let i = p.length - 1; i >= 0; i--) {
         if (p[i].Id !== folder.Id) {
@@ -208,7 +215,7 @@ export default {
       }
     },
 
-    folderBack: function () {
+    folderBack: function() {
       let p = this.pathStack;
       p.pop();
       this.curParentId = p.length === 0 ? 0 : p[p.length - 1].Id;
@@ -221,7 +228,7 @@ export default {
     },
 
     // 点击添加目录触发的事件
-    newFolder: function () {
+    newFolder: function() {
 
       // 顶级目录仅超级管理员可添加目录
       let isSuper = this.user.IsSuper;
@@ -250,11 +257,21 @@ export default {
       this.newFormModel.name = '';
       this.newFormModel.depart = [];
       this.newFormModel.isPublic = false;
+      this.newFormModel.hidden = false;
       this.newFormOrigin = {};
     },
 
+    // 添加目录表单中的公开性选项值发生变化时
+    // 若选择了公共文件夹，则需将model中的
+    // hidden值设置为false
+    onPublicChange: function(isPublic) {
+      if (isPublic) {
+        this.newFormModel.hidden = false;
+      }
+    },
+
     // 添加目录表单提交
-    newFormSubmit: function () {
+    newFormSubmit: function() {
       this.$refs.newForm.validate(valid => {
         if (valid) {
           let m = this.newFormModel;
@@ -268,6 +285,7 @@ export default {
             ParentId: this.curParentId,
             DepartmentId: departmentId,
             IsPublic: m.isPublic,
+            Hidden: m.hidden,
             CreatorId: this.user.Id
           };
 
@@ -302,6 +320,7 @@ export default {
                   // 将更新同步到本地
                   origin.TypeName = model.TypeName;
                   origin.IsPublic = model.IsPublic;
+                  origin.Hidden = model.Hidden;
                   origin.DepartmentId = model.DepartmentId;
                   origin.DepartmentName = departName;
                 } else {
@@ -320,7 +339,7 @@ export default {
     },
 
     // 点击添加文件按钮触发
-    addFiles: function () {
+    addFiles: function() {
       // 在私有文件目录中
       // 若当前登录用户不是超级管理员
       // 并且非当前目录责任部门的管理员
@@ -336,12 +355,12 @@ export default {
     },
 
     // 动态获取文件上传地址，因为需要通过url传递动态参数
-    uploadPath: function () {
+    uploadPath: function() {
       return `${server.base}/Files/AddFiles?token=${local.getItem('token')}&fileType=3&typeId=${this.curParentId}&depart=${this.curDirectory.DepartmentId}`;
     },
 
     // 文件上传成功
-    uploadSuccess: function (response, file, fileList) {
+    uploadSuccess: function(response, file, fileList) {
       let { msg, fileModel } = response;
       if (msg.code === 100) {
         this.data.files.push(fileModel);
@@ -354,7 +373,7 @@ export default {
       }
     },
 
-    addLocal: function (model, type) {
+    addLocal: function(model, type) {
       if (type === 1) {
         this.data.directories.push(model);
         this.curDirs.push(model);
@@ -365,7 +384,7 @@ export default {
     },
 
     // 点击目录中的修改按钮触发
-    renameFolder: function (folder) {
+    renameFolder: function(folder) {
 
       // 权限验证
       if (folder.IsPublic) {
@@ -385,6 +404,7 @@ export default {
       let m = this.newFormModel;
       m.name = folder.TypeName;
       m.isPublic = folder.IsPublic;
+      m.hidden = folder.Hidden;
 
       let selected = [];
       this.findParents(this.departs, folder.DepartmentId, selected);
@@ -395,7 +415,7 @@ export default {
     },
 
     // 点击文件中的重命名按钮触发
-    renameFile: function (file) {
+    renameFile: function(file) {
 
       if (!this.user.IsSuper && !this.user.DepartmentId !== file.DepartmentId) {
         this.$message({ type: 'error', message: `抱歉，此文件是由${file.DepartmentName}上传的，您无权限修改(:=` });
@@ -412,7 +432,7 @@ export default {
       this.renameFormModel.origin = name;
     },
 
-    renameFormSubmit: function () {
+    renameFormSubmit: function() {
       this.$refs.renameForm.validate(valid => {
         if (valid) {
           let m = this.renameFormModel;
@@ -441,7 +461,7 @@ export default {
       });
     },
 
-    remove: function (id, type, model) {
+    remove: function(id, type, model) {
 
       // 对目录或文件的删除权限
       // 仅超级管理员和其责任部门
@@ -477,7 +497,7 @@ export default {
       return -1;
     },
 
-    removeFromLocalData: function (id, type) {
+    removeFromLocalData: function(id, type) {
       let index = -1;
 
       if (type === 1) {
@@ -501,7 +521,7 @@ export default {
 
     //************部门选择器数据处理函数*************
     //
-    loadDeparts: function () {
+    loadDeparts: function() {
       server.post('/Common/GetDeparts', {}, this).then(res => {
         let { code, data } = res;
         this.departs = data;
@@ -509,7 +529,7 @@ export default {
       });
     },
 
-    findChildren: function (array, parentId) {
+    findChildren: function(array, parentId) {
       let sub = _.filter(array, item => item.ParentId === parentId);
       if (sub.length === 0) {
         return [];
@@ -531,7 +551,7 @@ export default {
       return result;
     },
 
-    findParents: function (array, id, result) {
+    findParents: function(array, id, result) {
       let obj = _.find(array, elem => elem.Id === id);
       result.splice(0, 0, id);
 

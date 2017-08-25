@@ -591,6 +591,7 @@ namespace Guoli.Import
                 SuggestSpeed = speed
             };
         }
+
         /// <summary>
         /// 创建此方法是为了解决单元格中值的格式不统一的问题
         /// 从给定单元格中提取出时间的 HH:mm:ss 部分

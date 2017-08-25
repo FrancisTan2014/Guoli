@@ -33,6 +33,7 @@ namespace Guoli.Model
         private DateTime _createtime = DateTime.Now;
         private int _departmentid = 0;
         private bool _ispublic = false;
+        private bool _hidden = false;
         private bool _isdelete = false;
         /// <summary>
         /// 主键
@@ -89,6 +90,14 @@ namespace Guoli.Model
         {
             set { _ispublic = value; }
             get { return _ispublic; }
+        }
+        /// <summary>
+        /// 是否仅本部门可见
+        /// </summary>
+        public bool Hidden
+        {
+            set { _hidden = value; }
+            get { return _hidden; }
         }
         /// <summary>
         /// 删除标识

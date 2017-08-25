@@ -20,6 +20,7 @@ namespace Guoli.Model
         private int _departmentid;
         private bool _isdelete;
         private bool _ispublic;
+        private bool _hidden;
         private int _parentid;
         private string _typename;
         private string _departmentname;
@@ -71,6 +72,14 @@ namespace Guoli.Model
         {
             set { _ispublic = value; }
             get { return _ispublic; }
+        }
+        /// <summary>
+        /// 是否仅本部门可见
+        /// </summary>
+        public bool Hidden
+        {
+            set { _hidden = value; }
+            get { return _hidden; }
         }
         /// <summary>
         /// 
