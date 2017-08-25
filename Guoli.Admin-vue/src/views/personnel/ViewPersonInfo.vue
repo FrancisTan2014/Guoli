@@ -90,12 +90,14 @@
 
         <el-form-item prop="DepartmentId" label="所属部门：">
           <el-cascader :options="cascaderOptions" v-model="editFormModel.DepartmentId" clearable expand-trigger="hover" placeholder="请选择部门" :show-all-levels="false"></el-cascader>
+          <el-button type="text" @click="$router.push('/depart')">添加部门</el-button>
         </el-form-item>
 
         <el-form-item prop="PostId" label="职务：">
           <el-select v-model="editFormModel.PostId" placeholder="请选择职务" clearable>
             <el-option v-for="item in posts" :key="item.PostName" :label="item.PostName" :value="item.Id"></el-option>
           </el-select>
+          <el-button type="text" @click="$router.push('/post')">添加职务</el-button>
         </el-form-item>
 
       </el-form>

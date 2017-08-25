@@ -100,7 +100,7 @@ namespace Guoli.Admin.Controllers
             var desc = param.Value<bool>("desc"); // 是否降序
             var table = param.Value<string>("table");
             var conditions = param.Value<JObject>("conditions");
-            var query = BuildQueryCondition(conditions);
+            var query = BuildQueryCondition(table, conditions);
 
             var bll = BllFactory.GetBllInstance(table);
             if (bll != null)
@@ -120,7 +120,7 @@ namespace Guoli.Admin.Controllers
             return Json(ErrorModel.GetDataFailed);
         }
 
-        private string BuildQueryCondition(JObject conditions)
+        private string BuildQueryCondition(string table, JObject conditions)
         {
             var list = new List<string>();
             foreach (var item in conditions)
@@ -164,6 +164,19 @@ namespace Guoli.Admin.Controllers
                                 break;
                         }
                     }
+                }
+            }
+
+            // @FrancisTan 2017-08-25
+            // 对新后台展示的所有数据均过滤部门Id
+            var name = $"Guoli.Model.{table}";
+            var tableType = Assembly.Load($"Guoli.Model").GetType(name);
+            if (tableType.GetProperties().Any(prop => prop.Name == "DepartmentId"))
+            {
+                var loginUser = LoginStatus.GetLoginUser();
+                if (loginUser.DepartmentId > 0)
+                {
+                    list.Add($"DepartmentId={loginUser.DepartmentId}");
                 }
             }
 

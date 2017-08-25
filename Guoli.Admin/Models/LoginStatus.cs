@@ -7,6 +7,8 @@ using CookieNames = Guoli.Admin.Utilities.CookieNames;
 using SessionNames = Guoli.Admin.Utilities.SessionNames;
 using System.Text.RegularExpressions;
 using System;
+using Guoli.Model;
+using Guoli.Bll;
 
 namespace Guoli.Admin.Models
 {
@@ -71,6 +73,12 @@ namespace Guoli.Admin.Models
             }
 
             return encryptId.ToInt32();
+        }
+
+        public static SystemUser GetLoginUser()
+        {
+            var userId = GetLoginId();
+            return new SystemUserBll().QuerySingle($"Id={userId}");
         }
 
         /// <summary>
