@@ -111,5 +111,14 @@ namespace Guoli.Admin.Controllers
 
             return Json(ErrorModel.InputError);
         }
+
+        [HttpPost]
+        public JsonResult Delete(int id)
+        {
+            var bll = new AppUpdateBll();
+            var success = bll.DeleteSoftly(id);
+
+            return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+        }
     }
 }

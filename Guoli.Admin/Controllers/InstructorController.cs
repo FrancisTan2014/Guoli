@@ -171,7 +171,8 @@ namespace Guoli.Admin.Controllers
             // 对新后台展示的所有数据均过滤部门Id
             var name = $"Guoli.Model.{table}";
             var tableType = Assembly.Load($"Guoli.Model").GetType(name);
-            if (tableType.GetProperties().Any(prop => prop.Name == "DepartmentId"))
+            var props = tableType.GetProperties();
+            if (props.Any(prop => prop.Name == "DepartmentId"))
             {
                 var loginUser = LoginStatus.GetLoginUser();
                 if (loginUser.DepartmentId > 0)
@@ -179,6 +180,11 @@ namespace Guoli.Admin.Controllers
                     list.Add($"DepartmentId={loginUser.DepartmentId}");
                 }
             }
+            if (props.Any(prop => prop.Name == "IsDelete"))
+            {
+                list.Add("IsDelete=0");
+            }
+
 
             return string.Join(" AND ", list);
         }

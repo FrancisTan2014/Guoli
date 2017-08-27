@@ -24,7 +24,7 @@
 
       <el-table-column label="操作" min-width="120">
         <template scope="scope">
-
+          <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
 
@@ -207,6 +207,22 @@ export default {
           });
         }
       });
+    },
+
+    handleDelete: function (model) {
+      this.$confirm('您确定删除此项吗？').then(() => {
+        NProgress.start();
+        server.post('/AppUpdate/Delete', { id: model.Id }, this)
+          .then(res => {
+            NProgress.done();
+            if (res.code === 100) {
+              this.$message({ type: 'success', message: '删除成功(:=' });
+              this.load();
+            } else {
+              this.$message({ type: 'error', message: '删除失败，请稍后重试(:=' });
+            }
+          });
+      }).catch(() => { /* 取消 */ });
     }
   },
 

@@ -62,6 +62,9 @@ namespace Guoli.Import
 
     /// <summary>
     /// 列车时刻数据导入工具类
+    /// 其中：
+    ///    格式一：参考文件'/Templates/客车时刻表.xls'
+    ///    格式二：参考文件'/Templates/货车时刻表.xls'
     /// </summary>
     public static class TimeTableImporter
     {
@@ -120,33 +123,122 @@ namespace Guoli.Import
 
                 foreach (ISheet sheet in workBook)
                 {
-                    // 验证表格格式
-                    if (!IsValid(sheet))
+                    var style = GetSheetStyle(sheet);
+                    switch (style)
                     {
-                        // 若此表格式不正确，则需要记录并提示操作者
-                        continue;
-                    }
+                        case 1:
+                            var timeTable = GetTimeTableOfStyleOne(sheet);
+                            AddTimeTable(timeTable);
+                            break;
 
-                    var timeTable = GetTimeTable(sheet);
-                    bool trainNoExists;
-                    AddTimeTable(timeTable, out trainNoExists);
+                        case 2:
+                            var tables = GetTimeTableOfStyleTwo(sheet);
+                            AddTimeTable(tables.ToArray());
+                            break;
 
-                    if (trainNoExists)
-                    {
-                        // 车次若已存在，则将当前列车时刻表信息存储下来
-                        // 并提示操作者，若操作者需要更新此车次信息，再读取此列车时刻表
+                        case -1:
+                        default:
+                            continue;
                     }
                 }
             }
         }
 
         /// <summary>
-        /// 按照一定格式从指定的<see cref="ISheet"/>对象中提取信息
+        /// 获取表格的格式编号
+        ///    1：与'/Templates/客车时刻表.xls'一致
+        ///    2：与'/Templates/货车车时刻表.xls'一致
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <returns></returns>
+        private static int GetSheetStyle(ISheet sheet)
+        {
+            if (IsStyleOne(sheet))
+            {
+                return 1;
+            }
+
+            if (IsStyleTwo(sheet))
+            {
+                return 2;
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// 验证表格格式是否符合第一种格式要求
+        /// 表格行数必须大于7行
+        /// 每行单元格数必须大于7
+        /// 第五行应该包含车次、区段等信息
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <returns></returns>
+        private static bool IsStyleOne(ISheet sheet)
+        {
+            if (sheet.LastRowNum < 6)
+            {
+                return false;
+            }
+
+            var fifthRow = sheet.GetRow(4);
+            if (fifthRow.LastCellNum < 6)
+            {
+                return false;
+            }
+
+            var txt = fifthRow.Cells[0].StringCellValue.Trim();
+            if (!txt.Contains("车次") && !txt.Contains("区段"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 验证表格格式是否符合第二种格式要求
+        /// 表格行数必须大于9行
+        /// 每行单元格数必须大于1个
+        /// 第四行第一个或者第三个单元格的值应该是“始发站”
+        /// 第六行第一个或者第三个单元格的值应该是“列车种类”
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <returns></returns>
+        private static bool IsStyleTwo(ISheet sheet)
+        {
+            if (sheet.LastRowNum < 8)
+            {
+                return false;
+            }
+
+            var fourthRow = sheet.GetRow(3);
+            if (fourthRow.LastCellNum < 2)
+            {
+                return false;
+            }
+
+            if (!fourthRow.Cells.Exists(cell => cell.ToString().Trim() == "始发站"))
+            {
+                return false;
+            }
+
+            var sixthRow = sheet.GetRow(5);
+            if (!sixthRow.Cells.Exists(cell => cell.ToString().Trim() == "列车种类"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 按照"格式一"从指定的<see cref="ISheet"/>对象中提取信息
         /// 并创建<see cref="TimeTable"/>对象返回
         /// </summary>
         /// <param name="sheet">将作为数据源的<see cref="ISheet"/>对象</param>
         /// <returns><see cref="TimeTable"/>对象</returns>
-        private static TimeTable GetTimeTable(ISheet sheet)
+        private static TimeTable GetTimeTableOfStyleOne(ISheet sheet)
         {
             var timeTable = new TimeTable();
 
@@ -209,30 +301,156 @@ namespace Guoli.Import
         }
 
         /// <summary>
+        /// 按照"格式二"从指定的<see cref="ISheet"/>对象中提取信息
+        /// 并创建<see cref="TimeTable"/>对象集合返回
+        /// </summary>
+        /// <param name="sheet">将作为数据源的<see cref="ISheet"/>对象</param>
+        /// <returns><see cref="TimeTable"/>对象集合</returns>
+        private static List<TimeTable> GetTimeTableOfStyleTwo(ISheet sheet)
+        {
+            // 从第二行中获取列车运行方向
+            var row = sheet.GetRow(1);
+            var title = row.Cells[0].ToString();
+            // 从字符串"古店-集宁间上行列车时刻表"中提取"上行"
+            var direction = title.Substring(title.IndexOf("行列车时刻表") - 1, 2);
+
+            // 从第八行和第九行中提取所有车次
+            row = sheet.GetRow(7);
+            var row9 = sheet.GetRow(8);
+            var stationColNum = Regex.Replace(row.Cells[0].ToString(), @"\s", "") == "区间公里" ? 2 : 0; // 车站所在列的索引
+            var trainNos = new List<string>();
+            for (var i = stationColNum + 1; i < row.Cells.Count; i++)
+            {
+                // 车次列索引从车站后一列开始
+                var value = row.Cells[i].ToString().Trim();
+                var value1 = row9.Cells[i].ToString().Trim(); // 有的车次占了第八和第九两行
+                if (!string.IsNullOrEmpty(value))
+                {
+                    trainNos.Add(value + value1);
+                }
+            }
+
+            // 从第一或者第三列中提取所有车站（有的表格车站在第三列，而有的在第一列）
+            // 从第十行开始循环
+            var stations = new List<BaseStation>();
+            for (var i = 9; i < sheet.LastRowNum; i++)
+            {
+                row = sheet.GetRow(i);
+                var txt = row.Cells[stationColNum].ToString();
+                if (!string.IsNullOrEmpty(txt))
+                {
+                    var name = txt.Trim();
+                    var pinyin = PinyinHelper.GetInitials(name).ToLower();
+                    stations.Add(new BaseStation { Spell = pinyin, StationName = name });
+                }
+            }
+
+            // 循环车次列表，生成列车时刻表集合
+            var startColNum = stationColNum + 1;
+            var timeTables = new List<TimeTable>();
+            for (var trainNoIndex = 0; trainNoIndex < trainNos.Count; trainNoIndex++)
+            {
+                var timeTable = new TimeTable();
+
+                // 从第二或者第四列开始，逐列获取列车时刻表
+                var sort = 1;
+                var stationIndex = 0; // 通过此索引从车站列表中获取与时刻表对应的车站
+                var colIndex = startColNum + trainNoIndex; // 随着车次索引的增加，相应的改变获取时刻表的单元格索引
+                for (var rowIndex = 9; rowIndex < sheet.LastRowNum; rowIndex++)
+                {
+                    row = sheet.GetRow(rowIndex);
+                    var arrive = row.Cells[colIndex].ToString().Trim().Replace("...", "");
+
+                    rowIndex++;
+                    row = sheet.GetRow(rowIndex);
+                    var start = row.Cells[colIndex].ToString().Trim().Replace("...", "");
+
+                    // 出发或者到达时间任意一个不为空
+                    // 则表明本车次将经过stationIndex所对应的车站
+                    // 否则表示本车次不经过此车站，则不将此车站添加到
+                    // 本车次对应的车站列表中
+                    if (!string.IsNullOrEmpty(arrive) || !string.IsNullOrEmpty(start))
+                    {
+                        arrive = TimeFormatter(arrive);
+                        start = TimeFormatter(start);
+                        timeTable.Stations.Add(stations[stationIndex]);
+                        timeTable.Moments.Add(new TrainMoment { ArriveTime = arrive, DepartTime = start, Sort = sort++ });
+                    }
+
+                    stationIndex++;
+                    // 如果stationIndex已经超出了车站数量，则结束循环
+                    if (stationIndex >= stations.Count)
+                    {
+                        break;
+                    }
+                }
+
+                // 重置索引和排序
+                stationIndex = 0;
+                sort = 1;
+
+                // 如果是上行车次，需要将车站及列车时刻反转
+                if (direction == "上行")
+                {
+                    timeTable.Stations.Reverse();
+                    timeTable.Moments.Reverse();
+
+                    // 改变序号，并将出发及到达时间互换
+                    sort = 1;
+                    timeTable.Moments.ForEach(item =>
+                    {
+                        var temp = item.ArriveTime;
+                        item.ArriveTime = item.DepartTime;
+                        item.DepartTime = temp;
+                        item.Sort = sort++;
+                    });
+                }
+
+                // 创建车次及线路对象
+                var firstStation = timeTable.Stations.First().StationName;
+                var lastStation = timeTable.Stations.Last().StationName;
+                timeTable.TrainNo = new TrainNo { Direction = direction, FullName = trainNos[trainNoIndex], FirstStation = firstStation, LastStation = lastStation, RunType = 2 };
+                timeTable.Line = new BaseLine { FirstStation = firstStation, LastStation = lastStation, LineName = $"{firstStation}-{lastStation}" };
+
+                timeTables.Add(timeTable);
+            }
+
+            return timeTables;
+        }
+
+        /// <summary>
         /// 将从excel表格中提取出的<see cref="TimeTable"/>对象写入数据库
         /// </summary>
         /// <param name="table">待处理的列表时刻表</param>
         /// <param name="trainNoExists">告知调用者车次是否已存在并需要更新</param>
-        private static void AddTimeTable(TimeTable table, out bool trainNoExists)
+        private static void AddTimeTable(params TimeTable[] tables)
         {
-            // 查询车次是否已存在
-            trainNoExists = _trainNoCaches.Exists(item => item.FullName == table.TrainNo.FullName);
-
-            if (!trainNoExists)
+            foreach (var table in tables)
             {
-                // 将车次、车站、线路信息写入数据库
-                table.Stations = WriteStations(table.Stations);
-                WriteTrainNo(table);
-                WriteLine(table);
+                // 查询车次是否已存在
+                var trainNoExists = _trainNoCaches.Exists(item => item.FullName == table.TrainNo.FullName);
 
-                // 构造线路-车站关系并写入数据库
-                WriteLineStaionRelation(table);
+                if (!trainNoExists)
+                {
+                    // 将车次、车站、线路信息写入数据库
+                    table.Stations = WriteStations(table.Stations);
+                    WriteTrainNo(table);
+                    WriteLine(table);
 
-                // 构造车次-线路关系并写入数据库
-                table.TrainNoLineRelation = WriteTrainNoLineRelation(table.TrainNo, table.Line);
+                    // 构造线路-车站关系并写入数据库
+                    WriteLineStaionRelation(table);
 
-                // 为列车时刻表中的车站Id、车次线路表Id赋值，并写入数据库
-                WriteTrainMoments(table);
+                    // 构造车次-线路关系并写入数据库
+                    table.TrainNoLineRelation = WriteTrainNoLineRelation(table.TrainNo, table.Line);
+
+                    // 为列车时刻表中的车站Id、车次线路表Id赋值，并写入数据库
+                    WriteTrainMoments(table);
+                }
+                else
+                {
+                    // 车次若已存在，则将当前列车时刻表信息存储下来
+                    // 并提示操作者，若操作者需要更新此车次信息，再读取此列车时刻表
+                }
             }
         }
 
@@ -285,6 +503,8 @@ namespace Guoli.Import
             table.TrainNo = trainNoBll.Insert(table.TrainNo);
 
             DataUpdateLog.SingleUpdate(nameof(TrainNo), table.TrainNo.Id, DataUpdateType.Insert); // 将数据更新记录同步到DbUpdataLog表中
+
+            _trainNoCaches.Add(table.TrainNo);
         }
 
         /// <summary>
@@ -456,36 +676,6 @@ namespace Guoli.Import
         }
 
         /// <summary>
-        /// 验证表格格式是否符合要求
-        /// 表格行数必须大于7行
-        /// 每行单元格数必须大于7
-        /// 第五行应该包含车次、区段等信息
-        /// </summary>
-        /// <param name="sheet"></param>
-        /// <returns></returns>
-        private static bool IsValid(ISheet sheet)
-        {
-            if (sheet.LastRowNum < 6)
-            {
-                return false;
-            }
-
-            var fifthRow = sheet.GetRow(4);
-            if (fifthRow.LastCellNum < 6)
-            {
-                return false;
-            }
-
-            var txt = fifthRow.Cells[0].StringCellValue.Trim();
-            if (!txt.Contains("车次") && !txt.Contains("区段"))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// 验证给定行是否为空行（前八个单元格均为空）
         /// </summary>
         /// <param name="row">给定的<see cref="IRow"></see>对象</param>
@@ -617,6 +807,49 @@ namespace Guoli.Import
             {
                 return string.Empty;
             }
+        }
+
+        /// <summary>
+        /// 处理从excel中获取到的时间
+        /// 将类似于3030这样的时间处理为30
+        /// 若时间是48或者03:48则不变
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        private static string TimeFormatter(string time)
+        {
+            if (!string.IsNullOrEmpty(time))
+            {
+                var temp = time.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                if (temp.Length == 1)
+                {
+                    // 如 48
+                    if (temp[0].ToInt32() < 60)
+                    {
+                        return temp[0];
+                    }
+                    // 如 4830
+                    else
+                    {
+                        return temp[0].Substring(0, temp[0].Length - 2);
+                    }
+                }
+                else
+                {
+                    // 如 23:15
+                    if (temp[1].ToInt32() < 60)
+                    {
+                        return time;
+                    }
+                    // 如 23：1530
+                    else
+                    {
+                        return $"{temp[0]}:{temp[1].Substring(0, temp[1].Length -2)}";
+                    }
+                }
+            }
+
+            return time;
         }
     }
 }

@@ -1320,6 +1320,8 @@
     <Content Include="Views\Planner\Single.cshtml" />
     <Content Include="Tutorials\product-delivery-doc.md" />
     <Content Include="Templates\exam-file.xls" />
+    <Content Include="Templates\货车时刻表.xls" />
+    <Content Include="Templates\客车时刻表.xls" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

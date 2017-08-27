@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System.Collections.Generic;
 
 namespace Guoli.Import.Test
 {
@@ -38,6 +39,21 @@ namespace Guoli.Import.Test
             using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 var workBook = new XSSFWorkbook(fs);
+                return workBook.GetSheetAt(0);
+            }
+        }
+
+        /// <summary>
+        /// 读取货车车次表格
+        /// </summary>
+        /// <returns></returns>
+        public static ISheet GetHuocheSheet()
+        {
+            var path = PathExtension.MapPath("test-huoche.xls"); // 下行
+
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                var workBook = new HSSFWorkbook(fs);
                 return workBook.GetSheetAt(0);
             }
         }
@@ -89,11 +105,19 @@ namespace Guoli.Import.Test
         }
 
         [TestMethod]
-        public void TestIsValid()
+        public void TestIsStyleOne()
         {
             var sheet = TestSuite.GetSheet();
-            var isValid = (bool) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "IsValid", sheet);
+            var isValid = (bool) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "IsStyleOne", sheet);
             isValid.Should().Be(true, "测试表格完全符合TimeTableImporter类所要求的格式");
+        }
+
+        [TestMethod]
+        public void TestIsStyleTwo()
+        {
+            var sheet = TestSuite.GetHuocheSheet();
+            var isValid = (bool)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "IsStyleTwo", sheet);
+            isValid.Should().Be(true, "测试表格符合第二种格式要求");
         }
 
         [TestMethod]
@@ -144,6 +168,22 @@ namespace Guoli.Import.Test
             time.Should().Be("19:05:00");
         }
 
+        [TestMethod]
+        public void TestTimeFormatter()
+        {
+            var res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "48");
+            res.Should().Be("48");
+
+            res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "4830");
+            res.Should().Be("48");
+
+            res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "23:30");
+            res.Should().Be("23:30");
+
+            res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "23:1530");
+            res.Should().Be("23:15");
+        }
+
         /// <summary>
         /// 上行表格导入测试
         /// </summary>
@@ -152,7 +192,7 @@ namespace Guoli.Import.Test
         {
             var sheet = TestSuite.GetSheet();
             var timeTable =
-                (TimeTable) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTable", sheet);
+                (TimeTable) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleOne", sheet);
 
             timeTable.Should().NotBe(null);
 
@@ -182,14 +222,14 @@ namespace Guoli.Import.Test
         }
 
         /// <summary>
-        /// 下午表格导入测试
+        /// 下行表格导入测试
         /// </summary>
         [TestMethod]
         public void TestGetTimeTableDownward()
         {
             var sheet = TestSuite.GetDownwardSheet();
             var timeTable =
-                (TimeTable)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTable", sheet);
+                (TimeTable)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleOne", sheet);
 
             timeTable.Should().NotBe(null);
 
@@ -217,6 +257,51 @@ namespace Guoli.Import.Test
             timeTable.Moments.First().DepartTime.Should().Be("14:11:00");
             timeTable.Moments.Last().ArriveTime.Should().Be("20:30:00");
             timeTable.Moments.Last().DepartTime.Should().Be("");
+        }
+
+        /// <summary>
+        /// 货车表格导入测试
+        /// </summary>
+        [TestMethod]
+        public void TestGetTimeTableOfStyleTwo()
+        {
+            var sheet = TestSuite.GetHuocheSheet();
+            var tables = (List<TimeTable>)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleTwo", sheet);
+
+            tables.Should().NotBeNull();
+            tables.Count.Should().Be(12);
+
+            var first = tables[0];
+            first.Line.FirstStation.Should().Be("古店");
+            first.Line.LastStation.Should().Be("集宁南");
+            first.Line.LineName.Should().Be("古店-集宁南");
+            first.TrainNo.FullName.Should().Be("22001");
+            first.Stations.Count.Should().Be(10);
+            first.Stations.First().StationName.Should().Be("古店");
+            first.Stations.First().Spell.Should().Be("gd");
+            first.Stations.Last().StationName.Should().Be("集宁南");
+            first.Stations.Last().Spell.Should().Be("jnn");
+            first.Moments.Count.Should().Be(10);
+            first.Moments.First().ArriveTime.Should().Be(""); //??
+            first.Moments.First().DepartTime.Should().Be("21:30");
+            first.Moments.Last().ArriveTime.Should().Be("23:16"); //??
+            first.Moments.Last().DepartTime.Should().Be("0:02");
+
+            var eighth = tables[7];
+            eighth.Line.FirstStation.Should().Be("古店");
+            eighth.Line.LastStation.Should().Be("集宁");
+            eighth.Line.LineName.Should().Be("古店-集宁");
+            eighth.TrainNo.FullName.Should().Be("72601");
+            eighth.Stations.Count.Should().Be(11);
+            eighth.Stations.First().StationName.Should().Be("古店");
+            eighth.Stations.First().Spell.Should().Be("gd");
+            eighth.Stations.Last().StationName.Should().Be("集宁");
+            eighth.Stations.Last().Spell.Should().Be("jn");
+            eighth.Moments.Count.Should().Be(11);
+            eighth.Moments.First().ArriveTime.Should().Be(""); //??
+            eighth.Moments.First().DepartTime.Should().Be("19:56");
+            eighth.Moments.Last().ArriveTime.Should().Be("23:47"); //??
+            eighth.Moments.Last().DepartTime.Should().Be("0:18");
         }
     }
 }
