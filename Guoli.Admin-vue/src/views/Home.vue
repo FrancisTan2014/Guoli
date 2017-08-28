@@ -9,8 +9,7 @@
       </el-col>
       <el-col :span="8" class="userinfo">
         <el-dropdown trigger="click">
-          <span class="el-dropdown-link userinfo-inner">
-            <img src="../assets/logo.png" /> {{ user.Name }}</span>
+          <span class="el-dropdown-link userinfo-inner user-name">{{ user.Name }}</span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="changePwd">修改密码</el-dropdown-item>
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
@@ -263,6 +262,11 @@ export default {
           margin: 10px 0px 10px 10px;
           float: right;
         }
+      }
+
+      .user-name {
+        font-size: 16px;
+        padding-right: 16px;
       }
 
       .account {
