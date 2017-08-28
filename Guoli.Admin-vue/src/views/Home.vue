@@ -3,11 +3,11 @@
 
     <!-- header start -->
     <el-col :span="24" class="header">
-      <el-col :span="20" class="logo">
+      <el-col :span="16" class="logo">
         <img src="../assets/logo.png" />
         <span>机务运用管控系统后台管理</span>
       </el-col>
-      <el-col :span="4" class="userinfo">
+      <el-col :span="8" class="userinfo">
         <el-dropdown trigger="click">
           <span class="el-dropdown-link userinfo-inner">
             <img src="../assets/logo.png" /> {{ user.Name }}</span>
@@ -16,6 +16,14 @@
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+        <el-button @click="changePwd" type="text" class="account"><i class="fa fa-key"></i>修改密码</el-button>
+        <el-button @click="logout" type="text" class="account"><i class="fa fa-sign-out"></i>退出登录</el-button>
+      </el-col>
+      <el-col :span="2" class="userinfo">
+
+      </el-col>
+      <el-col :span="2" class="userinfo">
+
       </el-col>
     </el-col>
     <!-- header end -->
@@ -69,13 +77,6 @@
 
           </template>
           <!-- 一级菜单 -->
-
-          <template>
-            <el-menu-item icon="menu" :index="8" @click="changePwd">
-              <i class="el-icon-menu"></i>修改密码</el-menu-item>
-            <el-menu-item :index="9" @click="logout">
-              <i class="el-icon-menu"></i>退出登录</el-menu-item>
-          </template>
 
         </el-menu>
       </aside>
@@ -262,6 +263,10 @@ export default {
           margin: 10px 0px 10px 10px;
           float: right;
         }
+      }
+
+      .account {
+        color: #c0ccda;
       }
     }
     .logo {
