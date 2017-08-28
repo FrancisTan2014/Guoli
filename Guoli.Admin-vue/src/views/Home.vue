@@ -119,7 +119,7 @@ export default {
 
       menus: [
         {
-          icon: 'el-icon-menu',
+          icon: 'fa fa-user',
           index: '1',
           title: '人员管理',
           subs: [
@@ -129,7 +129,7 @@ export default {
           ]
         },
         {
-          icon: 'el-icon-menu',
+          icon: 'fa fa-book',
           index: '2',
           title: '行车资料',
           subs: [
@@ -137,7 +137,7 @@ export default {
           ]
         },
         {
-          icon: 'el-icon-menu',
+          icon: 'fa fa-wordpress',
           index: '3',
           title: '指导司机',
           subs: [
@@ -163,7 +163,7 @@ export default {
         },
 
         {
-          icon: 'el-icon-menu',
+          icon: 'fa fa-id-card-o',
           index: '4',
           title: '司机手账',
           subs: [
@@ -172,7 +172,7 @@ export default {
         },
 
         {
-          icon: 'el-icon-menu',
+          icon: 'fa fa-newspaper-o',
           index: '5',
           title: '考试管理',
           subs: [
@@ -182,7 +182,7 @@ export default {
           ]
         },
         {
-          icon: 'el-icon-menu',
+          icon: 'fa fa-bell-o',
           index: '6',
           title: '通知公告',
           subs: [
@@ -190,9 +190,9 @@ export default {
           ]
         },
         {
-          icon: 'el-icon-menu',
+          icon: 'el-icon-setting',
           index: '7',
-          title: '系统',
+          title: '系统设置',
           subs: [
             { index: 'account', title: '账户管理' },
             { index: 'log', title: '操作日志' }
