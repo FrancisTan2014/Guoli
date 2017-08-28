@@ -67,5 +67,10 @@ namespace Guoli.Utilities.Extensions
 
             return stringBuilder.ToString();
         }
+
+        public static bool IsNullOrEmpty(this string value)
+        {
+            return string.IsNullOrEmpty(value);
+        }
     }
 }

@@ -8,25 +8,27 @@
       <el-form-item prop="Password">
         <el-input type="password" v-model="loginUser.Password" placeholder="密码"></el-input>
       </el-form-item>
-      <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
+      <!-- <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox> -->
       <el-form-item class="w100p">
         <el-button type="primary" class="w100p" @click.native.prevent="login" :loading="loading">登 录</el-button>
+        <el-button type="text" class="fr" @click="showChangeForm">修改密码</el-button>
       </el-form-item>
     </el-form>
 
     <el-form v-if="!isLogin" :model="changeUser" :rules="changeValidator" ref="changePwd" label-position="left" label-width="0px" class="demo-ruleForm login-container" @submit.native.prevent="changePassword">
       <h3 class="title">修改密码</h3>
-      <el-form-item prop="Account">
+      <el-form-item prop="account">
         <el-input type="text" v-model="changeUser.account" placeholder="账号"></el-input>
       </el-form-item>
       <el-form-item prop="oldPwd">
         <el-input type="password" v-model="changeUser.oldPwd" placeholder="旧密码"></el-input>
       </el-form-item>
-      <el-form-item prop="oldPwd">
-        <el-input type="password" v-model="changeUser.oldPwd" placeholder="新密码"></el-input>
+      <el-form-item prop="newPwd">
+        <el-input type="password" v-model="changeUser.newPwd" placeholder="新密码"></el-input>
       </el-form-item>
       <el-form-item class="w100p">
         <el-button type="primary" class="w100p" @click.native.prevent="changePassword" :loading="loading">确 定</el-button>
+        <el-button class="fr" type="text" @click="isLogin = true">登 录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -61,11 +63,11 @@ export default {
       },
 
       changeValidator: {
-        account: { required: true, message: '请输入账号', trigger: 'change' },
-        oldPwd: [{ required: true, message: '请输入新密码', trigger: 'change' },
-        { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'change' }],
-        newPwd: [{ required: true, message: '请输入新密码', trigger: 'change' },
-        { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'change' }]
+        account: { required: true, message: '请输入账号', trigger: 'blur' },
+        oldPwd: [{ required: true, message: '请输入新密码', trigger: 'blur' },
+        { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'blur' }],
+        newPwd: [{ required: true, message: '请输入新密码', trigger: 'blur' },
+        { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'blur' }]
       },
 
       checked: true,
@@ -123,15 +125,44 @@ export default {
       });
     },
 
+    showChangeForm() {
+      this.isLogin = false;
+      this.changeUser.account = '';
+      this.changeUser.oldPwd = '';
+      this.changeUser.newPwd = '';
+    },
+
     // 修改密码
     changePassword() {
       this.$refs.changePwd.validate(valid => {
         if (valid) {
           let { account, oldPwd, newPwd } = this.changeUser;
-          NProgress.start();
-          server.post('', { account, oldPwd, newPwd }, this)
-            .then(res => {
+          // BUG，element-ui框架没有验证newPwd字段
+          if (!newPwd) {
+            this.$error('请输入新密码(:=');
+            return;
+          }
 
+          this.loading = true;
+          NProgress.start();
+
+          server.post('/System/ChangePwd', { account, oldPwd, newPwd }, this)
+            .then(res => {
+              this.loading = false;
+              NProgress.done();
+
+              if (res.code === 100) {
+                this.$success('密码修改成功(:=');
+                this.isLogin = true;
+
+                // 清除登录状态
+                local.removeItem('token');
+                local.removeItem('user');
+              } else if (res.code === 123) {
+                this.$error('密码不正确(:=');
+              } else {
+                this.$error('账户不存在(:=');
+              }
             });
         }
       });
@@ -140,7 +171,10 @@ export default {
   }, // end methods,
 
   mounted() {
-
+    // 从其他页面跳转至本页面时
+    // 若想打开修改密码的表单
+    // 则需传入参数changePwd且值为true
+    this.isLogin = !this.$route.params.changePwd;
   }
 
 } // end export
@@ -169,6 +203,9 @@ export default {
   }
   .w100p {
     width: 100%;
+  }
+  .fr {
+    float:right;
   }
 }
 </style>

@@ -17,8 +17,8 @@ namespace Guoli.Admin.Utilities
     {
         public static bool Add(this OperateLogBll value, string table, int targetId, DataUpdateType operateType, int systemUserId, string log)
         {
-            var userBll = new SystemUserBll();
-            var user = userBll.QuerySingle(systemUserId);
+            //var userBll = new SystemUserBll();
+            //var user = userBll.QuerySingle(systemUserId);
 
             var model = new OperateLog
             {

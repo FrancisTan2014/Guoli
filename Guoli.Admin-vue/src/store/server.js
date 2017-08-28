@@ -40,8 +40,8 @@ let loginFilter = (data, $vue) => {
     $vue.$message({
       title: '提示',
       message: '未登录或者登录已失效，请先登录(:=',
-      type: 'success',
-      duration: 1000,
+      type: 'error',
+      duration: 3500,
       onClose: () => {
         console.info($vue);
         $vue.$router.push({path: '/login', params: { back: $vue.$route.path }});

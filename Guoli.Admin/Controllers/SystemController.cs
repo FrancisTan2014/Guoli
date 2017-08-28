@@ -79,7 +79,36 @@ namespace Guoli.Admin.Controllers
         [HttpPost]
         public JsonResult ChangePwd(string account, string oldPwd, string newPwd)
         {
-            if (string.IsNullOrEmpty())
+            if (account.IsNullOrEmpty() || oldPwd.IsNullOrEmpty() || newPwd.IsNullOrEmpty())
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            if (oldPwd == newPwd)
+            {
+                return Json(ErrorModel.OperateSuccess);
+            }
+
+            var userBll = new SystemUserBll();
+            var user = userBll.QuerySingle($"[Account]='{account}' AND IsDelete=0");
+            if (user == null)
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            // 确保只有在旧密码输入正确的情况下才允许修改密码
+            if (oldPwd.GetMd5() != user.Password)
+            {
+                return Json(ErrorModel.WrongPassword);
+            }
+
+            user.Password = newPwd.GetMd5();
+            var success = userBll.ExecuteTransation(
+                () => userBll.Update(user),
+                () => new OperateLogBll().Add(nameof(SystemUser), user.Id, DataUpdateType.Update, 0, $"修改了账户[{user.Account}]的密码")
+            );
+
+            return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
         }
     }
 }

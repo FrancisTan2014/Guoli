@@ -12,6 +12,7 @@
           <span class="el-dropdown-link userinfo-inner">
             <img src="../assets/logo.png" /> {{ user.Name }}</span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="changePwd">修改密码</el-dropdown-item>
             <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -68,6 +69,13 @@
 
           </template>
           <!-- 一级菜单 -->
+
+          <template>
+            <el-menu-item icon="menu" :index="8" @click="changePwd">
+              <i class="el-icon-menu"></i>修改密码</el-menu-item>
+            <el-menu-item :index="9" @click="logout">
+              <i class="el-icon-menu"></i>退出登录</el-menu-item>
+          </template>
 
         </el-menu>
       </aside>
@@ -187,7 +195,7 @@ export default {
           title: '系统',
           subs: [
             { index: 'account', title: '账户管理' },
-            { index: 'log', title: '操作日志' },
+            { index: 'log', title: '操作日志' }
           ]
         },
 
@@ -196,8 +204,12 @@ export default {
   }, // end data()
 
   methods: {
-    showOrNot: function (item) {
+    showOrNot(item) {
       return !item.hidden;
+    },
+
+    changePwd() {
+      this.$router.push({ name: 'login', params: { changePwd: true } });
     },
 
     logout() {
@@ -207,12 +219,12 @@ export default {
         local.logout();
         this.$router.push('/login');
       });
-    },
+    }
 
   }, // end methods
 
   computed: {
-    onRoutes: function () {
+    onRoutes: function() {
       this.$route.path.replace('/', '');
     }
   },
@@ -220,7 +232,7 @@ export default {
   mounted() {
     this.user = local.getItem('user');
     if (!this.user) {
-      this.$router.push({ name: 'login', params: { back: this.$route.path }});
+      this.$router.push({ name: 'login', params: { back: this.$route.path } });
     }
   } // end mounted
 };

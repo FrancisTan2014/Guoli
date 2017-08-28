@@ -8,6 +8,8 @@ import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import 'nprogress/nprogress.css'
 
+import './utils/messageExt'
+
 Vue.use(ElementUI)
 Vue.use(VueMoment)
 

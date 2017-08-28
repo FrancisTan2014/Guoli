@@ -314,5 +314,13 @@ namespace Guoli.Admin.Models
             msg = "App无更新"
         };
 
+        /// <summary>
+        /// 密码错误（123）
+        /// </summary>
+        public static object WrongPassword => new
+        {
+            code = 123,
+            msg = "密码错误"
+        };
     }
 }
