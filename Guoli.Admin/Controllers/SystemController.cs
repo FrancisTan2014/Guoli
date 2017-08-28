@@ -75,5 +75,11 @@ namespace Guoli.Admin.Controllers
 
             return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
         }
+
+        [HttpPost]
+        public JsonResult ChangePwd(string account, string oldPwd, string newPwd)
+        {
+            if (string.IsNullOrEmpty())
+        }
     }
 }

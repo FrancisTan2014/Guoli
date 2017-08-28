@@ -41,19 +41,6 @@ namespace Guoli.Admin
             {
                 Response.Flush();
             }
-
-            // @FrancisTan 2017-08-25
-            // 屏蔽所有老后台的GET请求
-            if (Request.HttpMethod == "GET"
-                && (!Request.Form.AllKeys.Contains("token") && !Request.Form.AllKeys.Contains("token")) // 新后台请求必带参数
-                && (!Request.QueryString.AllKeys.Contains("token") && !Request.QueryString.AllKeys.Contains("token"))
-                && (!Request.Form.AllKeys.Contains("signature") && !Request.Form.AllKeys.Contains("signature")) // app请求必带参数
-                && (!Request.QueryString.AllKeys.Contains("signature") && !Request.QueryString.AllKeys.Contains("signature"))
-            )
-            {
-                Response.StatusCode = 404;
-                Response.Flush();
-            }
         }
     }
 }

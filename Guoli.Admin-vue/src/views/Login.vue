@@ -1,17 +1,35 @@
 <template>
-  <el-form :model="loginUser" :rules="validator" ref="loginUser" label-position="left" label-width="0px" class="demo-ruleForm login-container" @submit.native.prevent="login">
-    <h3 class="title">系统登录</h3>
-    <el-form-item prop="Account">
-      <el-input type="text" v-model="loginUser.Account" auto-complete="off" placeholder="账号"></el-input>
-    </el-form-item>
-    <el-form-item prop="Password">
-      <el-input type="password" v-model="loginUser.Password" auto-complete="off" placeholder="密码"></el-input>
-    </el-form-item>
-    <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
-    <el-form-item class="w100p">
-      <el-button type="primary" class="w100p" @click.native.prevent="login" :loading="logining">登 录</el-button>
-    </el-form-item>
-  </el-form>
+  <div>
+    <el-form v-if="isLogin" :model="loginUser" :rules="validator" ref="loginUser" label-position="left" label-width="0px" class="demo-ruleForm login-container" @submit.native.prevent="login">
+      <h3 class="title">系统登录</h3>
+      <el-form-item prop="Account">
+        <el-input type="text" v-model="loginUser.Account" placeholder="账号"></el-input>
+      </el-form-item>
+      <el-form-item prop="Password">
+        <el-input type="password" v-model="loginUser.Password" placeholder="密码"></el-input>
+      </el-form-item>
+      <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
+      <el-form-item class="w100p">
+        <el-button type="primary" class="w100p" @click.native.prevent="login" :loading="loading">登 录</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-form v-if="!isLogin" :model="changeUser" :rules="changeValidator" ref="changePwd" label-position="left" label-width="0px" class="demo-ruleForm login-container" @submit.native.prevent="changePassword">
+      <h3 class="title">修改密码</h3>
+      <el-form-item prop="Account">
+        <el-input type="text" v-model="changeUser.account" placeholder="账号"></el-input>
+      </el-form-item>
+      <el-form-item prop="oldPwd">
+        <el-input type="password" v-model="changeUser.oldPwd" placeholder="旧密码"></el-input>
+      </el-form-item>
+      <el-form-item prop="oldPwd">
+        <el-input type="password" v-model="changeUser.oldPwd" placeholder="新密码"></el-input>
+      </el-form-item>
+      <el-form-item class="w100p">
+        <el-button type="primary" class="w100p" @click.native.prevent="changePassword" :loading="loading">确 定</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -24,6 +42,7 @@ let apiUrl = '/Home/Login';
 export default {
   data() {
     return {
+      isLogin: true,
       loginUser: {
         Account: '',
         Password: ''
@@ -35,8 +54,22 @@ export default {
         { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'change' }]
       },
 
+      changeUser: {
+        account: '',
+        oldPwd: '',
+        newPwd: ''
+      },
+
+      changeValidator: {
+        account: { required: true, message: '请输入账号', trigger: 'change' },
+        oldPwd: [{ required: true, message: '请输入新密码', trigger: 'change' },
+        { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'change' }],
+        newPwd: [{ required: true, message: '请输入新密码', trigger: 'change' },
+        { min: 6, max: 16, message: '密码长度必须在6~16之间', trigger: 'change' }]
+      },
+
       checked: true,
-      logining: false
+      loading: false
     }
   },
 
@@ -52,11 +85,11 @@ export default {
             return;
           }
 
-          this.logining = true;
+          this.loading = true;
           NProgress.start();
 
           server.post(apiUrl, this.loginUser).then(res => {
-            this.logining = false;
+            this.loading = false;
             NProgress.done();
 
             let { code, data } = res;
@@ -86,6 +119,20 @@ export default {
               });
             }
           });
+        }
+      });
+    },
+
+    // 修改密码
+    changePassword() {
+      this.$refs.changePwd.validate(valid => {
+        if (valid) {
+          let { account, oldPwd, newPwd } = this.changeUser;
+          NProgress.start();
+          server.post('', { account, oldPwd, newPwd }, this)
+            .then(res => {
+
+            });
         }
       });
     }
