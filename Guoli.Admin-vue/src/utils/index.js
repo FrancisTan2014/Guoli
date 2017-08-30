@@ -1,4 +1,5 @@
 import print from './print';
+import buildValidator from './validator';
 
 let isObject = obj => typeof (obj) === 'object';
 
@@ -116,5 +117,6 @@ export {
   fileIcons,
   timepickerOptions,
   convertCSharpTime,
-  print
+  print,
+  buildValidator
 };

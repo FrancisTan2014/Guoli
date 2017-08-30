@@ -13,6 +13,7 @@ namespace Guoli.Admin.Controllers
 {
     public class SystemController : Controller
     {
+        #region 账户管理
         [HttpPost]
         public JsonResult AddOrUpdate(SystemUser user)
         {
@@ -33,7 +34,7 @@ namespace Guoli.Admin.Controllers
                 user.Password = user.Password.GetMd5();
 
                 var log = user.Id == 0 ? $"添加了新账户：{user.Name}-{user.Account}" : $"修改了账户：{user.Name}-{user.Account}";
-                var operateType = user.Id == 0 ? DataUpdateType.Insert : DataUpdateType.Update;                
+                var operateType = user.Id == 0 ? DataUpdateType.Insert : DataUpdateType.Update;
 
                 Func<bool> doAddOrUpdate = () =>
                 {
@@ -110,5 +111,36 @@ namespace Guoli.Admin.Controllers
 
             return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
         }
+        #endregion
+
+        #region 路由器管理
+
+        [HttpPost]
+        public JsonResult AddOrUpdateRouter(InstructorRouterPosition model)
+        {
+            if (model != null)
+            {
+                var isUpdate = model.Id > 0;
+                var updateType = isUpdate ? DataUpdateType.Update : DataUpdateType.Insert;
+
+                var bll = new InstructorRouterPositionBll();
+                Func<bool> doUpdate = () => bll.Insert(model).Id > 0;
+                if (isUpdate)
+                {
+                    doUpdate = () => bll.Update(model);
+                }
+
+                var success = bll.ExecuteTransation(
+                    doUpdate,
+                    () => DataUpdateLog.SingleUpdate(nameof(InstructorRouterPosition), model.Id, updateType)
+                );
+
+                return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+            }
+
+            return Json(ErrorModel.InputError);
+        }
+
+        #endregion
     }
 }

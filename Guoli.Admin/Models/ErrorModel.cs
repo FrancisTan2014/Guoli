@@ -14,7 +14,7 @@ namespace Guoli.Admin.Models
     public class ErrorModel
     {
         /// <summary>
-        /// 操作成功
+        /// 操作成功（100）
         /// </summary>
         public static object OperateSuccess
         {
@@ -236,7 +236,7 @@ namespace Guoli.Admin.Models
         }
 
         /// <summary>
-        /// 添加数据成功
+        /// 添加数据成功（116）
         /// </summary>
         /// <param name="id">新添加的数据id</param>
         /// <returns></returns>

@@ -28,6 +28,7 @@ namespace Guoli.Model
 		#region Model
 		private int _id;
 		private string _bssid;
+        private string _ip;
 		private string _location;
 		private DateTime _addtime= DateTime.Now;
 		private bool _isdelete= false;
@@ -55,6 +56,14 @@ namespace Guoli.Model
 			set{ _location=value;}
 			get{return _location;}
 		}
+        /// <summary>
+        /// Ip地址
+        /// </summary>
+        public string Ip
+        {
+            set { _ip = value; }
+            get { return _ip; }
+        }
 		/// <summary>
 		/// 添加时间
 		/// </summary>

@@ -44,10 +44,11 @@ import ViewExamFiles from '@/views/exam/ViewExamFiles'
 // 通知公告
 import Announcement from '@/views/notify/Announcement'
 
-// 权限管理
+// 系统设置
 import SystemUser from '@/views/system/SystemUser'
 import ViewOperateLog from '@/views/system/ViewOperateLog'
 import AppUpdate from '@/views/system/AppUpdate'
+import InstructorRouterPosition from '@/views/system/InstructorRouterPosition'
 
 Vue.use(Router)
 
@@ -139,6 +140,7 @@ export default new Router({
       children: [
         { path: '/account', name: 'account', desc: '账户管理', component: SystemUser },
         { path: '/log', name: 'log', desc: '操作日志', component: ViewOperateLog },
+        { path: '/router', name: 'router', desc: '路由器管理', component: InstructorRouterPosition },
         { path: '/app', name: 'app', desc: 'app更新', component: AppUpdate }
       ]
     },

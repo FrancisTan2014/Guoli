@@ -195,7 +195,8 @@ export default {
           title: '系统设置',
           subs: [
             { index: 'account', title: '账户管理' },
-            { index: 'log', title: '操作日志' }
+            { index: 'log', title: '操作日志' },
+            { index: 'router', title: '路由器管理' },
           ]
         },
 
