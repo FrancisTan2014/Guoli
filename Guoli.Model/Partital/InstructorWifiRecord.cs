@@ -28,6 +28,7 @@ namespace Guoli.Model
 		#region Model
 		private int _id;
 		private int _instructorid;
+        private int _deviceid;
 		private int _routerpositionid;
 		private int _connectflag;
 		private DateTime _connecttime;
@@ -72,6 +73,14 @@ namespace Guoli.Model
 			set{ _connecttime=value;}
 			get{return _connecttime;}
 		}
+        /// <summary>
+        /// 设备 Id
+        /// </summary>
+        public int DeviceId
+        {
+            set { _deviceid = value; }
+            get { return _deviceid; }
+        }
 		/// <summary>
 		/// 删除标识
 		/// </summary>
