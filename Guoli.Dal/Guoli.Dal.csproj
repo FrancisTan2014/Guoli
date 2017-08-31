@@ -53,6 +53,7 @@
     <Compile Include="OracleDal\Z_JCYY_BASEPERSONNELDal.cs" />
     <Compile Include="Partital\AnnounceCommandsDal.cs" />
     <Compile Include="Partital\AnnouncementDal.cs" />
+    <Compile Include="Partital\AppOperateLogDal.cs" />
     <Compile Include="Partital\AppUpdateDal.cs" />
     <Compile Include="Partital\BaseLineDal.cs" />
     <Compile Include="Partital\BaseStationDal.cs" />

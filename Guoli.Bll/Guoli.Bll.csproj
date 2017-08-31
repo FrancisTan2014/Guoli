@@ -49,6 +49,7 @@
     <Compile Include="OracleBll\Z_JCYY_BASEPERSONNELBll.cs" />
     <Compile Include="Partital\AnnounceCommandsBll.cs" />
     <Compile Include="Partital\AnnouncementBll.cs" />
+    <Compile Include="Partital\AppOperateLogBll.cs" />
     <Compile Include="Partital\AppUpdateBll.cs" />
     <Compile Include="Partital\BaseLineBll.cs" />
     <Compile Include="Partital\BaseStationBll.cs" />
