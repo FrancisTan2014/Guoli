@@ -1,12 +1,12 @@
-移动设备信息上传接口
-接口地址：/App/Index
+/************************/	
+/* 移动设备信息上传接口 */
+/************************/
+接口地址：/App/AddDevice
 请求方式：POST
 请求参数：
 	{
 		"signature": "",
-		"TableName": "MobileDevice",
-		"Operate": 1,
-		"Data": {"UniqueId":"设备唯一标识","DeviceType":"设备型号","OsVersion":"系统版本"}
+		"json": {"UniqueId":"设备唯一标识","DeviceType":"设备型号","OsVersion":"系统版本"}
 	}
 请求成功返回数据：
 	{
@@ -14,4 +14,52 @@
 		"msg":"数据请求成功",
 		"data":{"Id":1,"UniqueId":"testid","DeviceType":"testtype","OsVersion":"testversion","AddTime":"2017-08-31 21:41:15","IsDelete":false},
 		"tableName":"MobileDevice"
+	}
+
+	
+	
+/************************/	
+/* Wifi连接记录上传接口 */
+/************************/	
+Wifi连接记录上传接口
+接口地址：/App/Index
+请求方式：POST
+
+特别说明：
+	请求参数中的 DeviceId 为调用“移动设备信息上传接口”
+	成功之后返回的数据中的 Id 值，需要存储到本地
+
+本接口有两种方式上传数据
+其中第一种为上传单条数据
+请求参数：
+	{
+		"signature": "",
+		"TableName": "InstructorWifiRecord",
+		"Operate": 1,
+		"Data": {"InstructorId":0,"RouterPositionId":0,"ConnectFlag":"1 连接 2 断开","ConnectTime":"2017-08-31 22:13:56","DeviceId":0}
+	},
+请求成功返回数据：
+	{
+		"code":108,
+		"msg":"数据请求成功",
+		"data":{},
+		"tableName":"InstructorWifiRecord"
+	}
+	
+第二种为上传多条数据
+请求参数：
+	{
+		"signature": "",
+		"TableName": "InstructorWifiRecord",
+		"Operate": 2,
+		"Data": [
+		{"InstructorId":0,"RouterPositionId":0,"ConnectFlag":"1 连接 2 断开","ConnectTime":"2017-08-31 22:13:56","DeviceId":0},
+		{"InstructorId":0,"RouterPositionId":0,"ConnectFlag":"1 连接 2 断开","ConnectTime":"2017-08-31 22:13:56","DeviceId":0},
+		{"InstructorId":0,"RouterPositionId":0,"ConnectFlag":"1 连接 2 断开","ConnectTime":"2017-08-31 22:13:56","DeviceId":0}
+		]
+	}
+请求成功返回数据：
+	{
+		"code":107,
+		"msg":"数据插入成功"
 	}

@@ -280,5 +280,38 @@ namespace Guoli.Admin.Controllers
                 }
             });
         }
+
+        /// <summary>
+        /// 移动终端设备信息上传接口
+        /// 保证每一台设备信息在数据库中
+        /// 仅有唯一一条记录
+        /// </summary>
+        /// <param name="json">包含上传的数据的json字符串</param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult AddDevice(string json)
+        {
+            var data = JsonHelper.Deserialize<MobileDevice>(json);
+
+            if (data == null)
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            var bll = new MobileDeviceBll();
+            var model = bll.QuerySingle($"UniqueId='{data.UniqueId}' AND IsDelete=0");
+            if (model != null)
+            {
+                return Json(ErrorModel.GetDataSuccess(model, nameof(MobileDevice)));
+            }
+
+            var success = bll.Insert(data).Id > 0;
+            if (success)
+            {
+                return Json(ErrorModel.GetDataSuccess(data, nameof(MobileDevice)));
+            }
+
+            return Json(ErrorModel.OperateFailed);
+        }
     }
 }
