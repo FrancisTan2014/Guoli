@@ -197,6 +197,7 @@ export default {
             { index: 'account', title: '账户管理' },
             { index: 'log', title: '操作日志' },
             { index: 'router', title: '路由器管理' },
+            { index: 'device', title: '移动设备管理' },
           ]
         },
 

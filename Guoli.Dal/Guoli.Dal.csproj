@@ -90,6 +90,7 @@
     <Compile Include="Partital\InstructorWifiRecordDal.cs" />
     <Compile Include="Partital\LineAnnounceCommandsDal.cs" />
     <Compile Include="Partital\LineStationsDal.cs" />
+    <Compile Include="Partital\MobileDeviceDal.cs" />
     <Compile Include="Partital\OperateLogDal.cs" />
     <Compile Include="Partital\OracleTableMaxIdDal.cs" />
     <Compile Include="Partital\PersonInfoDal.cs" />

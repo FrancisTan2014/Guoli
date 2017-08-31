@@ -1,0 +1,17 @@
+移动设备信息上传接口
+接口地址：/App/Index
+请求方式：POST
+请求参数：
+	{
+		"signature": "",
+		"TableName": "MobileDevice",
+		"Operate": 1,
+		"Data": {"UniqueId":"设备唯一标识","DeviceType":"设备型号","OsVersion":"系统版本"}
+	}
+请求成功返回数据：
+	{
+		"code":108,
+		"msg":"数据请求成功",
+		"data":{"Id":1,"UniqueId":"testid","DeviceType":"testtype","OsVersion":"testversion","AddTime":"2017-08-31 21:41:15","IsDelete":false},
+		"tableName":"MobileDevice"
+	}
