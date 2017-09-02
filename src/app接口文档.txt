@@ -1,49 +1,24 @@
-/************************/	
-/* 移动设备信息上传接口 */
-/************************/
-接口地址：/App/AddDevice
-请求方式：POST
-请求参数：
-	{
-		"signature": "",
-		"json": {"UniqueId":"设备唯一标识","DeviceType":"设备型号","OsVersion":"系统版本"}
-	}
-请求成功返回数据：
-	{
-		"code":108,
-		"msg":"数据请求成功",
-		"data":{"Id":1,"UniqueId":"testid","DeviceType":"testtype","OsVersion":"testversion","AddTime":"2017-08-31 21:41:15","IsDelete":false},
-		"tableName":"MobileDevice"
-	}
 
-	
-	
 /************************/	
 /* Wifi连接记录上传接口 */
 /************************/	
 Wifi连接记录上传接口
-接口地址：/App/Index
+接口地址：/App/WifiRecord
 请求方式：POST
-
-特别说明：
-	请求参数中的 DeviceId 为调用“移动设备信息上传接口”
-	成功之后返回的数据中的 Id 值，需要存储到本地
-
 请求参数：
 	{
 		"signature": "",
-		"TableName": "InstructorWifiRecord",
-		"Operate": 2,
-		"Data": [
+		"data": [
 		{"InstructorId":0,"RouterPositionId":0,"ConnectFlag":"1 连接 2 断开","ConnectTime":"2017-08-31 22:13:56","DeviceId":0},
 		{"InstructorId":0,"RouterPositionId":0,"ConnectFlag":"1 连接 2 断开","ConnectTime":"2017-08-31 22:13:56","DeviceId":0},
 		{"InstructorId":0,"RouterPositionId":0,"ConnectFlag":"1 连接 2 断开","ConnectTime":"2017-08-31 22:13:56","DeviceId":0}
-		]
+		],
+		"device": {"UniqueId":"设备唯一标识","DeviceType":"设备型号","OsVersion":"系统版本"}
 	}
 请求成功返回数据：
 	{
-		"code":107,
-		"msg":"数据插入成功"
+		"code":100,
+		"msg":"操作成功"
 	}
 	
 
@@ -52,28 +27,25 @@ Wifi连接记录上传接口
 /* App操作日志上传接口  */
 /************************/	
 Wifi连接记录上传接口
-接口地址：/App/Index
+接口地址：/App/OperateLog
 请求方式：POST
 
 特别说明：
-	请求参数中的 DeviceId 为调用“移动设备信息上传接口”
-	成功之后返回的数据中的 Id 值，需要存储到本地
 	OperatorId为当前登录人的Id（PersonInfo表的主键）
 	LogType（1 为登录系统；2 为退出系统）
 
 请求参数：
 	{
 		"signature": "",
-		"TableName": "AppOperateLog",
-		"Operate": 2,
-		"Data": [
+		"data": [
 		{"LogType":0,"LogContent":"","OperatorId":0,"DeviceId":0,"AddTime":"2017-08-31 22:13:56"},
 		{"LogType":0,"LogContent":"","OperatorId":0,"DeviceId":0,"AddTime":"2017-08-31 22:13:56"},
 		{"LogType":0,"LogContent":"","OperatorId":0,"DeviceId":0,"AddTime":"2017-08-31 22:13:56"}
-		]
+		],
+		"device": {"UniqueId":"设备唯一标识","DeviceType":"设备型号","OsVersion":"系统版本"}
 	}
 请求成功返回数据：
 	{
-		"code":107,
-		"msg":"数据插入成功"
+		"code":100,
+		"msg":"操作成功"
 	}

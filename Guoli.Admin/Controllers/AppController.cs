@@ -282,36 +282,70 @@ namespace Guoli.Admin.Controllers
         }
 
         /// <summary>
-        /// 移动终端设备信息上传接口
-        /// 保证每一台设备信息在数据库中
-        /// 仅有唯一一条记录
+        /// 确保设备信息在数据库中是唯一的
         /// </summary>
-        /// <param name="json">包含上传的数据的json字符串</param>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        private MobileDevice MakeDeviceUnique(MobileDevice device)
+        {
+            var bll = new MobileDeviceBll();
+            var model = bll.QuerySingle($"UniqueId='{device.UniqueId}' AND IsDelete=0");
+            if (model == null)
+            {
+                model = device;
+                var success = bll.Insert(model).Id > 0;
+                if (!success)
+                {
+                    throw new Exception("设备信息插入失败！");
+                }
+            }
+
+            return model;
+        }
+
+        /// <summary>
+        /// app上传wifi连接记录接口
+        /// </summary>
+        /// <param name="data">wifi连接记录数据集合</param>
+        /// <param name="device">设备信息</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult AddDevice(string json)
+        public JsonResult WifiRecord(List<InstructorWifiRecord> data, MobileDevice device)
         {
-            var data = JsonHelper.Deserialize<MobileDevice>(json);
-
-            if (data == null)
+            if (data == null || device == null)
             {
                 return Json(ErrorModel.InputError);
             }
 
-            var bll = new MobileDeviceBll();
-            var model = bll.QuerySingle($"UniqueId='{data.UniqueId}' AND IsDelete=0");
-            if (model != null)
+            device = MakeDeviceUnique(device);
+            data.ForEach(item => item.DeviceId = device.Id);
+
+            var wifiBll = new InstructorWifiRecordBll();
+            wifiBll.BulkInsert(data);
+
+            return Json(ErrorModel.OperateSuccess);
+        }
+
+        /// <summary>
+        /// app 操作日志上传接口
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        public JsonResult OperateLog(List<AppOperateLog> data, MobileDevice device)
+        {
+            if (data == null || device == null)
             {
-                return Json(ErrorModel.GetDataSuccess(model, nameof(MobileDevice)));
+                return Json(ErrorModel.InputError);
             }
 
-            var success = bll.Insert(data).Id > 0;
-            if (success)
-            {
-                return Json(ErrorModel.GetDataSuccess(data, nameof(MobileDevice)));
-            }
+            device = MakeDeviceUnique(device);
+            data.ForEach(item => item.DeviceId = device.Id);
 
-            return Json(ErrorModel.OperateFailed);
+            var logBll = new AppOperateLogBll();
+            logBll.BulkInsert(data);
+
+            return Json(ErrorModel.OperateSuccess);
         }
     }
 }
