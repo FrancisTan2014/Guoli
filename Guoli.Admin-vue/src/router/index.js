@@ -87,20 +87,30 @@ export default new Router({
       children: [
         { path: '/temptake', name: 'temptake', desc: '添乘信息单', component: Take },
         { path: '/temptake-prev', name: 'temptake-prev', desc: '添乘信息单打印预览', component: TakePrev, hidden: true },
+
         { path: '/analysis', name: 'analysis', desc: '监控分析单', component: ViewInstructorAnalysis },
         { path: '/analysis-prev', name: 'analysis-prev', desc: '监控分析单打印预览', component: AnalysisPrev, hidden: true },
+
         { path: '/check', name: 'check', desc: '抽查信息单', component: ViewInstructorCheck },
+
         { path: '/repair', name: 'repair', desc: '机破临修记录', component: ViewInstructorRepair },
+
         { path: '/keyperson', name: 'keyperson', desc: '关键人管理', component: ViewInstructorKeyPerson },
         { path: '/keyperson-prev', name: 'keyperson-prev', desc: '关键人管理打印预览', component: KeyPersonPrev, hidder: true },
+
         { path: '/quality', name: 'quality', desc: '机车质量登记', component: ViewInstructorLocoQuality },
         { path: '/quality-prev', name: 'quality-prev', desc: '违章违纪记录打印预览', component: QualityPrev, hidder: true },
+
         { path: '/good', name: 'good', desc: '防止事故及好人好事记录', component: ViewInstructorGoodJob },
         { path: '/good-prev', name: 'good-prev', desc: '防止事故及好人好事记录打印预览', component: GooPrev, hidder: true },
+
         { path: '/peccany', name: 'peccany', desc: '违章违纪记录', component: ViewInstructorPeccancy },
         { path: '/peccany-prev', name: 'peccany-prev', desc: '违章违纪记录打印预览', component: PeccanyPrev, hidder: true },
+
         { path: '/teach', name: 'teach', desc: '授课培训记录', component: ViewInstructorTeach },
+
         { path: '/plan', name: 'plan', desc: '工作总结计划', component: ViewInstructorPlan },
+
         { path: '/accept', name: 'accept', desc: '标准化验收', component: ViewInstructorAccept },
       ]
     },
