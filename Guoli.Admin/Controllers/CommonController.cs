@@ -104,5 +104,32 @@ namespace Guoli.Admin.Controllers
 
             return Json(ErrorModel.InputError);
         }
+
+        /// <summary>
+        /// 根据Id获取司机报单详情
+        /// 将会返回<see cref="ViewDriveRecord"/>对象
+        /// 和一个<see cref="ViewSignPoint"/>对象集合
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult GetDriverRecord(int id)
+        {
+            var driveRecordBll = new ViewDriveRecordBll();
+            var driveRecord = driveRecordBll.QuerySingle(id);
+            if (driveRecord == null)
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            var signPointBll = new ViewSignPointBll();
+            var signPoints = signPointBll.QueryList($"DriveRecordId={id}", null, null, "Sort").ToList();
+
+            return Json(ErrorModel.GetDataSuccess(new
+            {
+                record = driveRecord,
+                signs = signPoints
+            }));
+        }
     }
 }

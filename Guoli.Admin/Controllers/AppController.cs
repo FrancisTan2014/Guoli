@@ -310,18 +310,21 @@ namespace Guoli.Admin.Controllers
         /// <param name="device">设备信息</param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult WifiRecord(List<InstructorWifiRecord> data, MobileDevice device)
+        public JsonResult WifiRecord(string data, string device)
         {
-            if (data == null || device == null)
+            var list = JsonHelper.Deserialize<List<InstructorWifiRecord>>(data);
+            var model = JsonHelper.Deserialize<MobileDevice>(device);
+
+            if (list == null || model == null)
             {
                 return Json(ErrorModel.InputError);
             }
 
-            device = MakeDeviceUnique(device);
-            data.ForEach(item => item.DeviceId = device.Id);
+            model = MakeDeviceUnique(model);
+            list.ForEach(item => item.DeviceId = model.Id);
 
             var wifiBll = new InstructorWifiRecordBll();
-            wifiBll.BulkInsert(data);
+            wifiBll.BulkInsert(list);
 
             return Json(ErrorModel.OperateSuccess);
         }
@@ -332,18 +335,21 @@ namespace Guoli.Admin.Controllers
         /// <param name="data"></param>
         /// <param name="device"></param>
         /// <returns></returns>
-        public JsonResult OperateLog(List<AppOperateLog> data, MobileDevice device)
+        public JsonResult OperateLog(string data, string device)
         {
-            if (data == null || device == null)
+            var list = JsonHelper.Deserialize<List<AppOperateLog>>(data);
+            var model = JsonHelper.Deserialize<MobileDevice>(device);
+
+            if (list == null || model == null)
             {
                 return Json(ErrorModel.InputError);
             }
 
-            device = MakeDeviceUnique(device);
-            data.ForEach(item => item.DeviceId = device.Id);
+            model = MakeDeviceUnique(model);
+            list.ForEach(item => item.DeviceId = model.Id);
 
             var logBll = new AppOperateLogBll();
-            logBll.BulkInsert(data);
+            logBll.BulkInsert(list);
 
             return Json(ErrorModel.OperateSuccess);
         }

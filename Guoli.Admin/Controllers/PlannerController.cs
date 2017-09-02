@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Guoli.Admin.Models;
 using Guoli.Bll;
+using Guoli.Model;
 using Guoli.Utilities.Helpers;
 
 namespace Guoli.Admin.Controllers

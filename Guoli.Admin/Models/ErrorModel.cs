@@ -129,7 +129,7 @@ namespace Guoli.Admin.Models
         }
 
         /// <summary>
-        /// app请求数据成功后返回的消息（带有请求到的数据）
+        /// app请求数据成功后返回的消息（108 带有请求到的数据）
         /// </summary>
         /// <param name="data">请求到的数据结果</param>
         /// <param name="tableName"></param>
