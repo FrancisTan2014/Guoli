@@ -221,19 +221,13 @@ namespace Guoli.Admin.Models
         }
 
         /// <summary>
-        /// 存在依赖项
+        /// 存在依赖项（114）
         /// </summary>
-        public static object DeleteForbidden
+        public static object DeleteForbidden => new
         {
-            get
-            {
-                return new
-                {
-                    code = 114,
-                    msg = "存在依赖项，无法删除"
-                };
-            }
-        }
+            code = 114,
+            msg = "存在依赖项，无法删除"
+        };
 
         /// <summary>
         /// 添加数据成功（116）

@@ -471,10 +471,10 @@ namespace Guoli.Dal
             {
                 try
                 {
-                    var result = false;
+                    var result = true;
                     foreach (var func in delegates)
                     {
-                        result = func();
+                        result = result && func();
                     }
 
                     if (result)

@@ -4,6 +4,8 @@ using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace Guoli.Admin.Controllers
@@ -12,9 +14,9 @@ namespace Guoli.Admin.Controllers
     {
         #region 账户管理
         [HttpPost]
-        public JsonResult AddOrUpdate(SystemUser user)
+        public JsonResult AddOrUpdate(SystemUser user, int[] menus)
         {
-            if (user != null)
+            if (user != null && menus != null)
             {
                 var bll = new SystemUserBll();
 
@@ -33,7 +35,7 @@ namespace Guoli.Admin.Controllers
                 var log = user.Id == 0 ? $"添加了新账户：{user.Name}-{user.Account}" : $"修改了账户：{user.Name}-{user.Account}";
                 var operateType = user.Id == 0 ? DataUpdateType.Insert : DataUpdateType.Update;
 
-                Func<bool> doAddOrUpdate = () =>
+                bool DoAddOrUpdate()
                 {
                     if (user.Id == 0)
                     {
@@ -41,17 +43,51 @@ namespace Guoli.Admin.Controllers
                     }
 
                     return bll.Update(user);
-                };
+                }
 
                 var success = bll.ExecuteTransation(
-                    () => doAddOrUpdate(),
+                    DoAddOrUpdate,
+                    () => AddPermisions(user, menus),
                     () => new OperateLogBll().Add(nameof(SystemUser), user.Id, operateType, loginUserId, log)
                 );
 
                 return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
             }
+            else
+            {
+                return Json(ErrorModel.InputError);
+            }
+        }
 
-            return Json(ErrorModel.InputError);
+        private bool AddPermisions(SystemUser user, IEnumerable<int> menus)
+        {
+            if (user != null && user.Id > 0 && menus != null)
+            {
+                Func<bool> clear;
+
+                var bll = new PermissionBll();
+                if (bll.Exists($"SystemUserId={user.Id} AND IsDelete=0"))
+                {
+                    clear = () => bll.Delete($"SystemUserId={user.Id}");
+                }
+                else
+                {
+                    clear = () => true;
+                }
+
+                var permissions = menus.Select(menuId => new Permission {MenuId = menuId, SystemUserId = user.Id});
+                Func<bool> add = () =>
+                {
+                    bll.BulkInsert(permissions);
+                    return true;
+                };
+
+                return bll.ExecuteTransation(clear, add);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         [HttpPost]
@@ -136,6 +172,54 @@ namespace Guoli.Admin.Controllers
             }
 
             return Json(ErrorModel.InputError);
+        }
+
+        #endregion
+
+        #region 菜单管理
+
+        [HttpPost]
+        public JsonResult EditMenu(Menu menu)
+        {
+            if (menu == null)
+            {
+                return Json(ErrorModel.InputError);
+            }
+
+            var bll = new MenuBll();
+            var success = menu.Id > 0 ? bll.Update(menu) : bll.Insert(menu).Id > 0;
+            return Json(success ? ErrorModel.GetDataSuccess(menu) : ErrorModel.OperateFailed);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteMenu(int id)
+        {
+            var bll = new MenuBll();
+            if (bll.Exists($"ParentId={id} AND IsDelete=0"))
+            {
+                return Json(ErrorModel.DeleteForbidden);
+            }
+
+            var success = bll.Delete(id);
+            return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+        }
+
+        [HttpPost]
+        public JsonResult GetMenuList()
+        {
+            var bll = new MenuBll();
+            var list = bll.QueryList("IsDelete=0");
+
+            return Json(ErrorModel.GetDataSuccess(list));
+        }
+
+        [HttpPost]
+        public JsonResult GetPermissions(int userId)
+        {
+            var bll = new ViewPermissionBll();
+            var list = bll.QueryList($"SystemUserId={userId} AND IsDelete=0");
+
+            return Json(ErrorModel.GetDataSuccess(list));
         }
 
         #endregion

@@ -35,7 +35,7 @@
         <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
 
           <!-- 一级菜单 -->
-          <template v-for="item in menus">
+          <template v-for="item in permissions">
 
             <!-- 二级菜单 -->
             <template v-if="item.subs">
@@ -109,6 +109,9 @@
 
 <script>
 import local from '../store/local';
+import server from '../store/server';
+import _ from 'underscore';
+import clone from 'clone';
 
 export default {
   data() {
@@ -190,18 +193,28 @@ export default {
           ]
         },
         {
-          icon: 'el-icon-setting',
+          icon: 'fa fa-laptop',
           index: '7',
+          title: '设备管理',
+          subs: [
+            { index: 'router', title: '路由器管理' },
+            { index: 'mobile', title: '移动设备管理' }
+          ]
+        },
+        {
+          icon: 'el-icon-setting',
+          index: '8',
           title: '系统设置',
           subs: [
             { index: 'account', title: '账户管理' },
             { index: 'log', title: '操作日志' },
-            { index: 'router', title: '路由器管理' },
-            { index: 'device', title: '移动设备管理' },
+            { index: 'menu', title: '菜单管理' },
+            { index: 'app', title: 'app更新' }
           ]
         },
 
-      ]
+      ],
+      permissions: []
     };
   }, // end data()
 
@@ -235,6 +248,28 @@ export default {
     this.user = local.getItem('user');
     if (!this.user) {
       this.$router.push({ name: 'login', params: { back: this.$route.path } });
+    } else {
+      if (!this.user.IsSuper) {
+        // 若当前登录用户不是超级管理员
+        // 则加载其允许访问的菜单
+        server.post('/System/GetPermissions', { userId: this.user.Id }, this)
+        .then(res => {
+          let { data } = res;
+          // 筛选一级菜单
+          let topest = _.filter(this.menus, item => _.find(data, elem => elem.Path.replace('/', '') === item.index));
+          let list = clone(topest);
+
+          // 筛选二级菜单
+          list.forEach(item => {
+            let subs = _.filter(item.subs, v => _.find(data, elem => elem.Path.replace('/', '') === v.index));
+            item.subs = subs;
+          });
+
+          this.permissions = list;
+        });
+      } else {
+        this.permissions = this.menus;
+      }
     }
   } // end mounted
 };

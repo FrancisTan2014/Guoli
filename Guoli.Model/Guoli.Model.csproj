@@ -88,9 +88,11 @@
     <Compile Include="Partital\InstructorWifiRecord.cs" />
     <Compile Include="Partital\LineAnnounceCommands.cs" />
     <Compile Include="Partital\LineStations.cs" />
+    <Compile Include="Partital\Menu.cs" />
     <Compile Include="Partital\MobileDevice.cs" />
     <Compile Include="Partital\OperateLog.cs" />
     <Compile Include="Partital\OracleTableMaxId.cs" />
+    <Compile Include="Partital\Permission.cs" />
     <Compile Include="Partital\PersonInfo.cs" />
     <Compile Include="Partital\Posts.cs" />
     <Compile Include="Partital\PrimaryIdRelation.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="Partital\ViewInstructorTempTake.cs" />
     <Compile Include="Partital\ViewInstructorWifiRecord.cs" />
     <Compile Include="Partital\ViewOperateLog.cs" />
+    <Compile Include="Partital\ViewPermission.cs" />
     <Compile Include="Partital\ViewPersonInfo.cs" />
     <Compile Include="Partital\ViewSignPoint.cs" />
     <Compile Include="Partital\ViewStation.cs" />

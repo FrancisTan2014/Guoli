@@ -89,6 +89,48 @@
           <el-button type="text">添加部门</el-button>
         </el-form-item>
 
+        <!-- 权限设置 -->
+        <el-form-item label="权限设置：">
+          <el-collapse accordion v-if="menus.length > 0">
+
+            <!-- 一级菜单 -->
+            <el-collapse-item v-for="menu in menus" :key="menu.Id">
+              <template slot="title">
+                <el-checkbox @change="selectChanged(menu.Id)" :checked="menu.checked">{{menu.Name}}</el-checkbox>
+              </template>
+
+              <el-collapse accordion v-if="menu.children">
+
+                <!-- 二级菜单 -->
+                <el-collapse-item v-for="sub in menu.children" :key="sub.Id">
+                  <template slot="title">
+                    <el-checkbox @change="selectChanged(sub.Id)" :checked="sub.checked">{{sub.Name}}</el-checkbox>
+                  </template>
+
+                  <el-collapse accordion v-if="sub.children">
+
+                    <!-- 三级级菜单 -->
+                    <el-collapse-item v-for="grand in menu.children" :key="grand.Id">
+                      <template slot="title">
+                        <el-checkbox @change="selectChanged(grand.Id)" :checked="grand.checked">{{grand.Name}}</el-checkbox>
+                      </template>
+                    </el-collapse-item>
+                    <!-- 三级菜单 -->
+
+                  </el-collapse>
+
+                </el-collapse-item>
+                <!-- 二级菜单 -->
+
+              </el-collapse>
+
+            </el-collapse-item>
+            <!-- 一级菜单 -->
+
+          </el-collapse>
+        </el-form-item>
+        <!-- 权限设置 -->
+
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -107,6 +149,7 @@ import _ from 'underscore';
 import clone from 'clone';
 import NProgress from 'nprogress';
 import server from '@/store/server';
+import local from '@/store/local';
 import { timepickerOptions } from '@/utils';
 
 export default {
@@ -115,6 +158,7 @@ export default {
       isLoading: false,
       data: [],
       departs: [],
+      menus: [],
 
       // 搜索
       apiUrl: '/Instructor/GetListForVue',
@@ -160,12 +204,15 @@ export default {
         DepartmentId: [{ required: true, type: 'array', message: '请选择此账户所属部门', trigger: 'change' }]
       },
       cascaderOptions: [],
-      searchSelected: ''
+      searchSelected: '',
+
+      // 权限设置
+      permission: []
     };
   },
 
   methods: {
-    load: function () {
+    load: function() {
       let o = {
         page: this.page,
         size: this.size,
@@ -184,7 +231,7 @@ export default {
       });
     },
 
-    loadDeparts: function () {
+    loadDeparts: function() {
       let findChildren = (array, parentId) => {
         let sub = _.filter(array, item => item.ParentId === parentId);
         if (sub.length === 0) {
@@ -217,20 +264,20 @@ export default {
         });
     },
 
-    CreatorIdFormatter: function (row) { return '超级管理员'; }, CreateTimeFormatter: function (row) { return moment(row.CreateTime).format('YYYY-MM-DD HH:mm:ss'); },
+    CreatorIdFormatter: function(row) { return '超级管理员'; }, CreateTimeFormatter: function(row) { return moment(row.CreateTime).format('YYYY-MM-DD HH:mm:ss'); },
 
-    handlePageChange: function (page) {
+    handlePageChange: function(page) {
       this.page = page;
       this.load();
     },
 
-    accountChange: function (value) {
+    accountChange: function(value) {
       this.editFormModel.Password = this.editFormModel.Account;
     },
 
     // 级联选择器选项改变时
     // 将部门名称赋值给DepartmentName字段
-    handleDepartChange: function (selected) {
+    handleDepartChange: function(selected) {
       let departId = _.last(selected);
       let depart = _.find(this.departs, item => item.Id === departId);
       this.editFormModel.DepartmentName = depart.DepartmentName;
@@ -239,7 +286,7 @@ export default {
     // 根据用户输入的工号
     // 从服务器匹配人员信息列表
     // 为智能提示控件提供数据源
-    querySearchAsync: function (query, callback) {
+    querySearchAsync: function(query, callback) {
       if (!query) {
         callback([]);
       }
@@ -255,7 +302,7 @@ export default {
       });
     },
 
-    findParents: function (array, id, result) {
+    findParents: function(array, id, result) {
       let obj = _.find(array, elem => elem.Id === id);
       result.splice(0, 0, id);
 
@@ -269,7 +316,7 @@ export default {
 
     // 当用户从智能提示下拉框中选择一个人员信息时
     // 将此人员相关信息自动填充到表单相应控件中
-    handleSelect: function (item) {
+    handleSelect: function(item) {
       let m = this.editFormModel;
       m.Name = item.Name;
       m.Account = item.WorkNo;
@@ -287,7 +334,7 @@ export default {
       this.$refs.editForm.validate();
     },
 
-    showEditForm: function (model) {
+    showEditForm: function(model) {
       this.editFormModel = clone(model);
 
       let selected = [];
@@ -295,25 +342,96 @@ export default {
       this.editFormModel.DepartmentId = selected;
       this.editFormModel.Password = model.Account;
 
-      this.editFormVisible = true;
+      // 递归
+      let self = this;
+      let recursion = function(arr) {
+        arr.forEach(item => {
+          if (_.contains(self.permission, item.Id)) {
+            item.checked = true;
+          } else {
+            item.checked = false;
+          }
+
+          if (item.children) {
+            recursion(item.children);
+          }
+        });
+      };
+
+      this.loadPermissions(model.Id).then(() => {
+        // 设置当前表单中
+        // 的checkebox的选中状态
+        recursion(this.menus);
+        this.editFormVisible = true;
+      });
     },
 
-    handleDelete: function (model) {
+    handleDelete: function(model) {
 
+    },
+
+    loadMenus() {
+      server.post('/System/GetMenuList', {}, this)
+        .then(res => {
+          this.menus = this.findChildren(res.data, 0);
+        });
+    },
+
+    findChildren(array, parentId) {
+      let sub = _.filter(array, item => item.ParentId === parentId);
+      if (sub.length === 0) {
+        return [];
+      }
+
+      let result = [];
+      sub.forEach(item => {
+        // 递归遍历具有层级关系的部门列表
+        // 并将其包装为符合el-cascader组件所需要的数据格式后返回
+        let children = this.findChildren(array, item.Id);
+
+        if (children.length > 0) {
+          item.children = children;
+        }
+        result.push(item);
+      });
+
+      return result;
+    },
+
+    selectChanged(id) {
+      let arr = this.permission;
+      let index = _.indexOf(arr, id);
+      if (index === -1) {
+        arr.push(id);
+      } else {
+        arr.splice(index, 1);
+      }
+    },
+
+    loadPermissions(userId) {
+      return server.post('/System/GetPermissions', { userId: userId }, this)
+        .then(res => {
+          let list = [];
+          res.data.forEach((value, index) => {
+            list.push(value.MenuId);
+          });
+
+          this.permission = list;
+        });
     },
 
     // 提交账户添加/修改到服务器
-    submit: function () {
+    submit: function() {
       this.$refs.editForm.validate(valid => {
         if (valid) {
           let model = clone(this.editFormModel);
-          console.info(model);
+
           // 将级联选择器结果的最后一项作为账户的部门Id
           model.DepartmentId = _.last(model.DepartmentId);
 
           this.editFormLoading = true;
           NProgress.start();
-          server.post('/System/AddOrUpdate', { user: model }, this)
+          server.post('/System/AddOrUpdate', { user: model, menus: this.permission }, this)
             .then(res => {
               this.editFormLoading = false;
               NProgress.done();
@@ -338,6 +456,7 @@ export default {
   mounted() {
     this.loadDeparts();
     this.load();
+    this.loadMenus();
   }
 };
 </script>

@@ -50,6 +50,7 @@ import ViewOperateLog from '@/views/system/ViewOperateLog'
 import AppUpdate from '@/views/system/AppUpdate'
 import InstructorRouterPosition from '@/views/system/InstructorRouterPosition'
 import MobileDevice from '@/views/system/MobileDevice'
+import Menu from '@/views/system/Menu'
 
 Vue.use(Router)
 
@@ -145,14 +146,23 @@ export default new Router({
     },
     {
       path: '/',
+      name: 'device',
+      desc: '设备管理',
+      component: Home,
+      children: [
+        { path: '/router', name: 'router', desc: '路由器管理', component: InstructorRouterPosition },
+        { path: '/mobile', name: 'device', desc: '移动设备管理', component: MobileDevice }
+      ]
+    },
+    {
+      path: '/',
       name: 'system',
-      desc: '系统',
+      desc: '系统管理',
       component: Home,
       children: [
         { path: '/account', name: 'account', desc: '账户管理', component: SystemUser },
         { path: '/log', name: 'log', desc: '操作日志', component: ViewOperateLog },
-        { path: '/router', name: 'router', desc: '路由器管理', component: InstructorRouterPosition },
-        { path: '/device', name: 'device', desc: '移动设备管理', component: MobileDevice },
+        { path: '/menu', name: 'menu', desc: '菜单管理', component: Menu },
         { path: '/app', name: 'app', desc: 'app更新', component: AppUpdate }
       ]
     },
