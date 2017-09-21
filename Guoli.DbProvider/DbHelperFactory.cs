@@ -24,11 +24,13 @@ namespace Guoli.DbProvider
             switch (dbType)
             {
                 case DatabaseType.SqlServer:
-                    return new SqlHelper(dbType);
+                    return new SqlHelper();
                 case DatabaseType.Oracle:
-                    return new OracleHelper(dbType);
+                    return new OracleHelper();
                 case DatabaseType.MySql:
                     throw new ArgumentOutOfRangeException(nameof(dbType), dbType, "Mysql is not supported.");
+                case DatabaseType.Sqlite:
+                    return new SqliteHelper();
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dbType), dbType, "Unsupported database type.");
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using Oracle.ManagedDataAccess.Client;
@@ -28,9 +29,11 @@ namespace Guoli.DbProvider
                 case DatabaseType.Oracle:
                     return new OracleConnection(conStr);
                 case DatabaseType.MySql:
-                    throw new ArgumentOutOfRangeException("dbType", dbType, "MySql is not supported.");
+                    throw new ArgumentOutOfRangeException(nameof(dbType), dbType, "MySql is not supported.");
+                case DatabaseType.Sqlite:
+                    return new SQLiteConnection(conStr);
                 default:
-                    throw new ArgumentOutOfRangeException("dbType", dbType, "Unsupported database type.");
+                    throw new ArgumentOutOfRangeException(nameof(dbType), dbType, "Unsupported database type.");
 
             }
         }

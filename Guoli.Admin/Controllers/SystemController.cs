@@ -5,14 +5,18 @@ using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Web.Mvc;
+using Guoli.MSSqlToSqlite;
 
 namespace Guoli.Admin.Controllers
 {
     public class SystemController : Controller
     {
         #region 账户管理
+
         [HttpPost]
         public JsonResult AddOrUpdate(SystemUser user, int[] menus)
         {
@@ -75,7 +79,7 @@ namespace Guoli.Admin.Controllers
                     clear = () => true;
                 }
 
-                var permissions = menus.Select(menuId => new Permission {MenuId = menuId, SystemUserId = user.Id});
+                var permissions = menus.Select(menuId => new Permission { MenuId = menuId, SystemUserId = user.Id });
                 Func<bool> add = () =>
                 {
                     bll.BulkInsert(permissions);
@@ -139,11 +143,13 @@ namespace Guoli.Admin.Controllers
             user.Password = newPwd.GetMd5();
             var success = userBll.ExecuteTransation(
                 () => userBll.Update(user),
-                () => new OperateLogBll().Add(nameof(SystemUser), user.Id, DataUpdateType.Update, 0, $"修改了账户[{user.Account}]的密码")
+                () => new OperateLogBll().Add(nameof(SystemUser), user.Id, DataUpdateType.Update, 0,
+                    $"修改了账户[{user.Account}]的密码")
             );
 
             return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
         }
+
         #endregion
 
         #region 路由器管理
@@ -223,5 +229,30 @@ namespace Guoli.Admin.Controllers
         }
 
         #endregion
+
+        public JsonResult UploadSqliteDbScript()
+        {
+            var file = Request.Files[0];
+            if (file != null && file.FileName.ToLower().EndsWith(".xml"))
+            {
+                var msToSqlite = new MsSqlToSqlite();
+                file.SaveAs(msToSqlite.ScriptFilePath);
+
+                msToSqlite.GetSqliteDb();
+                return Json(ErrorModel.OperateSuccess);
+            }
+            else
+            {
+                return Json(ErrorModel.OperateFailed);
+            }
+        }
+
+        public FileResult GetSqliteDb()
+        {
+            var msToSqlite = new MsSqlToSqlite();
+            var fs = new FileStream(msToSqlite.SqliteDbPath, FileMode.Open, FileAccess.Read);
+
+            return File(fs, "application/force-download", "Railroad.db");
+        }
     }
 }

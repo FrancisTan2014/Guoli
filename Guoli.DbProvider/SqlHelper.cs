@@ -63,7 +63,7 @@ namespace Guoli.DbProvider
             BulkInsert(connectionString, tableName, table);
         }
 
-        public SqlHelper(DatabaseType dbType) : base(dbType)
+        public SqlHelper() : base(DatabaseType.SqlServer)
         {
             
         }

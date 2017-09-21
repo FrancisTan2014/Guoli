@@ -22,7 +22,7 @@
 
         <el-form-item>
           <el-button type="primary" v-on:click="load" icon="search">查询</el-button>
-          <el-button type="primary" v-on:click="editFormVisible = true" icon="plus">添加账户</el-button>
+          <el-button type="primary" v-on:click="showEditForm(null)" icon="plus">添加账户</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -151,6 +151,7 @@ import NProgress from 'nprogress';
 import server from '@/store/server';
 import local from '@/store/local';
 import { timepickerOptions } from '@/utils';
+import Vue from 'vue';
 
 export default {
   data() {
@@ -181,6 +182,14 @@ export default {
       editFormVisible: false,
       editFormLoading: false,
       editFormModel: {
+        Id: 0,
+        Name: '',
+        Account: '',
+        Password: '',
+        DepartmentId: [],
+        DepartmentName: ''
+      },
+      emptyFormModel: {
         Id: 0,
         Name: '',
         Account: '',
@@ -335,18 +344,14 @@ export default {
     },
 
     showEditForm: function(model) {
-      this.editFormModel = clone(model);
-
-      let selected = [];
-      this.findParents(this.departs, model.DepartmentId, selected);
-      this.editFormModel.DepartmentId = selected;
-      this.editFormModel.Password = model.Account;
+      this.editFormModel = clone(model || this.emptyFormModel);
 
       // 递归
       let self = this;
       let recursion = function(arr) {
-        arr.forEach(item => {
-          if (_.contains(self.permission, item.Id)) {
+        arr.forEach((item, index) => {
+          let exists = _.contains(self.permission, item.Id);
+          if (exists) {
             item.checked = true;
           } else {
             item.checked = false;
@@ -358,12 +363,35 @@ export default {
         });
       };
 
-      this.loadPermissions(model.Id).then(() => {
-        // 设置当前表单中
-        // 的checkebox的选中状态
-        recursion(this.menus);
-        this.editFormVisible = true;
-      });
+      if (model) {
+        let selected = [];
+        this.findParents(this.departs, model.DepartmentId, selected);
+        this.editFormModel.DepartmentId = selected;
+        this.editFormModel.Password = model.Account;
+
+        // this.loadPermissions(model.Id).then(() => {
+        //   // 设置当前表单中
+        //   // 的checkebox的选中状态
+        //   recursion(this.menus);
+        //   this.editFormVisible = true;
+        // });
+
+        Promise.all([this.loadMenus(), this.loadPermissions(model.Id)]).then(res => {
+          // 设置当前表单中
+          // 的checkebox的选中状态
+          recursion(res[0]);
+          this.menus = res[0];
+          this.editFormVisible = true;
+        });
+      } else {
+        this.loadMenus().then(res => {
+          this.permission = [];
+          recursion(res);
+          this.menus = res;
+          this.editFormVisible = true;
+        });
+      }
+
     },
 
     handleDelete: function(model) {
@@ -371,13 +399,17 @@ export default {
     },
 
     loadMenus() {
-      server.post('/System/GetMenuList', {}, this)
-        .then(res => {
-          this.menus = this.findChildren(res.data, 0);
+      return server.post('/System/GetMenuList', {}, this)
+        .then((res, resolve) => {
+          let menus = this.findChildren(res.data, 0, item => {
+            item.checked = false;
+          });
+
+          return menus;
         });
     },
 
-    findChildren(array, parentId) {
+    findChildren(array, parentId, callback) {
       let sub = _.filter(array, item => item.ParentId === parentId);
       if (sub.length === 0) {
         return [];
@@ -387,11 +419,16 @@ export default {
       sub.forEach(item => {
         // 递归遍历具有层级关系的部门列表
         // 并将其包装为符合el-cascader组件所需要的数据格式后返回
-        let children = this.findChildren(array, item.Id);
+        let children = this.findChildren(array, item.Id, callback);
 
         if (children.length > 0) {
           item.children = children;
         }
+
+        if (callback && typeof (callback) === 'function') {
+          callback(item);
+        }
+
         result.push(item);
       });
 

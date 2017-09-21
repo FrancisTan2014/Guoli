@@ -8,6 +8,7 @@
     <el-row class="toolbar">
       <el-col :span="24">
         <el-button icon="plus" type="primary" @click="showDialog">发布新版本</el-button>
+        <el-button type="primary" @click="exportVisible = true"><i class="fa fa-download" aria-hidden="true"></i> &nbsp;导出 sqlite db 文件</el-button>
       </el-col>
     </el-row>
 
@@ -79,6 +80,21 @@
 
     </el-dialog>
 
+    <el-dialog title="导出sqlite.db" :visible="exportVisible" :before-close="() => exportVisible = false">
+
+      <el-alert title="操作说明" type="info" description="先上传数据创建脚本文件（*.xml），xml文件上传成功之后需要等待一段时间，若导出成功则会直接得到一个 sqlite db 文件" show-icon class="password-tips">
+      </el-alert>
+
+      <el-upload ref="upload" class="upload-demo" drag :action="getSqliteUploadUrl()" :on-success="getSqliteDbSuccess" accept="application/xml">
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或
+          <em>点击上传</em>
+        </div>
+        <div class="el-upload__tip" slot="tip">仅支持 xml 文件上传</div>
+      </el-upload>
+
+    </el-dialog>
+
   </section>
 </template>
 <script>
@@ -120,7 +136,10 @@ export default {
       editFormRules: {
         UpdateLog: [{ required: true, message: '请输入更新日志', trigger: 'blur' }]
       },
-      fileUploadApi: ''
+      fileUploadApi: '',
+
+      // 导出sqlite.db文件
+      exportVisible: false
     };
   },
 
@@ -144,7 +163,7 @@ export default {
       });
     },
 
-    timeFormatter: function (row) {
+    timeFormatter: function(row) {
       return moment(row.AddTime).format('YYYY-MM-DD HH:mm:ss');
     },
 
@@ -157,7 +176,7 @@ export default {
       return `${server.base}/AppUpdate/Upload?level=${this.editFormModel.level}&token=${local.getItem('token')}&async=true`;
     },
 
-    showDialog: function () {
+    showDialog: function() {
       this.editFormModel.UpdateLog = '';
       this.editFormModel.Url = '';
       this.editFormModel.level = 3;
@@ -209,7 +228,7 @@ export default {
       });
     },
 
-    handleDelete: function (model) {
+    handleDelete: function(model) {
       this.$confirm('您确定删除此项吗？').then(() => {
         NProgress.start();
         server.post('/AppUpdate/Delete', { id: model.Id }, this)
@@ -223,7 +242,17 @@ export default {
             }
           });
       }).catch(() => { /* 取消 */ });
-    }
+    },
+
+    getSqliteUploadUrl() {
+      return `${server.base}/System/UploadSqliteDbScript?token=${local.getItem('token')}&async=true`;
+    },
+
+    getSqliteDbSuccess(res) {
+      if (res.code === 100) {
+        window.location = `${server.base}/System/GetSqliteDb?token=${local.getItem('token')}&async=true`;
+      }
+    },
   },
 
   mounted() {

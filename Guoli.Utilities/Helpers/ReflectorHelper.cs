@@ -80,7 +80,7 @@ namespace Guoli.Utilities.Helpers
         /// <param name="methodName">待执行的方法名称</param>
         /// <param name="parameters">方法需要的参数集合</param>
         /// <returns>执行的结果</returns>
-        public static object RunStaticMethod(Type type, string methodName, params object[] parameters)
+        public static object InvokeStaticMethod(Type type, string methodName, params object[] parameters)
         {
             if (type == null)
             {
@@ -89,7 +89,28 @@ namespace Guoli.Utilities.Helpers
 
             var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
             var method = type.GetMethod(methodName, flags);
-            return method.Invoke(null, flags, null, parameters, null);
+            return method.Invoke(null, flags, null, parameters, CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// 执行给定实例的任意级别（static、public、private）的方法，并返回结果
+        /// </summary>
+        /// <param name="instance">待执行方法的实例</param>
+        /// <param name="methodName">待执行的方法名称</param>
+        /// <param name="parameters">将要传递给待执行方法的参数列表</param>
+        /// <returns>执行方法所返回的结果</returns>
+        public static object InvokeMethod(object instance, string methodName, params object[] parameters)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
+            var type = instance.GetType();
+            var flag = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
+            var method = type.GetMethod(methodName, flag);
+
+            return method?.Invoke(instance, flag, null, parameters, CultureInfo.CurrentCulture);
         }
     }
 }

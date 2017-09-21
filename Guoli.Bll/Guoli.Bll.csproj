@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseBll.cs" />
+    <Compile Include="BllFactory.cs" />
     <Compile Include="DalFactory.cs" />
     <Compile Include="ExceptionLogBll.cs" />
     <Compile Include="LoginResult.cs" />

@@ -17,7 +17,7 @@ namespace Guoli.DbProvider
             throw new NotImplementedException();
         }
 
-        public OracleHelper(DatabaseType dbType) : base(dbType)
+        public OracleHelper() : base(DatabaseType.Oracle)
         {
 
         }

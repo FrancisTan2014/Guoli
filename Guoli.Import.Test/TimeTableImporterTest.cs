@@ -72,7 +72,7 @@ namespace Guoli.Import.Test
         public void TestIsUpward()
         {
             var trainNo = "Z180";
-            var isUpward = (bool) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "IsUpward", trainNo);
+            var isUpward = (bool) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "IsUpward", trainNo);
             isUpward.Should().Be(true, "Z180车次尾号是偶数，根据规定，此类车次为上行方向");
         }
 
@@ -81,7 +81,7 @@ namespace Guoli.Import.Test
         {
             var sheet = TestSuite.GetSheet();
             var row = sheet.GetRow(4);
-            var trainNo = (TrainNo) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTrainNo", row);
+            var trainNo = (TrainNo) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetTrainNo", row);
             trainNo.Should().NotBe(null, "测试表格中第五行包含车次信息");
             trainNo.Code.Should().Be("K");
             trainNo.Direction.Should().Be("上行");
@@ -97,7 +97,7 @@ namespace Guoli.Import.Test
         {
             var sheet = TestSuite.GetSheet();
             var row = sheet.GetRow(4);
-            var line = (BaseLine) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetLine", row);
+            var line = (BaseLine) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetLine", row);
             line.Should().NotBe(null, "测试表格中第五行包含线路信息");
             line.FirstStation.Should().Be("呼和浩特");
             line.LastStation.Should().Be("集宁南");
@@ -108,7 +108,7 @@ namespace Guoli.Import.Test
         public void TestIsStyleOne()
         {
             var sheet = TestSuite.GetSheet();
-            var isValid = (bool) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "IsStyleOne", sheet);
+            var isValid = (bool) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "IsStyleOne", sheet);
             isValid.Should().Be(true, "测试表格完全符合TimeTableImporter类所要求的格式");
         }
 
@@ -116,7 +116,7 @@ namespace Guoli.Import.Test
         public void TestIsStyleTwo()
         {
             var sheet = TestSuite.GetHuocheSheet();
-            var isValid = (bool)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "IsStyleTwo", sheet);
+            var isValid = (bool)ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "IsStyleTwo", sheet);
             isValid.Should().Be(true, "测试表格符合第二种格式要求");
         }
 
@@ -125,7 +125,7 @@ namespace Guoli.Import.Test
         {
             var sheet = TestSuite.GetSheet();
             var row = sheet.GetRow(sheet.LastRowNum);
-            var isEmpty = (bool) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "IsEmptyRow", row);
+            var isEmpty = (bool) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "IsEmptyRow", row);
             isEmpty.Should().Be(true, "测试表格最后一行为空");
         }
 
@@ -133,7 +133,7 @@ namespace Guoli.Import.Test
         public void TestGetStation()
         {
             var row = TestSuite.GetRow(6);
-            var station = (BaseStation) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetStation", row);
+            var station = (BaseStation) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetStation", row);
             station.Should().NotBe(null, "给定数据源中有车站名称");
             station.Spell.Should().Be("zjkn", "车站名称为张家口南");
             station.StationName.Should().Be("张家口南");
@@ -145,7 +145,7 @@ namespace Guoli.Import.Test
             var row1 = TestSuite.GetRow(24);
             var row2 = TestSuite.GetRow(25);
             var moment =
-                (TrainMoment) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTrainMoment", row1, row2);
+                (TrainMoment) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetTrainMoment", row1, row2);
             moment.Should().NotBe(null);
             moment.ArriveTime.Should().Be("17:43:00");
             moment.DepartTime.Should().Be("18:05:00");
@@ -160,27 +160,27 @@ namespace Guoli.Import.Test
             var sheet = TestSuite.GetDownwardSheet();
             var row = sheet.GetRow(48);
             var cell = row.GetCell(5);
-            var time = (string) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTime", cell);
+            var time = (string) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetTime", cell);
             time.Should().Be("18:54:00");
 
             cell = row.GetCell(6);
-            time = (string) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTime", cell);
+            time = (string) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetTime", cell);
             time.Should().Be("19:05:00");
         }
 
         [TestMethod]
         public void TestTimeFormatter()
         {
-            var res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "48");
+            var res = (string)ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "48");
             res.Should().Be("48");
 
-            res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "4830");
+            res = (string)ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "4830");
             res.Should().Be("48");
 
-            res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "23:30");
+            res = (string)ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "23:30");
             res.Should().Be("23:30");
 
-            res = (string)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "23:1530");
+            res = (string)ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "TimeFormatter", "23:1530");
             res.Should().Be("23:15");
         }
 
@@ -192,7 +192,7 @@ namespace Guoli.Import.Test
         {
             var sheet = TestSuite.GetSheet();
             var timeTable =
-                (TimeTable) ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleOne", sheet);
+                (TimeTable) ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleOne", sheet);
 
             timeTable.Should().NotBe(null);
 
@@ -229,7 +229,7 @@ namespace Guoli.Import.Test
         {
             var sheet = TestSuite.GetDownwardSheet();
             var timeTable =
-                (TimeTable)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleOne", sheet);
+                (TimeTable)ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleOne", sheet);
 
             timeTable.Should().NotBe(null);
 
@@ -266,7 +266,7 @@ namespace Guoli.Import.Test
         public void TestGetTimeTableOfStyleTwo()
         {
             var sheet = TestSuite.GetHuocheSheet();
-            var tables = (List<TimeTable>)ReflectorHelper.RunStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleTwo", sheet);
+            var tables = (List<TimeTable>)ReflectorHelper.InvokeStaticMethod(typeof(TimeTableImporter), "GetTimeTableOfStyleTwo", sheet);
 
             tables.Should().NotBeNull();
             tables.Count.Should().Be(12);

@@ -15,6 +15,7 @@ namespace Guoli.DbProvider
     {
         SqlServer = 1,
         Oracle = 2,
-        MySql = 3
+        MySql = 3,
+        Sqlite = 4
     }
 }
