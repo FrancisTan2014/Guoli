@@ -23,7 +23,7 @@
 
       <!-- 没有任何文件或文件夹时 -->
       <el-col :span="24" class="file-empty" v-if="curDirs.length === 0 && curFiles.length === 0">
-        <img src="../assets/empty.png" />
+        <img src="../../assets/empty.png" />
         <p>空空如也(:=</p>
       </el-col>
 
@@ -131,9 +131,9 @@
 <script>
 import NProgress from 'nprogress';
 import _ from 'underscore';
-import server from '../store/server';
-import local from '../store/local';
-import { fileIcons, rules } from '../utils';
+import server from '@/store/server';
+import local from '@/store/local';
+import { fileIcons, rules } from '@/utils';
 
 export default {
   data() {
@@ -573,7 +573,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import './sass/mixins.scss';
+@import '../sass/mixins.scss';
 
 $folderColor: #A3DDFF;
 $folderContrastColor: #ED5E07;

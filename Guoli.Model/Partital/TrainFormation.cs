@@ -33,6 +33,10 @@ namespace Guoli.Model
 		private decimal _carryingcapacity;
 		private decimal _length;
 		private DateTime _notetime;
+	    private string _decompress = string.Empty;
+	    private string _rowTime = string.Empty;
+	    private string _fillingTime = string.Empty;
+	    private string _missing = string.Empty;
 		/// <summary>
 		/// 主键
 		/// </summary>
@@ -89,8 +93,40 @@ namespace Guoli.Model
 			set{ _notetime=value;}
 			get{return _notetime;}
 		}
-		#endregion Model
+        /// <summary>
+        /// 减压
+        /// </summary>
+	    public string Decompress
+	    {
+	        set { _decompress = value; }
+            get { return _decompress; }
+	    }
+        /// <summary>
+        /// 排风时间
+        /// </summary>
+	    public string RowTime
+	    {
+	        set { _rowTime = value; }
+            get { return _rowTime; }
+	    }
+        /// <summary>
+        /// 充风时间
+        /// </summary>
+	    public string FillingTime
+	    {
+	        set { _fillingTime = value; }
+            get { return _fillingTime; }
+	    }
+        /// <summary>
+        /// 漏压
+        /// </summary>
+	    public string Missing
+	    {
+	        set { _missing = value; }
+            get { return _missing; }
+	    }
+        #endregion Model
 
-	}
+    }
 }
 

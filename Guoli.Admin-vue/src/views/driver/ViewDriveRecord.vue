@@ -105,6 +105,10 @@
             <el-table-column prop="CarryingCapacity" label="辆数"></el-table-column>
             <el-table-column prop="CarriageCount" label="吨数"></el-table-column>
             <el-table-column prop="Length" label="计长"></el-table-column>
+            <el-table-column prop="Decompress" label="减压(KPa)"></el-table-column>
+            <el-table-column prop="RowTime" label="排(S)"></el-table-column>
+            <el-table-column prop="FillingTime" label="充(S)"></el-table-column>
+            <el-table-column prop="Missing" label="漏(KPa)"></el-table-column>
           </el-table>
         </el-tab-pane>
         <el-tab-pane label="退勤信息" name="third">
@@ -334,6 +338,7 @@ export default {
   text-align: center;
   padding: 16px;
   margin-top: 8px;
+  font-weight: bold;
 }
 
 .center {

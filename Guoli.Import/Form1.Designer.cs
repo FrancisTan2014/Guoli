@@ -31,6 +31,7 @@
             this.btnStations = new System.Windows.Forms.Button();
             this.btnMigration = new System.Windows.Forms.Button();
             this.btnAdmin = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStations
@@ -63,11 +64,22 @@
             this.btnAdmin.UseVisualStyleBackColor = true;
             this.btnAdmin.Click += new System.EventHandler(this.btnAdmin_Click);
             // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(51, 150);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(165, 64);
+            this.btnClear.TabIndex = 3;
+            this.btnClear.Text = "清空基础数据（车站、线路、车次）";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // frmImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(816, 586);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnAdmin);
             this.Controls.Add(this.btnMigration);
             this.Controls.Add(this.btnStations);
@@ -82,6 +94,7 @@
         private System.Windows.Forms.Button btnStations;
         private System.Windows.Forms.Button btnMigration;
         private System.Windows.Forms.Button btnAdmin;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 

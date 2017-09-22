@@ -43,11 +43,43 @@ namespace Guoli.Import
         }
 
         /// <summary>
+        /// 清空基础数据（车站、线路、车次）
+        /// </summary>
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            var res = MessageBox.Show(@"提示，您确定要清空基础数据吗？", @"警告", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+            if (res == DialogResult.Yes)
+            {
+                res = MessageBox.Show(@"再次提示，您确定要清空基础数据吗？", @"警告", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (res == DialogResult.Yes)
+                {
+                    var sql = @"TRUNCATE TABLE TrainMoment
+                                TRUNCATE TABLE TrainNoLine
+                                TRUNCATE TABLE LineStations
+                                TRUNCATE TABLE BaseStation
+                                TRUNCATE TABLE BaseLine
+                                TRUNCATE TABLE TrainNo";
+                    var bll = new TrainNoBll();
+                    bll.ExecuteSql(sql);
+                    MessageBox.Show(@"基础数据已被清空，您可以点击上方的按钮重新导入(:=");
+                }
+            }
+        }
+
+        /// <summary>
         /// 手动执行同步运安数据库数据的操作
         /// </summary>
         private void btnMigration_Click(object sender, EventArgs e)
         {
-            OracleMigrationTask.ExecuteDataSynchronization();
+            var bll = new PersonInfoBll();
+            if (bll.Exists())
+            {
+                MessageBox.Show(@"人员信息已存在(:=");
+            }
+            else
+            {
+                OracleMigrationTask.ExecuteDataSynchronization();
+            }
         }
 
         /// <summary>
@@ -57,9 +89,9 @@ namespace Guoli.Import
         {
             var admin = new SystemUser { Account = "admin", CreateTime = DateTime.Now, CreatorId = 0, IsSuper = true, Name = "Administrator", Password = "123456".GetMd5() };
             var bll = new SystemUserBll();
-            if (bll.Exists("Account='admin' OR IsSuper=1"))
+            if (bll.Exists("IsSuper=1"))
             {
-                MessageBox.Show("管理员账号已存在(:=");
+                MessageBox.Show(@"管理员账号已存在(:=");
                 return;
             }
 

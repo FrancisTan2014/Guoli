@@ -136,7 +136,8 @@ export default {
           index: '2',
           title: '行车资料',
           subs: [
-            { index: 'files', title: '文件管理' }
+            { index: 'files', title: '文件管理' },
+            { index: 'reading', title: '学习记录' }
           ]
         },
         {

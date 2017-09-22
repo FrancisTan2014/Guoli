@@ -3,8 +3,11 @@ import Router from 'vue-router'
 import Home from '@/views/Home'
 import NotFound from '@/views/NotFound'
 import Forbidden from '@/views/Forbidden'
-import Files from '@/views/Files'
 import Login from '@/views/Login'
+
+// 文件管理
+import Files from '@/views/File/Files'
+import ReadingLog from '@/views/File/ReadingLog'
 
 // 部门人员
 import ViewDepartInfo from '@/views/personnel/ViewDepartInfo'
@@ -78,7 +81,8 @@ export default new Router({
       desc: '行车资料',
       component: Home,
       children: [
-        { path: '/files', name: 'files', desc: '文件管理', component: Files }
+        { path: '/files', name: 'files', desc: '文件管理', component: Files },
+        { path: '/reading', name: 'reading', desc: '学习记录', component: ReadingLog },
       ]
     },
     {

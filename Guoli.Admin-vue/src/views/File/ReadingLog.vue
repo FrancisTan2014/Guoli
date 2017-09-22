@@ -8,7 +8,7 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="conditions" @submit.native.prevent="load">
-                
+
 
                 <el-form-item>
                             <el-select v-model="conditions.DepartmentId.value" placeholder="部门" clearable>
@@ -42,33 +42,33 @@
 
             <el-table-column prop="LogContent"
                                 label="日志内容"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="Name"
                                 label="姓名"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="WorkNo"
                                 label="工号"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="PostName"
                                 label="职务"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="DepartmentName"
                                 label="部门"
-                                
-                                
+
+
                                 ></el-table-column>
             <el-table-column prop="AddTime"
                                 label="添加时间"
                                 :formatter="AddTimeFormatter"
-                                
+
                                 ></el-table-column>
 
 
@@ -87,14 +87,14 @@
         </el-col>
 
         <!-- 弹窗 -->
-        
+
 
     </section>
 </template>
 <script>
-    
+
     import moment from 'moment';
-    
+
     import server from '@/store/server';
     import { timepickerOptions } from '@/utils';
 
