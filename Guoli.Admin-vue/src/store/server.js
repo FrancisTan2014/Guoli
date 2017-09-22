@@ -1,8 +1,8 @@
 import axios from 'axios';
 import local from './local';
 
-// let base = 'http://192.168.0.121:8002';
-let base = 'http://localhost:56147';
+let base = 'http://192.168.0.123:8002';
+// let base = 'http://localhost:56147';
 
 /**
  * 在向服务器发送请求前对接口url进行处理

@@ -204,12 +204,13 @@ export default {
         {
           icon: 'el-icon-setting',
           index: '8',
-          title: '系统设置',
+          title: '系统管理',
           subs: [
             { index: 'account', title: '账户管理' },
-            { index: 'log', title: '操作日志' },
+            { index: 'log', title: '后台操作日志' },
             { index: 'menu', title: '菜单管理' },
-            { index: 'app', title: 'app更新' }
+            { index: 'app', title: 'app更新' },
+            { index: 'applog', title: 'app操作日志' }
           ]
         },
 

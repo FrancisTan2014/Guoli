@@ -108,6 +108,7 @@
     <Compile Include="Partital\TrainMomentBll.cs" />
     <Compile Include="Partital\TrainNoBll.cs" />
     <Compile Include="Partital\TrainNoLineBll.cs" />
+    <Compile Include="Partital\ViewAppOperateLogBll.cs" />
     <Compile Include="Partital\ViewBaseLineBll.cs" />
     <Compile Include="Partital\ViewDepartInfoBll.cs" />
     <Compile Include="Partital\ViewDriveRecordBll.cs" />
