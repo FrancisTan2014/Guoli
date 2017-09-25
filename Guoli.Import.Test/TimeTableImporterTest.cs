@@ -303,5 +303,18 @@ namespace Guoli.Import.Test
             eighth.Moments.Last().ArriveTime.Should().Be("23:47"); //??
             eighth.Moments.Last().DepartTime.Should().Be("0:18");
         }
+
+        [TestMethod]
+        public void TestClearSql()
+        {
+            var tables = new List<string> { "TrainMoment", "TrainNoLine", "LineStations", "BaseStation", "BaseLine", "TrainNo" };
+            var truncate = $"TRUNCATE TABLE {string.Join("; TRUNCATE TABLE ", tables)};";
+            var delete = $"DELETE FROM DbUpdateLog WHERE DELETE FROM DbUpdateLog WHERE TableName IN( {string.Join(", ", tables.Select(s => $"'{s}'"))} );";
+
+            truncate.Should()
+                .Be(
+                    "TRUNCATE TABLE TrainMoment; TRUNCATE TABLE TrainNoLine; TRUNCATE TABLE LineStations; TRUNCATE TABLE BaseStation; TRUNCATE TABLE BaseLine; TRUNCATE TABLE TrainNo;");
+            delete.Should().Be("DELETE FROM DbUpdateLog WHERE DELETE FROM DbUpdateLog WHERE TableName IN( 'TrainMoment', 'TrainNoLine', 'LineStations', 'BaseStation', 'BaseLine', 'TrainNo' );");
+        }
     }
 }
