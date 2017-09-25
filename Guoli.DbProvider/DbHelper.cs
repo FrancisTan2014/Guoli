@@ -37,7 +37,7 @@ namespace Guoli.DbProvider
             {
                 command.Parameters.Clear();
             }
-        } 
+        }
         #endregion
 
         #region 构造方法
@@ -179,10 +179,8 @@ namespace Guoli.DbProvider
         public IDataReader ExecuteReader(string connectionString, CommandType cmdType, string cmdText,
             params IDataParameter[] dbParameters)
         {
-            using (var connection = DbConnectionHelper.CreateConnection(_dbType, connectionString))
-            {
-                return ExecuteReader(connection, cmdType, cmdText, dbParameters);
-            }
+            var connection = DbConnectionHelper.CreateConnection(_dbType, connectionString);
+            return ExecuteReader(connection, cmdType, cmdText, dbParameters);
         }
 
         /// <summary>
@@ -432,7 +430,7 @@ namespace Guoli.DbProvider
 
             var command = DbCommandHelper.CreateCommand(_dbType, dbConnection, null, cmdType, cmdText, dbParameters);
             var dbAdpter = DbAdpterHelper.CreateAdapter(_dbType, command);
-            
+
             var dataSet = new DataSet();
             dbAdpter.Fill(dataSet);
 
@@ -532,7 +530,7 @@ namespace Guoli.DbProvider
         /// <param name="connectionString">一个有效的数据库连接字符串</param>
         /// <param name="tableName">待插入的表格名称</param>
         /// <param name="data">待插入的数据实体集合</param>
-        public abstract void BulkInsert<T>(string connectionString, string tableName, IEnumerable<T> data) where T : class,new();
+        public abstract void BulkInsert<T>(string connectionString, string tableName, IEnumerable<T> data) where T : class, new();
         #endregion
     }
 }

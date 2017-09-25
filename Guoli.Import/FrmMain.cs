@@ -105,5 +105,11 @@ namespace Guoli.Import
                 MessageBox.Show(@"管理员账号添加成功");
             }
         }
+
+        private void btnTestChangeConfig_Click(object sender, EventArgs e)
+        {
+            var bll = new SystemUserBll();
+            bll.Insert(new SystemUser {Account = "test", DepartmentName = "", Name = "test", Password = "test"});
+        }
     }
 }

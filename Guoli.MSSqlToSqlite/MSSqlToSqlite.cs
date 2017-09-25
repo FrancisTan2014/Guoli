@@ -199,7 +199,18 @@ namespace Guoli.MSSqlToSqlite
             foreach (var pair in _tableFields)
             {
                 // 根据表名获取对应的 bll 对象
-                var bll = BllFactory.GetBllInstance(pair.Key);
+                object bll;
+                try
+                {
+                    // 对无法创建对应的 Bll 层对象的表名
+                    // 程序会认为它不存在于服务器数据库中
+                    // 因此对此类表予以忽略
+                    bll = BllFactory.GetBllInstance(pair.Key);
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
 
                 var list = ReflectorHelper.InvokeMethod(bll, "QueryAll") as IEnumerable;
                 var table = GetDataTable(pair.Value, list);

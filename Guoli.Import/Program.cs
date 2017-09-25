@@ -15,7 +15,7 @@ namespace Guoli.Import
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmImport());
+            Application.Run(new FrmInit());
         }
     }
 }
