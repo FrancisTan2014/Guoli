@@ -34,8 +34,8 @@
             this.btnClear = new System.Windows.Forms.Button();
             this.gpbInitial = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnImport2 = new System.Windows.Forms.Button();
             this.btnTestChangeConfig = new System.Windows.Forms.Button();
+            this.btnImport2 = new System.Windows.Forms.Button();
             this.gpbInitial.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -106,16 +106,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "当铁路总公司通知变图时（针对基础数据需要先清空，再重新导入新的基础数据）";
             // 
-            // btnImport2
-            // 
-            this.btnImport2.Location = new System.Drawing.Point(228, 61);
-            this.btnImport2.Name = "btnImport2";
-            this.btnImport2.Size = new System.Drawing.Size(197, 63);
-            this.btnImport2.TabIndex = 0;
-            this.btnImport2.Text = "车站-线路-车次导入";
-            this.btnImport2.UseVisualStyleBackColor = true;
-            this.btnImport2.Click += new System.EventHandler(this.btnStations_Click);
-            // 
             // btnTestChangeConfig
             // 
             this.btnTestChangeConfig.Location = new System.Drawing.Point(446, 61);
@@ -126,6 +116,16 @@
             this.btnTestChangeConfig.UseVisualStyleBackColor = true;
             this.btnTestChangeConfig.Click += new System.EventHandler(this.btnTestChangeConfig_Click);
             // 
+            // btnImport2
+            // 
+            this.btnImport2.Location = new System.Drawing.Point(228, 61);
+            this.btnImport2.Name = "btnImport2";
+            this.btnImport2.Size = new System.Drawing.Size(197, 63);
+            this.btnImport2.TabIndex = 0;
+            this.btnImport2.Text = "车站-线路-车次导入";
+            this.btnImport2.UseVisualStyleBackColor = true;
+            this.btnImport2.Click += new System.EventHandler(this.btnStations_Click);
+            // 
             // frmImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -135,6 +135,7 @@
             this.Controls.Add(this.gpbInitial);
             this.Name = "frmImport";
             this.Text = "部署工具";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmImport_FormClosed);
             this.gpbInitial.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);

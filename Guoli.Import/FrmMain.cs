@@ -111,5 +111,10 @@ namespace Guoli.Import
             var bll = new SystemUserBll();
             bll.Insert(new SystemUser {Account = "test", DepartmentName = "", Name = "test", Password = "test"});
         }
+
+        private void frmImport_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
