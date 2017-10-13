@@ -55,7 +55,7 @@ namespace Guoli.Import
                 {
                     var tables = new List<string>{ "TrainMoment", "TrainNoLine", "LineStations", "BaseStation", "BaseLine", "TrainNo" };
                     var truncate = $"TRUNCATE TABLE {string.Join("; TRUNCATE TABLE ", tables)};";
-                    var delete = $"DELETE FROM DbUpdateLog WHERE DELETE FROM DbUpdateLog WHERE TableName IN( {string.Join(", ", tables.Select(s => $"'{s}'"))} );";
+                    var delete = $"DELETE FROM DbUpdateLog WHERE TableName IN( {string.Join(", ", tables.Select(s => $"'{s}'"))} );";
                     //var sql = @"TRUNCATE TABLE TrainMoment
                     //            TRUNCATE TABLE TrainNoLine
                     //            TRUNCATE TABLE LineStations
