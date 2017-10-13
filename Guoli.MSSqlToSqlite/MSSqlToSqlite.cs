@@ -180,7 +180,8 @@ namespace Guoli.MSSqlToSqlite
                         var prop = type.GetProperty(item);
                         if (prop != null)
                         {
-                            row[item] = prop.GetValue(iterator.Current);
+                            //row[item] = prop.GetValue(iterator.Current);
+                            row[item] = prop.GetValue(iterator.Current, null);
                         }
                     });
 

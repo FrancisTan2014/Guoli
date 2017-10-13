@@ -1,4 +1,5 @@
 ﻿
+
 using System.ComponentModel.DataAnnotations;
 
 namespace Guoli.Admin.Models
@@ -14,14 +15,14 @@ namespace Guoli.Admin.Models
         /// 账号
         /// </summary>
         [Required]
-        [MaxLength(20)]
+        [StringLength(16)]
         public string Account { get; set; }
 
         /// <summary>
         /// 密码
         /// </summary>
         [Required]
-        [MaxLength(20)]
+        [StringLength(20)]
         public string Password { get; set; }
 
         /// <summary>
