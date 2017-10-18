@@ -211,7 +211,8 @@ export default {
             { index: 'log', title: '后台操作日志' },
             { index: 'menu', title: '菜单管理' },
             { index: 'app', title: 'app更新' },
-            { index: 'applog', title: 'app操作日志' }
+            { index: 'applog', title: 'app操作日志' },
+            // { index: 'ext', title: '文件格式管理' }
           ]
         },
 

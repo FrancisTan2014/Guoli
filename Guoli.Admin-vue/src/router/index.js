@@ -55,6 +55,7 @@ import InstructorRouterPosition from '@/views/system/InstructorRouterPosition'
 import MobileDevice from '@/views/system/MobileDevice'
 import Menu from '@/views/system/Menu'
 import ViewAppOperateLog from '@/views/system/ViewAppOperateLog'
+import FileExtensions from '@/views/system/FileExtensions'
 
 Vue.use(Router)
 
@@ -170,6 +171,7 @@ export default new Router({
         { path: '/menu', name: 'menu', desc: '菜单管理', component: Menu },
         { path: '/app', name: 'app', desc: 'app更新', component: AppUpdate },
         { path: '/applog', name: 'applog', desc: 'app操作日志', component: ViewAppOperateLog },
+        { path: '/ext', name: 'ext', desc: '文件格式管理', component: FileExtensions },
       ]
     },
     {

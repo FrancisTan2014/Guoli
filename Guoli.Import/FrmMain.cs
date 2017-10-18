@@ -1,20 +1,13 @@
 ﻿using Guoli.DataMigration;
 using Guoli.Model;
-using Guoli.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Guoli.Bll;
 using Guoli.Utilities.Extensions;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
+using Application = System.Windows.Forms.Application;
+using Microsoft.Office.Interop.Word;
 
 namespace Guoli.Import
 {
@@ -53,7 +46,7 @@ namespace Guoli.Import
                 res = MessageBox.Show(@"再次提示，您确定要清空基础数据吗？", @"警告", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 if (res == DialogResult.Yes)
                 {
-                    var tables = new List<string>{ "TrainMoment", "TrainNoLine", "LineStations", "BaseStation", "BaseLine", "TrainNo" };
+                    var tables = new List<string> { "TrainMoment", "TrainNoLine", "LineStations", "BaseStation", "BaseLine", "TrainNo" };
                     var truncate = $"TRUNCATE TABLE {string.Join("; TRUNCATE TABLE ", tables)};";
                     var delete = $"DELETE FROM DbUpdateLog WHERE TableName IN( {string.Join(", ", tables.Select(s => $"'{s}'"))} );";
                     //var sql = @"TRUNCATE TABLE TrainMoment
@@ -108,8 +101,24 @@ namespace Guoli.Import
 
         private void btnTestChangeConfig_Click(object sender, EventArgs e)
         {
-            var bll = new SystemUserBll();
-            bll.Insert(new SystemUser {Account = "test", DepartmentName = "", Name = "test", Password = "test"});
+            var word = new ApplicationClass();
+
+            Document document = null;
+
+            try
+            {
+                document = word.Documents.Open("E:\\test.doc");
+                document.ExportAsFixedFormat("E:\\test.pdf", WdExportFormat.wdExportFormatPDF);
+                MessageBox.Show("success(:=");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+            finally
+            {
+                document?.Close();
+            }
         }
 
         private void frmImport_FormClosed(object sender, FormClosedEventArgs e)

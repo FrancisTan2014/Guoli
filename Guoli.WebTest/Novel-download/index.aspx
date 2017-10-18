@@ -30,7 +30,8 @@
         }
 
             article div {
-                font-size: 1.2em;
+                font-size: 1.4em;
+                line-height: 1.5;
                 text-align:justify;
                 text-justify: inter-word;
             }

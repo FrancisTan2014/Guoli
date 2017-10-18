@@ -123,22 +123,29 @@ namespace Guoli.Import
 
                 foreach (ISheet sheet in workBook)
                 {
-                    var style = GetSheetStyle(sheet);
-                    switch (style)
+                    try
                     {
-                        case 1:
-                            var timeTable = GetTimeTableOfStyleOne(sheet);
-                            AddTimeTable(timeTable);
-                            break;
+                        var style = GetSheetStyle(sheet);
+                        switch (style)
+                        {
+                            case 1:
+                                var timeTable = GetTimeTableOfStyleOne(sheet);
+                                AddTimeTable(timeTable);
+                                break;
 
-                        case 2:
-                            var tables = GetTimeTableOfStyleTwo(sheet);
-                            AddTimeTable(tables.ToArray());
-                            break;
+                            case 2:
+                                var tables = GetTimeTableOfStyleTwo(sheet);
+                                AddTimeTable(tables.ToArray());
+                                break;
 
-                        case -1:
-                        default:
-                            continue;
+                            case -1:
+                            default:
+                                continue;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // Ignore
                     }
                 }
             }

@@ -130,7 +130,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 586);
+            this.ClientSize = new System.Drawing.Size(829, 696);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gpbInitial);
             this.Name = "frmImport";

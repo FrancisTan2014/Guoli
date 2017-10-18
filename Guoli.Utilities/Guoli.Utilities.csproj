@@ -78,6 +78,7 @@
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="FileUpload\ImageHelper.cs" />
     <Compile Include="FileUpload\FilePathInfo.cs" />
+    <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\CookieHelper.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Helpers\JqueryDataTableAjaxHelper.cs" />

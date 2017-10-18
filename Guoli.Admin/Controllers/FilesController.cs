@@ -447,5 +447,30 @@ namespace Guoli.Admin.Controllers
                 });
             }
         }
+
+        #region 上传文件格式管理
+
+        /// <summary>
+        /// 获取系统允许上传的文件格式列表
+        /// </summary>
+        public JsonResult GetFileExtensions()
+        {
+            var exts = AppSettings.GetFileExtensions();
+            return Json(ErrorModel.GetDataSuccess(exts));
+        }
+
+        public JsonResult AddFileExtension(string ext)
+        {
+            var success = AppSettings.AddFileExtension(ext);
+            return Json(success ? ErrorModel.OperateSuccess : ErrorModel.OperateFailed);
+        }
+
+        public JsonResult RemoveFileExtension(string ext)
+        {
+            AppSettings.RemoveFileExtension(ext);
+            return Json(ErrorModel.OperateSuccess);
+        }
+
+        #endregion
     }
 }

@@ -48,29 +48,44 @@
 
       <!-- 文件 -->
       <transition name="fade" v-for="file in curFiles" :key="file.Id">
-        <el-col :span="4">
-          <div class="folder">
-            <i class="folder-img" :class="getFileIconClass(file.FileExtension)" aria-hidden="true"></i>
-            <div class="file-info">
-              <span class="file-name">{{ file.FileName }}</span>
-              <span class="file-time">{{ `${file.DepartmentName}-${file.CreatorName}` }}</span>
-              <span class="file-time">{{ file.AddTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
+
+        <el-tooltip class="item" effect="dark" content="点击下载文件" placement="top">
+
+          <el-col :span="4" @click.native="download(file)">
+            <div class="folder">
+              <a :href="`${base}${file.FilePath}`" :download="file.FileName">
+                <i class="folder-img" :class="getFileIconClass(file.FileExtension)" aria-hidden="true"></i>
+              </a>
+              <!-- <div class="file-info">
+                  <span class="file-name">{{ file.FileName }}</span>
+                  <span class="file-time">{{ `${file.DepartmentName}-${file.CreatorName}` }}</span>
+                  <span class="file-time">{{ file.AddTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
+                </div> -->
+              <a class="file-info" :href="`${base}${file.FilePath}`" :download="file.FileName">
+                <span class="file-name">{{ file.FileName }}</span>
+                <span class="file-time">{{ `${file.DepartmentName}-${file.CreatorName}` }}</span>
+                <span class="file-time">{{ file.AddTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
+              </a>
+              <div class="file-shadow">
+                <p>
+                  <el-button class="file-btn" size="small" icon="edit" @click.native.stop="renameFile(file)">重命名</el-button>
+                  <el-button class="file-btn" size="small" icon="delete" @click.native.stop="remove(file.Id, 2, file)">删除</el-button>
+                </p>
+              </div>
             </div>
-            <div class="file-shadow">
-              <p>
-                <el-button class="file-btn" size="small" icon="edit" @click.native.stop="renameFile(file)">重命名</el-button>
-                <el-button class="file-btn" size="small" icon="delete" @click.native.stop="remove(file.Id, 2, file)">删除</el-button>
-              </p>
-            </div>
-          </div>
-        </el-col>
+          </el-col>
+
+        </el-tooltip>
+
+        <a :href="downloadUrl" style="display: none;" :download="downloadName"></a>
+
       </transition>
 
     </el-row>
 
     <!-- 添加文件 -->
     <el-dialog title="添加文件" v-model="isUploadVisible">
-      <el-upload class="file-upload" ref="upload" :action="uploadPath()" :on-success="uploadSuccess" drag multiple>
+      <el-upload class="file-upload" ref="upload" :action="uploadPath()" :on-success="uploadSuccess" :before-upload="beforeUpload" drag multiple>
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或
           <em>点击上传</em>
@@ -138,6 +153,7 @@ import { fileIcons, rules } from '@/utils';
 export default {
   data() {
     return {
+      base: server.base,
       user: {},
 
       isFileLoading: false,
@@ -147,6 +163,7 @@ export default {
       curDirs: [],
       curFiles: [],
       pathStack: [],
+      fileExtensions: [],
 
       // 文件/目录重合表单数据
       renameFormVisible: false,
@@ -170,7 +187,8 @@ export default {
 
       // 部门级联选择数据
       cascaderOptions: [],
-      departs: []
+      departs: [],
+
     };
   }, // end data()
 
@@ -359,6 +377,18 @@ export default {
       return `${server.base}/Files/AddFiles?token=${local.getItem('token')}&fileType=3&typeId=${this.curParentId}&depart=${this.curDirectory.DepartmentId}`;
     },
 
+    beforeUpload: function(file) {
+      let ext = this.getFileExtension(file.name);
+      if (!_.contains(this.fileExtensions, ext)) {
+        this.$error(`不允许上传像《${file.name}》这样格式的文件(:=`);
+        return false;
+      }
+    },
+
+    getFileExtension: function(fileName) {
+      return fileName.substr(fileName.lastIndexOf('.'));
+    },
+
     // 文件上传成功
     uploadSuccess: function(response, file, fileList) {
       let { msg, fileModel } = response;
@@ -371,6 +401,10 @@ export default {
       } else {
         this.$notify({ type: 'error', message: `《${file.name}》上传失败(:=` });
       }
+    },
+
+    download: function(file) {
+
     },
 
     addLocal: function(model, type) {
@@ -568,6 +602,10 @@ export default {
     this.loadFiles().then(res => this.getCurrentFiles());
     this.user = local.getItem('user');
     this.loadDeparts();
+
+    server.post('/Files/GetFileExtensions', {}, this).then(res => {
+      this.fileExtensions = res.data;
+    });
   }
 };
 </script>
@@ -651,7 +689,8 @@ $blue: #20A0FF;
   }
 
   .file-info {
-    // padding: 10px 14px 0 14px;
+    display: block;
+    text-decoration: none; // padding: 10px 14px 0 14px;
     span {
       display: inline-block;
       margin-top: 10px;

@@ -26,11 +26,17 @@ namespace Guoli.WebTest.Novel_download
             var url = Request["novelUrl"];
             if (!string.IsNullOrEmpty(url))
             {
-                var webClient = new WebClient { Encoding = Encoding.UTF8 };
+                var webClient = new WebClient { Encoding = Encoding.GetEncoding("UTF-8") };
                 var sourceCode = webClient.DownloadString(url);
+                var pageEncoding = GetEncoding(sourceCode);
+                if (pageEncoding.EncodingName.ToUpper() != "UTF-8")
+                {
+                    webClient.Encoding = pageEncoding;
+                    sourceCode = webClient.DownloadString(url);
+                }
 
                 var contentPattern = "(<h1>[\\s\\S]+?</h1>)[\\s\\S]+?(<div\\sid=\"content\">[\\s\\S]+?</div>)";
-                var nextPagePattern = "<a\\s*id=\"pager_next\"\\s*href=\"([^\"]+)\"";
+                var nextPagePattern = "<a\\s*href=\"([^\"]+)\">下一章</a>";
 
                 var contentRegex = new Regex(contentPattern);
                 var contentMatch = contentRegex.Match(sourceCode);
@@ -47,8 +53,7 @@ namespace Guoli.WebTest.Novel_download
 
                 if (nextPageMath.Groups.Count > 1)
                 {
-                    var path = url.Substring(0, url.LastIndexOf("/") + 1);
-                    var nextUrl = path + nextPageMath.Groups[1].Value;
+                    var nextUrl = nextPageMath.Groups[1].Value;
 
                     article.NextChapter = nextUrl;
                 }
@@ -57,6 +62,20 @@ namespace Guoli.WebTest.Novel_download
                 Response.ContentType = "json";
                 Response.Write(json);
                 Response.End();
+            }
+        }
+
+        private Encoding GetEncoding(string html)
+        {
+            var pattern = "<meta\\s+http-equiv=\"Content-Type\"\\s+content=\"text/html;\\s+charset=([^\"]+)\\s*\"\\s*/>";
+            var match = Regex.Match(html, pattern);
+            if (match.Success)
+            {
+                return Encoding.GetEncoding(match.Groups[1].Value);
+            }
+            else
+            {
+                return Encoding.UTF8;
             }
         }
     }

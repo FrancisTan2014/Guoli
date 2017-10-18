@@ -134,15 +134,18 @@ namespace Guoli.Admin.Utilities
                     // @FrancisTan 20170208
                     var zipPath = PathExtension.MapPath(file.FilePath);
 
-                    FileHelper.ExtractZip(zipPath, ExtractPath);
+                    if (file.FileExtension.ToLower() == ".zip")
+                    {
+                        FileHelper.ExtractZip(zipPath, ExtractPath);
 
-                    var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
+                        var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
 
-                    File.Delete(zipPath);
-                    FileHelper.Zip(zipPath, ExtractPath);
-                    Directory.Delete(ExtractPath, true);
+                        File.Delete(zipPath);
+                        FileHelper.Zip(zipPath, ExtractPath);
+                        Directory.Delete(ExtractPath, true);
 
-                    InsertToDb(searchResult, file.Id, keywordsId);
+                        InsertToDb(searchResult, file.Id, keywordsId);
+                    }
                 }
             }
         }

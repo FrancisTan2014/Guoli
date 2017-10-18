@@ -1,5 +1,8 @@
-﻿using System.Configuration;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using Guoli.Utilities.Extensions;
+using Guoli.Utilities.Helpers;
 
 namespace Guoli.Admin.Utilities
 {
@@ -69,6 +72,45 @@ namespace Guoli.Admin.Utilities
                     return ApkFiles;
                 default:
                     return string.Empty;
+            }
+        }
+
+        public static List<string> GetFileExtensions()
+        {
+            var config = ConfigurationManager.AppSettings["FileExtensions"];
+            if (config.IsNullOrEmpty())
+            {
+                return new List<string>();
+            }
+            else
+            {
+                var arr = config.Split('|');
+                return new List<string>(arr);
+            }
+        }
+
+        public static bool AddFileExtension(string ext)
+        {
+            var exts = GetFileExtensions();
+            if (exts.Contains(ext))
+            {
+                return false;
+            }
+            else
+            {
+                exts.Add(ext);
+                ConfigHelper.ChangeAppsettings("FileExtensions", string.Join("|", exts));
+                return true;
+            }
+        }
+
+        public static void RemoveFileExtension(string ext)
+        {
+            var exts = GetFileExtensions();
+            if (exts.Contains(ext))
+            {
+                exts.Remove(ext);
+                ConfigHelper.ChangeAppsettings("FileExtensions", string.Join("|", exts));
             }
         }
     }
