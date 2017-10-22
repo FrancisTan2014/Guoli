@@ -8,6 +8,8 @@ using Guoli.Bll;
 using Guoli.Utilities.Extensions;
 using Application = System.Windows.Forms.Application;
 using Microsoft.Office.Interop.Word;
+using System.Text;
+using System.Diagnostics;
 
 namespace Guoli.Import
 {
@@ -101,6 +103,12 @@ namespace Guoli.Import
 
         private void btnTestChangeConfig_Click(object sender, EventArgs e)
         {
+            // Word2Pdf();
+            Word2Html();
+        }
+
+        private void Word2Pdf()
+        {
             var word = new ApplicationClass();
 
             Document document = null;
@@ -119,6 +127,28 @@ namespace Guoli.Import
             {
                 document?.Close();
             }
+        }
+
+        private void Word2Html()
+        {
+            var word = new ApplicationClass();
+            var doc = word.Documents.Open("E:\\test.doc", true, true);
+
+            try
+            {                
+                doc.SaveAs2("E:\\test.html", WdSaveFormat.wdFormatHTML);
+                MessageBox.Show("转换成功(:=");
+            }
+            catch (Exception ex)
+            {
+                // Ignore
+            }
+            finally
+            {
+                doc.Close();
+                word.Quit();
+            }
+
         }
 
         private void frmImport_FormClosed(object sender, FormClosedEventArgs e)
