@@ -10,6 +10,7 @@ using Application = System.Windows.Forms.Application;
 using Microsoft.Office.Interop.Word;
 using System.Text;
 using System.Diagnostics;
+using Guoli.Utilities.Helpers;
 
 namespace Guoli.Import
 {
@@ -131,24 +132,15 @@ namespace Guoli.Import
 
         private void Word2Html()
         {
-            var word = new ApplicationClass();
-            var doc = word.Documents.Open("E:\\test.doc", true, true);
-
             try
-            {                
-                doc.SaveAs2("E:\\test.html", WdSaveFormat.wdFormatHTML);
+            {
+                FileHelper.Word2Html("E:\\test.docx", "E:\\www");
                 MessageBox.Show("转换成功(:=");
             }
             catch (Exception ex)
             {
-                // Ignore
-            }
-            finally
-            {
-                doc.Close();
-                word.Quit();
-            }
-
+                MessageBox.Show(ex.Message);
+            }        
         }
 
         private void frmImport_FormClosed(object sender, FormClosedEventArgs e)

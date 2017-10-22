@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
+using Guoli.Utilities.Extensions;
+using Microsoft.Office.Interop.Word;
 
 namespace Guoli.Utilities.Helpers
 {
@@ -76,6 +78,60 @@ namespace Guoli.Utilities.Helpers
             if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
             if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
             return Encoding.Default;
+        }
+
+        /// <summary>
+        /// 将给定的 word 文档（.doc|.docx）转换为 html 
+        /// </summary>
+        /// <param name="docFileName">word 文档绝对路径</param>
+        /// <param name="targetPath">转换后的 html 文件存储路径，若此参数为 null，则 html 文件存储路径将与 word 文档一致</param>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="Exception"></exception>
+        public static void Word2Html(string docFileName, string targetPath = null)
+        {
+            if (!File.Exists(docFileName))
+            {
+                throw new FileNotFoundException();
+            }
+
+            var ext = Path.GetExtension(docFileName).ToLower();
+            if (ext != ".doc" && ext != ".docx")
+            {
+                throw new InvalidOperationException("此函数仅支持转换“.doc|.docx”格式的文件");
+            }
+
+            if (!targetPath.IsNullOrEmpty())
+            {
+                if (!Directory.Exists(targetPath))
+                {
+                    Directory.CreateDirectory(targetPath);
+                }
+            }
+            else
+            {
+                targetPath = Path.GetDirectoryName(docFileName);
+            }
+
+            var word = new ApplicationClass();
+            Document doc = null;
+
+            try
+            {
+                doc = word.Documents.Open(docFileName);
+
+                var htmlFilename = Path.Combine(targetPath, Path.GetFileNameWithoutExtension(docFileName) + ".html");
+                doc.SaveAs2(htmlFilename, WdSaveFormat.wdFormatHTML);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                doc?.Close();
+                word.Quit();
+            }
         }
     }
 }
