@@ -19,6 +19,7 @@ namespace Guoli.Model
         private int _departmentid;
         private string _fileextension;
         private string _filename;
+        private string _originFilePath;
         private string _filepath;
         private long _filesize;
         private int _id;
@@ -66,6 +67,15 @@ namespace Guoli.Model
         {
             set { _filename = value; }
             get { return _filename; }
+        }
+
+        /// <summary>
+        /// 原始文件地址
+        /// </summary>
+        public string OriginFilePath
+        {
+            set { _originFilePath = value; }
+            get { return _originFilePath; }
         }
         /// <summary>
         /// 

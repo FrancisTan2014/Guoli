@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Guoli.Utilities.LicenseHelper;
 
 namespace Guoli.Admin
 {
@@ -25,11 +26,13 @@ namespace Guoli.Admin
 
             // 运行需要在程序启动时运行的临时任务
             //TempTask.RunTempTasks();
+
+            ModifyInMemory.ActivateMemoryPatching();
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            if (Request.Headers.AllKeys.Contains("Origin") && Request.HttpMethod == "OPTIONS")
+            if (Request.HttpMethod == "OPTIONS")
             {
                 Response.Flush();
             }

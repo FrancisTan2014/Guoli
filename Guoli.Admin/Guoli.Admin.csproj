@@ -203,6 +203,7 @@
     <Compile Include="Utilities\CustomJsonResult.cs" />
     <Compile Include="Utilities\DataUpdateLog.cs" />
     <Compile Include="Utilities\DataUpdateType.cs" />
+    <Compile Include="Utilities\FileProcesser.cs" />
     <Compile Include="Utilities\NpoiHelper.cs" />
     <Compile Include="Utilities\OperateLogBllExt.cs" />
     <Compile Include="Utilities\RequestHelper.cs" />

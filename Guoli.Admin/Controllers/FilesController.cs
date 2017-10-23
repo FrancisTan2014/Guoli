@@ -10,6 +10,8 @@ using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using Guoli.Utilities.FileUpload;
 using Guoli.Utilities.Helpers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Guoli.Admin.Controllers
 {
@@ -61,6 +63,7 @@ namespace Guoli.Admin.Controllers
                 FileExtension = filePathInfo.FileExtension,
                 FileName = filePathInfo.OriginalFileName,
                 FilePath = filePathInfo.FileRelativePath,
+                OriginFilePath = filePathInfo.FileRelativePath,
                 FileSize = filePathInfo.FileSize,
                 TypeId = typeId,
                 CreatorId = loginUser,
@@ -81,10 +84,9 @@ namespace Guoli.Admin.Controllers
 
             if (success)
             {
-                if (filePathInfo.FileExtension.ToLower() == ".zip")
-                {
-                    SearchHelper.AddSearchTask(1, fileModel.Id);
-                }
+                // 开启新线程执行将 office 文件转换为 html 的任务
+                // 以避免阻塞网络请求线程，造成用户长时间的等待
+                Task.Factory.StartNew(() => FormatFile(fileModel));
 
                 return Json(new
                 {
@@ -96,6 +98,23 @@ namespace Guoli.Admin.Controllers
             }
 
             return Json(new { msg = ErrorModel.OperateFailed });
+        }
+
+        /// <summary>
+        /// 处理上传文件的格式
+        /// </summary>
+        /// <param name="fileModel"></param>
+        private void FormatFile(TraficFiles fileModel)
+        {
+            if (FileHelper.IsOfficeWordDocument(fileModel.FilePath) || FileHelper.IsPdfDocument(fileModel.FilePath))
+            {
+                fileModel = FileProcesser.Format(fileModel);
+
+                var fileBll = new TraficFilesBll();
+                fileBll.Update(fileModel);
+
+                SearchHelper.AddSearchTask(1, fileModel.Id);
+            }
         }
 
         [HttpPost]
