@@ -97,22 +97,24 @@ namespace Guoli.Admin.Utilities
                 var keywordsBll = new TraficKeywordsBll();
                 var keywordsList = keywordsBll.QueryAll();
 
-                //var zipPath = Context.Server.MapPath(file.FilePath);
+                //var zipFileName = Context.Server.MapPath(file.FilePath);
                 // @FrancisTan 20170208
-                var zipPath = PathExtension.MapPath(file.FilePath);
-
-                FileHelper.ExtractZip(zipPath, ExtractPath);
-
-                foreach (var keywords in keywordsList)
+                var zipFileName = PathExtension.MapPath(file.FilePath);
+                if (File.Exists(zipFileName))
                 {
-                    var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
-                    
-                    InsertToDb(searchResult, fileId, keywords.Id);
-                }
+                    FileHelper.ExtractZip(zipFileName, ExtractPath);
 
-                File.Delete(zipPath);
-                FileHelper.Zip(zipPath, ExtractPath);
-                Directory.Delete(ExtractPath, true);
+                    foreach (var keywords in keywordsList)
+                    {
+                        var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
+
+                        InsertToDb(searchResult, fileId, keywords.Id);
+                    }
+
+                    File.Delete(zipFileName);
+                    FileHelper.Zip(zipFileName, ExtractPath);
+                    Directory.Delete(ExtractPath, true);
+                }
             }
         }
 
@@ -127,25 +129,24 @@ namespace Guoli.Admin.Utilities
             if (keywords != null)
             {
                 var fileBll = new TraficFilesBll();
-                var fileList = fileBll.QueryList("IsDelete=0", new[] { "Id", "FilePath", "FileExtension" });
+                var fileList = fileBll.QueryList("IsDelete=0", new[] { "Id", "FilePath", "FileExtension" }).Where(t => t.FileExtension.ToLower() == ".zip");
                 foreach (var file in fileList)
                 {
-                    //var zipPath = Context.Server.MapPath(file.FilePath);
+                    //var zipFileName = Context.Server.MapPath(file.FilePath);
                     // @FrancisTan 20170208
-                    var zipPath = PathExtension.MapPath(file.FilePath);
-
-                    if (file.FileExtension.ToLower() == ".zip")
+                    var zipFileName = PathExtension.MapPath(file.FilePath);
+                    if (File.Exists(zipFileName))
                     {
-                        FileHelper.ExtractZip(zipPath, ExtractPath);
+                        FileHelper.ExtractZip(zipFileName, ExtractPath);
 
                         var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
 
-                        File.Delete(zipPath);
-                        FileHelper.Zip(zipPath, ExtractPath);
+                        File.Delete(zipFileName);
+                        FileHelper.Zip(zipFileName, ExtractPath);
                         Directory.Delete(ExtractPath, true);
 
                         InsertToDb(searchResult, file.Id, keywordsId);
-                    }
+                    }                    
                 }
             }
         }
