@@ -9,6 +9,7 @@ using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
+using HtmlAgilityPack;
 
 namespace Guoli.Admin.Utilities
 {
@@ -192,17 +193,18 @@ namespace Guoli.Admin.Utilities
             var result = new Dictionary<string, string>();
             if (htmlFileName != null)
             {
-                AddIdForHtmlTag(htmlFileName, html => { SearchFromHtml(keywords, html, result); });
+                ExecuteSearch(htmlFileName, html => { SearchFromHtml(keywords, html, result); });
             }
             return result;
         }
 
         /// <summary>
         /// 读取html文件，为所有body下没有id的元素添加唯一标识，之后将新文本写入原文件
+        /// 待此操作执行完成之后，执行在 html 文本中搜索特定关键字的逻辑
         /// </summary>
         /// <param name="filePath">html文件路径</param>
         /// <param name="afterComplete">添加唯一标识完成后执行的方法</param>
-        public static void AddIdForHtmlTag(string filePath, Action<string> afterComplete)
+        public static void ExecuteSearch(string filePath, Action<string> afterComplete)
         {
             using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
             {
@@ -277,6 +279,14 @@ namespace Guoli.Admin.Utilities
 
                 result.Add(id, content);
             }
+
+            // @FrancisTan 2017-10-23
+            // 使用 HtmlAgility 操作 html 的方式替代老版本的正则查找的方式
+            //var htmlDoc = new HtmlDocument();
+            //htmlDoc.LoadHtml(html);
+
+            //var body = htmlDoc.DocumentNode.SelectSingleNode("//body");
+            //body.ChildNodes
         }
 
         /// <summary>

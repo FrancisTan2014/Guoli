@@ -35,9 +35,9 @@ namespace Guoli.Admin.Utilities
                         FileHelper.Word2Html(fileName, htmlFilesPath);
                         break;
 
-                    case ".pdf":
-                        FileHelper.Pdf2Html(fileName, htmlFilesPath);
-                        break;
+                    //case ".pdf":
+                    //    FileHelper.Pdf2Html(fileName, htmlFilesPath);
+                    //    break;
 
                     default:
                         throw new NotImplementedException();

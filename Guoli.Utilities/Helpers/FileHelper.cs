@@ -181,8 +181,9 @@ namespace Guoli.Utilities.Helpers
             }
 
             var htmlFilename = Path.Combine(targetPath, Path.GetFileNameWithoutExtension(filename) + ".html");
+
             var doc = new Aspose.Pdf.Document(filename);
-            //doc.Save(htmlFilename, Aspose.Pdf.SaveFormat.Html);
+            doc.Save(htmlFilename, Aspose.Pdf.SaveFormat.Html);
             doc.Save(htmlFilename, new Aspose.Pdf.HtmlSaveOptions { DocumentType = Aspose.Pdf.HtmlDocumentType.Html5 });
         }
 
