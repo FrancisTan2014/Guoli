@@ -36,8 +36,11 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnTestChangeConfig = new System.Windows.Forms.Button();
             this.btnImport2 = new System.Windows.Forms.Button();
+            this.groupKeywords = new System.Windows.Forms.GroupBox();
+            this.btnBaiduAnalysiser = new System.Windows.Forms.Button();
             this.gpbInitial.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupKeywords.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStations
@@ -126,11 +129,33 @@
             this.btnImport2.UseVisualStyleBackColor = true;
             this.btnImport2.Click += new System.EventHandler(this.btnStations_Click);
             // 
+            // groupKeywords
+            // 
+            this.groupKeywords.Controls.Add(this.btnBaiduAnalysiser);
+            this.groupKeywords.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupKeywords.Location = new System.Drawing.Point(12, 461);
+            this.groupKeywords.Name = "groupKeywords";
+            this.groupKeywords.Size = new System.Drawing.Size(786, 179);
+            this.groupKeywords.TabIndex = 6;
+            this.groupKeywords.TabStop = false;
+            this.groupKeywords.Text = "关键词处理";
+            // 
+            // btnBaiduAnalysiser
+            // 
+            this.btnBaiduAnalysiser.Location = new System.Drawing.Point(15, 68);
+            this.btnBaiduAnalysiser.Name = "btnBaiduAnalysiser";
+            this.btnBaiduAnalysiser.Size = new System.Drawing.Size(187, 59);
+            this.btnBaiduAnalysiser.TabIndex = 0;
+            this.btnBaiduAnalysiser.Text = "百度分词工具";
+            this.btnBaiduAnalysiser.UseVisualStyleBackColor = true;
+            this.btnBaiduAnalysiser.Click += new System.EventHandler(this.btnBaiduAnalysiser_Click);
+            // 
             // frmImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(829, 696);
+            this.Controls.Add(this.groupKeywords);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gpbInitial);
             this.Name = "frmImport";
@@ -138,6 +163,7 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmImport_FormClosed);
             this.gpbInitial.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.groupKeywords.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -152,6 +178,8 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnImport2;
         private System.Windows.Forms.Button btnTestChangeConfig;
+        private System.Windows.Forms.GroupBox groupKeywords;
+        private System.Windows.Forms.Button btnBaiduAnalysiser;
     }
 }
 

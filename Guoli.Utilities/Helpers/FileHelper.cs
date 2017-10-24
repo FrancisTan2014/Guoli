@@ -197,5 +197,51 @@ namespace Guoli.Utilities.Helpers
             var ext = Path.GetExtension(filename).ToLower();
             return ext == ".pdf";
         }
+
+        /// <summary>
+        /// 读取 pdf 文件中的文本
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static string GetTextFromPdf(string filename)
+        {
+            var textAbsorber = new Aspose.Pdf.Text.TextAbsorber();
+            var pdf = new Aspose.Pdf.Document(filename);
+            pdf.Pages.Accept(textAbsorber);
+
+            return textAbsorber.Text;
+        }
+
+        public static string GetTextFromTxt(string filename)
+        {
+            using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = new StreamReader(fs))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 从 word 文档中读取文本
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static string GetTextFromWord(string filename)
+        {
+            try
+            {
+                var doc = new Aspose.Words.Document(filename);
+                var builder = new Aspose.Words.DocumentBuilder(doc);
+                builder.InsertField("MERGEFIELD Field");
+
+                return doc.GetText();
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
     }
 }
