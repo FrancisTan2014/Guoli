@@ -58,7 +58,7 @@ namespace Guoli.Admin
 
                             // 依次对单个文件执行关键字搜索
                             var fileBll = new TraficFilesBll();
-                            var idList = fileBll.QueryList("", new string[] { "Id" }).Select(t => t.Id).ToList();
+                            var idList = fileBll.QueryList("IsDelete=0", new string[] { "Id" }).Select(t => t.Id).ToList();
                             idList.ForEach(id =>
                             {
                                 SearchHelper.AddSearchTask(1, id);
