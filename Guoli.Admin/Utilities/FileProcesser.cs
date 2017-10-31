@@ -40,7 +40,8 @@ namespace Guoli.Admin.Utilities
                     //    break;
 
                     default:
-                        throw new NotImplementedException();
+                        //throw new NotImplementedException();
+                        return fileModel;
                 }
 
                 // 将 __html 中的文件打包压缩成 zip 格式的文件

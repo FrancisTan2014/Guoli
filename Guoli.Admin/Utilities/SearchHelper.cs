@@ -10,6 +10,8 @@ using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
 using HtmlAgilityPack;
+using System.Text;
+using System.Collections.Concurrent;
 
 namespace Guoli.Admin.Utilities
 {
@@ -23,6 +25,7 @@ namespace Guoli.Admin.Utilities
         //private static readonly string ExtractPath = Context.Server.MapPath("/_searchTemp"); // 临时解压路径
         // @FrancisTan 20170208
         private static readonly string ExtractPath = PathExtension.MapPath("/_searchTemp"); // 临时解压路径
+        private static readonly string ZipTempPath = PathExtension.MapPath("/_zipTemp"); // 临时压缩包路径
 
         /// <summary>
         /// 待执行的搜索队列，其中：
@@ -79,6 +82,13 @@ namespace Guoli.Admin.Utilities
                     else
                     {
                         _isTaskRunning = false;
+                        using (var fs = new FileStream("D:\\finish.txt", FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            using (var writer = new StreamWriter(fs))
+                            {
+                                writer.Write("finished");
+                            }
+                        }
                         break;
                     }
                 }
@@ -97,25 +107,78 @@ namespace Guoli.Admin.Utilities
             {
                 var keywordsBll = new TraficKeywordsBll();
                 var keywordsList = keywordsBll.QueryAll();
-
-                //var zipFileName = Context.Server.MapPath(file.FilePath);
-                // @FrancisTan 20170208
                 var zipFileName = PathExtension.MapPath(file.FilePath);
+
+                var zipTempFileName = Path.Combine(ZipTempPath, Path.GetFileName(file.FilePath));
+                if (!Directory.Exists(ZipTempPath))
+                {
+                    Directory.CreateDirectory(ZipTempPath);
+                }
+
                 if (File.Exists(zipFileName))
                 {
                     FileHelper.ExtractZip(zipFileName, ExtractPath);
-
+                    var html = GetHtmlStr(ExtractPath, out string htmlFileName, out Encoding encoding);
+                    html = AddIdForHtmlDom(html);
+                    var tasks = new List<Task>();
                     foreach (var keywords in keywordsList)
                     {
-                        var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
+                        tasks.Add(Task.Factory.StartNew(() =>
+                        {
+                            try
+                            {
+                                var searchResult = SearchFromHtml(keywords.Keywords, html);
 
-                        InsertToDb(searchResult, fileId, keywords.Id);
+                                SearchResultEnqueue(searchResult, fileId, keywords.Id);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionLogBll.ExceptionPersistence(nameof(SearchHelper), nameof(SearchHelper), ex);
+                            }
+                        }));
                     }
 
-                    File.Delete(zipFileName);
-                    FileHelper.Zip(zipFileName, ExtractPath);
-                    Directory.Delete(ExtractPath, true);
+                    Task.WaitAll(tasks.ToArray());
+                    ClearSearchResultQueue();
+                    FileHelper.Write(htmlFileName, html, encoding);
+                    SearchCompleted(zipTempFileName, zipFileName, ExtractPath);
+                    tasks = null;
+                    GC.Collect();
                 }
+            }
+        }
+
+        /// <summary>
+        /// 搜索过程执行完毕之后
+        /// 删除原文件，将新压缩后的文件复制到原文件所在文件夹
+        /// 删除临时解压文件夹
+        /// </summary>
+        /// <param name="tempFileName"></param>
+        /// <param name="originFileName"></param>
+        /// <param name="deleteDir"></param>
+        private static void SearchCompleted(string tempFileName, string originFileName, string deleteDir)
+        {
+            // 压缩异常时，保持原文件不变
+            try
+            {
+                FileHelper.Zip(tempFileName, ExtractPath);
+                File.Delete(originFileName);
+                File.Move(tempFileName, originFileName);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            // 异常：目录不是空的
+            try
+            {
+                Directory.Delete(ExtractPath, true);
+            }
+            catch (Exception ex)
+            {
+
+                Directory.Delete(ExtractPath, true);
             }
         }
 
@@ -133,120 +196,107 @@ namespace Guoli.Admin.Utilities
                 var fileList = fileBll.QueryList("IsDelete=0", new[] { "Id", "FilePath", "FileExtension" }).Where(t => t.FileExtension.ToLower() == ".zip");
                 foreach (var file in fileList)
                 {
-                    //var zipFileName = Context.Server.MapPath(file.FilePath);
-                    // @FrancisTan 20170208
                     var zipFileName = PathExtension.MapPath(file.FilePath);
                     if (File.Exists(zipFileName))
                     {
                         FileHelper.ExtractZip(zipFileName, ExtractPath);
 
-                        var searchResult = SearchHtmlInZip(ExtractPath, keywords.Keywords);
+                        var html = GetHtmlStr(ExtractPath, out string htmlFileName, out Encoding encoding);
+                        html = AddIdForHtmlDom(html);
 
-                        File.Delete(zipFileName);
-                        FileHelper.Zip(zipFileName, ExtractPath);
-                        Directory.Delete(ExtractPath, true);
+                        var searchResult = SearchFromHtml(keywords.Keywords, html);
+                        FileHelper.Write(htmlFileName, html, encoding);
 
-                        InsertToDb(searchResult, file.Id, keywordsId);
-                    }                    
+                        var zipTempFileName = Path.Combine(ZipTempPath, Path.GetFileName(file.FilePath));
+                        if (!Directory.Exists(ZipTempPath))
+                        {
+                            Directory.CreateDirectory(ZipTempPath);
+                        }
+
+                        SearchResultEnqueue(searchResult, file.Id, keywordsId);
+
+                        SearchCompleted(zipTempFileName, zipFileName, ExtractPath);
+                    }
                 }
+
+                ClearSearchResultQueue();
             }
         }
 
+        private static object _lockObj = new object();
+        private static Queue<TraficSearchResult> searchResultQueue = new Queue<TraficSearchResult>();
         /// <summary>
         /// 将搜索结果插入数据库
         /// </summary>
         /// <param name="searchResult"></param>
         /// <param name="fileId"></param>
         /// <param name="keywordsId"></param>
-        private static void InsertToDb(Dictionary<string, string> searchResult, int fileId, int keywordsId)
+        private static void SearchResultEnqueue(Dictionary<string, string> searchResult, int fileId, int keywordsId)
+        {
+                foreach (var pair in searchResult)
+                {
+                    searchResultQueue.Enqueue(new TraficSearchResult
+                    {
+                        KeywordsId = keywordsId,
+                        TraficFileId = fileId,
+                        SearchResult = pair.Value,
+                        Position = pair.Key
+                    });
+                } 
+        }
+
+        private static void ClearSearchResultQueue()
         {
             var resultBll = new TraficSearchResultBll();
             var maxId = resultBll.GetMaxId();
-
-            var list = searchResult.Select(keyPair => new TraficSearchResult
-            {
-                KeywordsId = keywordsId,
-                TraficFileId = fileId,
-                SearchResult = keyPair.Value,
-                Position = keyPair.Key
-            });
-
-            resultBll.BulkInsert(list);
+            resultBll.BulkInsert(searchResultQueue.ToList());
             DataUpdateLog.BulkUpdate(typeof(TraficSearchResult).Name, (int)maxId);
+            searchResultQueue.Clear();
         }
 
-        /// <summary>
-        /// 从包含htm/html的zip包中提取出html文件
-        /// 为此html文件中的body下所有元素添加id属性（guid）
-        /// 从body下的文本中搜索所有包含指定关键字的内容
-        /// 将新的Html文本写入原文件中
-        /// 返回包含关键字的元素的id及此元素文本（关键字高亮后）所组成的字典集
-        /// </summary>
-        /// <param name="filePath">待搜索文件所在路径</param>
-        /// <param name="keywords">待搜索的关键字</param>
-        /// <returns>搜索结果</returns>
-        public static Dictionary<string, string> SearchHtmlInZip(string filePath, string keywords)
+        public static string GetHtmlStr(string filePath, out string htmlFileName, out Encoding encoding)
         {
             var fileNames = Directory.GetFiles(filePath);
-            var htmlFileName = fileNames.FirstOrDefault(f => f.EndsWith(".htm") || f.EndsWith(".html"));
+            htmlFileName = fileNames.FirstOrDefault(f => f.EndsWith(".htm") || f.EndsWith(".html"));
 
-            var result = new Dictionary<string, string>();
+            encoding = Encoding.Default;
             if (htmlFileName != null)
             {
-                ExecuteSearch(htmlFileName, html => { SearchFromHtml(keywords, html, result); });
+                return FileHelper.ReadText(htmlFileName, out encoding);
             }
-            return result;
+
+            return "";
         }
 
-        /// <summary>
-        /// 读取html文件，为所有body下没有id的元素添加唯一标识，之后将新文本写入原文件
-        /// 待此操作执行完成之后，执行在 html 文本中搜索特定关键字的逻辑
-        /// </summary>
-        /// <param name="filePath">html文件路径</param>
-        /// <param name="afterComplete">添加唯一标识完成后执行的方法</param>
-        public static void ExecuteSearch(string filePath, Action<string> afterComplete)
+        private static string AddIdForHtmlDom(string html)
         {
-            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+            var match = Regex.Match(html, "<body[^>]*>([\\s\\S]*)</body>");
+            if (match.Success)
             {
-                var encoding = FileHelper.GetEncoding(fs);
-                using (var reader = new StreamReader(fs, encoding))
+                var body = match.Groups[1].Value;
+                var newBody = Regex.Replace(body, "<[^/>\\[\\]]+>", m =>
                 {
-                    var html = reader.ReadToEnd();
-                    var match = Regex.Match(html, "<body[^>]*>([\\s\\S]*)</body>");
-                    if (match.Success)
+                    var tag = m.Groups[0].Value;
+                    if (!tag.Contains("id="))
                     {
-                        var body = match.Groups[1].Value;
-                        var newBody = Regex.Replace(body, "<[^/>\\[\\]]+>", m =>
-                        {
-                            var tag = m.Groups[0].Value;
-                            if (!tag.Contains("id="))
-                            {
-                                var guid = Guid.NewGuid().ToString();
-                                tag = tag.Replace(">", $" id=\"{guid}\">");
-                            }
-
-                            return tag;
-                        });
-
-                        html = html.Replace(body, newBody);
-                        afterComplete?.Invoke(html);
-
-                        if (!html.Contains("FrancisTan201609191127"))
-                        {
-                            html = html.Replace("</body>",
-                            "<script>; (function(window, document) {var author='FrancisTan201609191127';window.getQueryString = function(name) {var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', \"i\");var r = window.location.search.substr(1).match(reg);if (r != null) return decodeURIComponent(r[2]); return '';};window.jump = function(id, keywords) {var dom = document.getElementById(id);var content = dom.innerText.replace(keywords, '<font style=\"background: yellow;\">' + keywords + '</font>');dom.innerHTML = content;window.scrollTo(0, dom.offsetTop - 20);};window.onload = function() {var id = getQueryString('id');var keywords = getQueryString('keywords');jump(id, keywords);};})(window, document);</script></body>");
-                        }
-                        using (var writer = new StreamWriter(fs, encoding))
-                        {
-                            fs.Seek(0, SeekOrigin.Begin);
-                            writer.WriteLine(html);
-                        }
+                        var guid = Guid.NewGuid().ToString();
+                        tag = tag.Replace(">", $" id=\"{guid}\">");
                     }
+
+                    return tag;
+                });
+
+                html = html.Replace(body, newBody);
+
+                if (!html.Contains("FrancisTan201609191127"))
+                {
+                    html = html.Replace("</body>",
+                    "<script>; (function(window, document) {var author='FrancisTan201609191127';window.getQueryString = function(name) {var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', \"i\");var r = window.location.search.substr(1).match(reg);if (r != null) return decodeURIComponent(r[2]); return '';};window.jump = function(id, keywords) {var dom = document.getElementById(id);var content = dom.innerText.replace(keywords, '<font style=\"background: yellow;\">' + keywords + '</font>');dom.innerHTML = content;window.scrollTo(0, dom.offsetTop - 20);};window.onload = function() {var id = getQueryString('id');var keywords = getQueryString('keywords');jump(id, keywords);};})(window, document);</script></body>");
                 }
+            }
 
-            } // end FileStream
-
-        }// end method
+            return html;
+        }
 
         /// <summary>
         /// 从html的body中探索指定关键字，将搜索结果存储到给定字典集中（键-关键字所在DOM元素Id 值-将关键字高亮后的文本）
@@ -254,8 +304,10 @@ namespace Guoli.Admin.Utilities
         /// <param name="keywords">待搜索的关键字</param>
         /// <param name="html">待搜索的html源代码</param>
         /// <param name="result">搜索结果</param>
-        public static void SearchFromHtml(string keywords, string html, Dictionary<string, string> result)
+        public static Dictionary<string, string> SearchFromHtml(string keywords, string html)
         {
+            var result = new Dictionary<string, string>();
+            
             if (string.IsNullOrEmpty(keywords))
             {
                 throw new ArgumentNullException(nameof(keywords));
@@ -280,13 +332,7 @@ namespace Guoli.Admin.Utilities
                 result.Add(id, content);
             }
 
-            // @FrancisTan 2017-10-23
-            // 使用 HtmlAgility 操作 html 的方式替代老版本的正则查找的方式
-            //var htmlDoc = new HtmlDocument();
-            //htmlDoc.LoadHtml(html);
-
-            //var body = htmlDoc.DocumentNode.SelectSingleNode("//body");
-            //body.ChildNodes
+            return result;
         }
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace Guoli.Admin
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // 运行需要在程序启动时运行的临时任务
-            //TempTask.RunTempTasks();
+            TempTask.RunTempTasks();
 
             // 激活 Aspose.Words、Aspose.Pdf 等 Aspose 系统组件
             ModifyInMemory.ActivateMemoryPatching();

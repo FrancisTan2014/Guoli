@@ -13,6 +13,7 @@ using System.Collections.Concurrent;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Guoli.Import
 {
@@ -125,7 +126,7 @@ namespace Guoli.Import
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }        
+            }
         }
 
         private void frmImport_FormClosed(object sender, FormClosedEventArgs e)
@@ -170,7 +171,7 @@ namespace Guoli.Import
                     {
                         // continue
                     }
-                }               
+                }
             }
         }
 
@@ -194,7 +195,7 @@ namespace Guoli.Import
             if (!string.IsNullOrEmpty(text))
             {
                 var keywords = GetKeywordsFrom78901Net(text);
-                AddKeywordsToQueye(keywords);   
+                AddKeywordsToQueye(keywords);
             }
         }
 
@@ -218,7 +219,7 @@ namespace Guoli.Import
             _keywodsQueue = new ConcurrentQueue<string>();
             GC.Collect();
         }
-        
+
         private ConcurrentQueue<string> _keywodsQueue = new ConcurrentQueue<string>();
         /// <summary>
         /// 将获得的关键字持久化
@@ -265,6 +266,86 @@ namespace Guoli.Import
             return new List<string>();
         }
 
-        
+        /// <summary>
+        /// 去除重复的关键字（单独处理 TraficKeywords 表）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnDistinct_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("确定要清除 TraficKeywods 表中的重复项吗？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                var bll = new TraficKeywordsBll();
+                var list = bll.QueryAll().Distinct();
+
+                var removed = new List<string>();
+                var newList = new List<TraficKeywords>();
+                foreach (var item in list)
+                {
+                    if (!Regex.IsMatch(item.Keywords, "\\d"))
+                    {
+                        newList.Add(new TraficKeywords { Keywords = item.Keywords });
+                    }
+                    else
+                    {
+                        removed.Add(item.Keywords);
+                    }
+                }
+
+                bll.ExecuteSql("TRUNCATE TABLE TraficKeywords;");
+                bll.BulkInsert(newList);
+
+                using (var fs = new FileStream("E:\\removed.txt", FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    using (var writer = new StreamWriter(fs))
+                    {
+                        writer.Write(string.Join("\r\n", removed));
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 处理由重复的关键字引起的重复搜索结果
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnDistinct2_Click(object sender, EventArgs e)
+        {
+            var bll = new TraficKeywordsBll();
+            var resBll = new TraficSearchResultBll();
+            var dbUpdateBll = new DbUpdateLogBll();
+
+            var list = bll.QueryAll();
+            var searchResults = resBll.QueryList("", new string[] { "Id", "KeywordsId" });
+            var groups = list.GroupBy(k => k.Keywords);
+            foreach (var group in groups)
+            {
+                if (group.Count() > 1)
+                {
+                    var ids = group.Select(k => k.Id).ToList();
+                    var firstId = ids.First();
+                    ids.RemoveAt(0);
+
+                    // 删除重复项
+                    var idsStr = string.Join(",", ids);
+                    var deleteKeywodsSql = $"DELETE FROM TraficKeywords WHERE Id IN({idsStr})";
+                    var deleteKeywordsUpdates = $"DELETE FROM DbUpdateLog WHERE TargetId IN({idsStr}) AND TableName='TraficKeywords'";
+
+                    var results = searchResults.Where(r => ids.Contains(r.KeywordsId));
+                    var resIds = results.Select(r => r.Id);
+                    var resIdsStr = string.Join(",", resIds);
+                    var deleteResultSql = $"DELETE FROM TraficSearchResult WHERE KeywordsId IN({idsStr})";
+                    var deleteResultUpdates = $"DELETE FROM DbUpdateLog WHERE TargetId IN({(resIdsStr == "" ? "0" : resIdsStr)}) AND TableName='TraficSearchResult'";
+
+                    bll.ExecuteTransation(
+                        () => bll.ExecuteSql(deleteKeywodsSql) >= 0,
+                        () => bll.ExecuteSql(deleteKeywordsUpdates) >= 0,
+                        () => bll.ExecuteSql(deleteResultSql) >= 0,
+                        () => bll.ExecuteSql(deleteResultUpdates) >= 0
+                    );
+                }
+            }
+        }
     }
 }

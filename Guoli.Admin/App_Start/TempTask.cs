@@ -6,6 +6,8 @@ using Guoli.Admin.Utilities;
 using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Guoli.Admin
 {
@@ -48,21 +50,35 @@ namespace Guoli.Admin
                             var text = streamReader.ReadToEnd();
                             var keywords = text.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-                            // 逐条插入数据库关执行文件的搜索任务
-                            foreach (var word in keywords)
-                            {
-                                var condition = $"Keywords='{word}'";
-                                if (!keywordsBll.Exists(condition))
-                                {
-                                    var keywordsModel = new TraficKeywords { Keywords = word };
-                                    if (keywordsBll.Insert(keywordsModel).Id > 0)
-                                    {
-                                        DataUpdateLog.SingleUpdate(nameof(TraficKeywords), keywordsModel.Id, DataUpdateType.Insert);
-                                        SearchHelper.AddSearchTask(2, keywordsModel.Id);
-                                    }
-                                }
+                            // @FrancisTan 2017-10-27
+                            // 批量插入关键字
+                            var modelList = keywords.Select(k => new TraficKeywords { Keywords = k, AddTime = DateTime.Now });
+                            keywordsBll.BulkInsert(modelList);
+                            DataUpdateLog.BulkUpdate(nameof(TraficKeywords), 0);
 
-                            } // end foreach
+                            // 依次对单个文件执行关键字搜索
+                            var fileBll = new TraficFilesBll();
+                            var idList = fileBll.QueryList("", new string[] { "Id" }).Select(t => t.Id).ToList();
+                            idList.ForEach(id =>
+                            {
+                                SearchHelper.AddSearchTask(1, id);
+                            });
+
+                            //// 逐条插入数据库关执行文件的搜索任务
+                            //foreach (var word in keywords)
+                            //{
+                            //    var condition = $"Keywords='{word}'";
+                            //    if (!keywordsBll.Exists(condition))
+                            //    {
+                            //        var keywordsModel = new TraficKeywords { Keywords = word };
+                            //        if (keywordsBll.Insert(keywordsModel).Id > 0)
+                            //        {
+                            //            DataUpdateLog.SingleUpdate(nameof(TraficKeywords), keywordsModel.Id, DataUpdateType.Insert);
+                            //            SearchHelper.AddSearchTask(2, keywordsModel.Id);
+                            //        }
+                            //    }
+
+                            //} // end foreach
 
                         } // end streamreader
 

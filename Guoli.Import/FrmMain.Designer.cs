@@ -37,7 +37,9 @@
             this.btnTestChangeConfig = new System.Windows.Forms.Button();
             this.btnImport2 = new System.Windows.Forms.Button();
             this.groupKeywords = new System.Windows.Forms.GroupBox();
+            this.btnDistinct = new System.Windows.Forms.Button();
             this.btnBaiduAnalysiser = new System.Windows.Forms.Button();
+            this.btnDistinct2 = new System.Windows.Forms.Button();
             this.gpbInitial.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupKeywords.SuspendLayout();
@@ -131,6 +133,8 @@
             // 
             // groupKeywords
             // 
+            this.groupKeywords.Controls.Add(this.btnDistinct2);
+            this.groupKeywords.Controls.Add(this.btnDistinct);
             this.groupKeywords.Controls.Add(this.btnBaiduAnalysiser);
             this.groupKeywords.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupKeywords.Location = new System.Drawing.Point(12, 461);
@@ -139,6 +143,16 @@
             this.groupKeywords.TabIndex = 6;
             this.groupKeywords.TabStop = false;
             this.groupKeywords.Text = "关键词处理";
+            // 
+            // btnDistinct
+            // 
+            this.btnDistinct.Location = new System.Drawing.Point(228, 68);
+            this.btnDistinct.Name = "btnDistinct";
+            this.btnDistinct.Size = new System.Drawing.Size(186, 59);
+            this.btnDistinct.TabIndex = 1;
+            this.btnDistinct.Text = "去除重复的关键字";
+            this.btnDistinct.UseVisualStyleBackColor = true;
+            this.btnDistinct.Click += new System.EventHandler(this.btnDistinct_Click);
             // 
             // btnBaiduAnalysiser
             // 
@@ -149,6 +163,16 @@
             this.btnBaiduAnalysiser.Text = "百度分词工具";
             this.btnBaiduAnalysiser.UseVisualStyleBackColor = true;
             this.btnBaiduAnalysiser.Click += new System.EventHandler(this.btnBaiduAnalysiser_Click);
+            // 
+            // btnDistinct2
+            // 
+            this.btnDistinct2.Location = new System.Drawing.Point(446, 68);
+            this.btnDistinct2.Name = "btnDistinct2";
+            this.btnDistinct2.Size = new System.Drawing.Size(197, 59);
+            this.btnDistinct2.TabIndex = 2;
+            this.btnDistinct2.Text = "处理重复关键字导致的搜索结果";
+            this.btnDistinct2.UseVisualStyleBackColor = true;
+            this.btnDistinct2.Click += new System.EventHandler(this.btnDistinct2_Click);
             // 
             // frmImport
             // 
@@ -180,6 +204,8 @@
         private System.Windows.Forms.Button btnTestChangeConfig;
         private System.Windows.Forms.GroupBox groupKeywords;
         private System.Windows.Forms.Button btnBaiduAnalysiser;
+        private System.Windows.Forms.Button btnDistinct;
+        private System.Windows.Forms.Button btnDistinct2;
     }
 }
 

@@ -14,16 +14,29 @@ namespace Guoli.Utilities.Helpers
     /// <since>2016-09-18</since>
     public static class FileHelper
     {
+        public static string ReadText(string filename, out Encoding encoding)
+        {
+            using (var fs = new FileStream(filename, FileMode.Open, FileAccess.ReadWrite))
+            {
+                encoding = GetEncoding(fs);
+                using (var reader = new StreamReader(fs, encoding))
+                {
+                    return reader.ReadToEnd();
+                }
+
+            } // end FileStream
+        }
+
         /// <summary>
         /// 对写文件的简单封装
         /// </summary>
         /// <param name="path">要写入的文件绝对路径（不存在会自动创建）</param>
         /// <param name="txt">待写入的文本</param>
-        public static void Write(string path, string txt)
+        public static void Write(string path, string txt, Encoding encoding = null)
         {
             using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                using (var writer = new StreamWriter(fs))
+                using (var writer = new StreamWriter(fs, encoding ?? Encoding.Default))
                 {
                     writer.Write(txt);
                 }
