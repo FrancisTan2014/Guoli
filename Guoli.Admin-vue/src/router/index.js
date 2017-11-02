@@ -46,6 +46,8 @@ import ViewExamFiles from '@/views/exam/ViewExamFiles'
 
 // 通知公告
 import Announcement from '@/views/notify/Announcement'
+import Accident from '@/views/notify/AccidentWarn'
+import Annex from '@/views/notify/Annex'
 
 // 系统设置
 import SystemUser from '@/views/system/SystemUser'
@@ -147,7 +149,9 @@ export default new Router({
       desc: '通知公告',
       component: Home,
       children: [
-        { path: '/announce', name: 'announce', desc: '公告管理', component: Announcement }
+        { path: '/announce', name: 'announce', desc: '普通公告', component: Announcement },
+        { path: '/accident', name: 'announce', desc: '事故预警', component: Accident },
+        { path: '/annex', name: 'announce', desc: '附件4', component: Annex },
       ]
     },
     {

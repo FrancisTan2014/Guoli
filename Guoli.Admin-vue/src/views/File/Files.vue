@@ -247,7 +247,7 @@ export default {
       this.getCurrentFiles();
     },
 
-    getFileExtension: function(filename) {
+    getFileExtenExtension: function(filename) {
       return filename.substr(filename.lastIndexOf("."));
     },
 

@@ -19,7 +19,7 @@
 
         <el-form-item>
           <el-button type="primary" v-on:click="load" icon="search">查询</el-button>
-          <el-button type="primary" v-on:click="dialogVisible = true" icon="plus">发布公告</el-button>
+          <el-button type="primary" v-on:click="showAddForm()" icon="plus">发布公告</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -56,7 +56,7 @@
     </el-col>
 
     <!-- 弹窗 -->
-    <el-dialog title="发布新公告" :visible="dialogVisible" :before-close="reset">
+    <el-dialog :title="editFormModel.Id > 0 ? '修改' : '添加'" :visible="dialogVisible" :before-close="reset">
 
       <el-form ref="editForm" :model="editFormModel" :rules="editFormRules" label-width="120px">
 
@@ -83,6 +83,7 @@
 
         <el-form-item label="文件名称：" prop="FileName" v-if="editFormModel.AnnounceType === 1">
           <el-input v-model="editFormModel.FileName"></el-input>
+          <a v-if="editFormModel.Id" :href="getDownloadUrl(editFormModel.FilePath)" :download="getDownloadName(editFormModel.FilePath, editFormModel.FileName)">下载</a>
         </el-form-item>
 
         <el-form-item label="公告内容：" v-if="editFormModel.AnnounceType === 2" prop="Content">
@@ -106,7 +107,7 @@ import moment from 'moment';
 import NProgess from 'nprogress';
 import clone from 'clone';
 import server from '@/store/server';
-import { timepickerOptions } from '@/utils';
+import { timepickerOptions, getFileExtenExtension } from '@/utils';
 
 export default {
   data() {
@@ -122,6 +123,7 @@ export default {
       conditions: {
         Title: { value: undefined, type: 'like' },
         PubTime: { value: undefined, type: 'between' },
+        BusinessType: { value: 1, type: 'equal' }
       },
 
       // 分页
@@ -134,10 +136,21 @@ export default {
       fileUploadUrl: `${server.base}/Files/FileUpload?fileType=5`,
       dialogVisible: false,
       editFormLoading: false,
+      emptyModel: {
+        Id: 0,
+        Title: '',
+        AnnounceType: 1,
+        BusinessType: 1,
+        Content: '',
+        FileName: '',
+        FilePath: '',
+        PubTime: ''
+      },
       editFormModel: {
         Id: 0,
         Title: '',
         AnnounceType: 1,
+        BusinessType: 1,
         Content: '',
         FileName: '',
         FilePath: '',
@@ -190,6 +203,11 @@ export default {
       }
     },
 
+    showAddForm: function () {
+      this.editFormModel = clone(this.emptyModel);
+      this.dialogVisible = true;
+    },
+
     showEditForm: function (model) {
       this.editFormModel = clone(model);
       this.dialogVisible = true;
@@ -199,6 +217,14 @@ export default {
       let model = this.editFormModel;
       model.FileName = file.OriginalFileName.replace(file.FileExtension, '');
       model.FilePath = file.FileRelativePath;
+    },
+
+    getDownloadUrl: function (relateUrl) {
+      return server.base + relateUrl;
+    },
+
+    getDownloadName: function (filepath, filename) {
+      return filename + getFileExtenExtension(filepath);
     },
 
     handleEdit: function () {

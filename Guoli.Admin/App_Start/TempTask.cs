@@ -64,22 +64,6 @@ namespace Guoli.Admin
                                 SearchHelper.AddSearchTask(1, id);
                             });
 
-                            //// 逐条插入数据库关执行文件的搜索任务
-                            //foreach (var word in keywords)
-                            //{
-                            //    var condition = $"Keywords='{word}'";
-                            //    if (!keywordsBll.Exists(condition))
-                            //    {
-                            //        var keywordsModel = new TraficKeywords { Keywords = word };
-                            //        if (keywordsBll.Insert(keywordsModel).Id > 0)
-                            //        {
-                            //            DataUpdateLog.SingleUpdate(nameof(TraficKeywords), keywordsModel.Id, DataUpdateType.Insert);
-                            //            SearchHelper.AddSearchTask(2, keywordsModel.Id);
-                            //        }
-                            //    }
-
-                            //} // end foreach
-
                         } // end streamreader
 
                     } // end filestream

@@ -87,6 +87,10 @@ namespace Guoli.Admin.Controllers
 
             if (success)
             {
+                var logBll = new OperateLogBll();
+                var dic = new Dictionary<int, string> { { 1, "普通公告" }, { 2, "事故预警" }, { 3, "附件4" } };
+                var log = $"发布了[{dic[model.BusinessType]}]类型的公告";
+                logBll.Add(nameof(Announcement), model.Id, updateType, LoginStatus.GetLoginId(), log);
                 DataUpdateLog.SingleUpdate(nameof(Announcement), model.Id, updateType);
 
                 return Json(ErrorModel.OperateSuccess);
