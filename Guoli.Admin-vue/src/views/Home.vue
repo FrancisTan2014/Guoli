@@ -190,7 +190,7 @@ export default {
           index: '6',
           title: '通知公告',
           subs: [
-            { index: 'announce', title: '公告管理' },
+            { index: 'announce', title: '普通公告' },
             { index: 'accident', title: '事故预警' },
             { index: 'annex', title: '附件4' },
           ]

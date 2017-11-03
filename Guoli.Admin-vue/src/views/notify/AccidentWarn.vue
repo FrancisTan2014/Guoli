@@ -33,6 +33,8 @@
       <el-table-column prop="AnnounceType" label="预警类型" :formatter="AnnounceTypeFormatter"></el-table-column>
       <el-table-column prop="Content" label="预警内容" :formatter="ContentFormatter"></el-table-column>
       <el-table-column prop="PubTime" label="发布时间" :formatter="PubTimeFormatter"></el-table-column>
+      <el-table-column prop="PubTime" label="发布人" :formatter="Name"></el-table-column>
+      <el-table-column prop="PubTime" label="部门" :formatter="DepartmentName"></el-table-column>
 
       <el-table-column label="操作" min-width="120">
         <template scope="scope">
@@ -116,7 +118,7 @@ export default {
 
       // 搜索
       apiUrl: "/Instructor/GetListForVue",
-      table: "Announcement",
+      table: "ViewAnnouncement",
       order: "PubTime",
       desc: true,
       conditions: {
