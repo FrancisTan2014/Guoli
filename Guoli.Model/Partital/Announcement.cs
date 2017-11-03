@@ -33,6 +33,8 @@ namespace Guoli.Model
         private string _filename = "";
         private string _filepath = "";
         private int _systemuserid;
+        private int _departmentid;
+        private string _departmentname = "";
         private DateTime _pubtime = DateTime.Now;
         private int _businesstype = 1;
         /// <summary>
@@ -90,6 +92,19 @@ namespace Guoli.Model
         {
             set { _systemuserid = value; }
             get { return _systemuserid; }
+        }
+        /// <summary>
+        /// 部门Id
+        /// </summary>
+        public int DepartmentId
+        {
+            set { _departmentid = value; }
+            get { return _departmentid; }
+        }
+        public string DepartmentName
+        {
+            set { _departmentname = value; }
+            get { return _departmentname; }
         }
         /// <summary>
         /// 发布时间

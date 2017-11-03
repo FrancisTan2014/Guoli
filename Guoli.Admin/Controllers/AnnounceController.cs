@@ -69,8 +69,11 @@ namespace Guoli.Admin.Controllers
                 return Json(ErrorModel.InputError);
             }
 
+            var loginUser = LoginStatus.GetLoginUser();
+            model.SystemUserId = loginUser.Id;
+            model.DepartmentId = loginUser.DepartmentId;
+            model.DepartmentName = loginUser.DepartmentName;
             model.PubTime = DateTime.Now;
-            model.SystemUserId = LoginStatus.GetLoginId();
 
             var updateType = model.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
 
