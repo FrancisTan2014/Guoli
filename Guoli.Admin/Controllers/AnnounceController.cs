@@ -70,6 +70,7 @@ namespace Guoli.Admin.Controllers
             }
 
             model.PubTime = DateTime.Now;
+            model.SystemUserId = LoginStatus.GetLoginId();
 
             var updateType = model.Id > 0 ? DataUpdateType.Update : DataUpdateType.Insert;
 
