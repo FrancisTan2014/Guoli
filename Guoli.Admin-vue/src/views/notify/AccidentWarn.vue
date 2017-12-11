@@ -40,6 +40,7 @@
         <template scope="scope">
           <el-button type="text" @click="showEditForm(scope.row)">修改</el-button>
           <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
+          <a class="el-button el-button--text" v-if="scope.row.AnnounceType === 1" :href="getDownloadUrl(scope.row.FilePath)" :download="getDownloadName(scope.row.FilePath, scope.row.FileName)">下载</a>
         </template>
       </el-table-column>
 
@@ -85,7 +86,7 @@
 
         <el-form-item label="文件名称：" prop="FileName" v-if="editFormModel.AnnounceType === 1">
           <el-input v-model="editFormModel.FileName"></el-input>
-          <a v-if="editFormModel.Id" :href="getDownloadUrl(editFormModel.FilePath)" :download="getDownloadName(editFormModel.FilePath, editFormModel.FileName)">下载</a>
+          <a v-if="editFormModel.FilePath" :href="getDownloadUrl(editFormModel.FilePath)" :download="getDownloadName(editFormModel.FilePath, editFormModel.FileName)">下载</a>
         </el-form-item>
 
         <el-form-item label="预警内容：" v-if="editFormModel.AnnounceType === 2" prop="Content">
