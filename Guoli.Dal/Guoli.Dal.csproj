@@ -111,6 +111,7 @@
     <Compile Include="Partital\TrainMomentDal.cs" />
     <Compile Include="Partital\TrainNoDal.cs" />
     <Compile Include="Partital\TrainNoLineDal.cs" />
+    <Compile Include="Partital\ViewAnnouncementDal.cs" />
     <Compile Include="Partital\ViewAppOperateLogDal.cs" />
     <Compile Include="Partital\ViewBaseLineDal.cs" />
     <Compile Include="Partital\ViewDepartInfoDal.cs" />

@@ -110,6 +110,10 @@ let convertCSharpTime = csharpTime => {
   return null;
 };
 
+let getFileExtenExtension = function (filename) {
+  return filename.substr(filename.lastIndexOf("."));
+};
+
 export {
   rules,
   clone,
@@ -118,5 +122,6 @@ export {
   timepickerOptions,
   convertCSharpTime,
   print,
-  buildValidator
+  buildValidator,
+  getFileExtenExtension
 };

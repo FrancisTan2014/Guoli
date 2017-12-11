@@ -181,7 +181,7 @@ export default {
           title: '考试管理',
           subs: [
             { index: 'examlib', title: '题库管理' },
-            { index: 'examnotify', title: '考试通知' },
+            { index: 'examnotify', title: '在线考试' },
             { index: 'examresult', title: '考试结果' },
           ]
         },
@@ -190,7 +190,9 @@ export default {
           index: '6',
           title: '通知公告',
           subs: [
-            { index: 'announce', title: '公告管理' }
+            { index: 'announce', title: '普通公告' },
+            { index: 'accident', title: '事故预警' },
+            { index: 'annex', title: '附件4' },
           ]
         },
         {

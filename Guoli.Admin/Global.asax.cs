@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Guoli.Utilities.LicenseHelper;
 
 namespace Guoli.Admin
 {
@@ -24,20 +25,15 @@ namespace Guoli.Admin
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // 运行需要在程序启动时运行的临时任务
-            //TempTask.RunTempTasks();
+            TempTask.RunTempTasks();
+
+            // 激活 Aspose.Words、Aspose.Pdf 等 Aspose 系统组件
+            ModifyInMemory.ActivateMemoryPatching();
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            //var ctx = HttpContext.Current;
-            //if (ctx.Request.HttpMethod == "OPTIONS")
-            //{
-            //    ctx.Response.AddHeader("Access-Control-Allow-Origin", "*");
-            //    ctx.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
-            //    ctx.Response.AddHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            //}
-
-            if (Request.Headers.AllKeys.Contains("Origin") && Request.HttpMethod == "OPTIONS")
+            if (Request.HttpMethod == "OPTIONS")
             {
                 Response.Flush();
             }

@@ -31,6 +31,7 @@ namespace Guoli.Model
         private string _filename;
         private string _fileextension;
         private long _filesize;
+        private string _originFilePath = string.Empty;
         private string _filepath;
         private int _creatorid = 0;
         private int _departmentid = 0;
@@ -75,6 +76,14 @@ namespace Guoli.Model
         {
             set { _filesize = value; }
             get { return _filesize; }
+        }
+        /// <summary>
+        /// 原始文件地址
+        /// </summary>
+        public string OriginFilePath
+        {
+            set { _originFilePath = value; }
+            get { return _originFilePath; }
         }
         /// <summary>
         /// 文件地址，文件在服务器存放的相对路径

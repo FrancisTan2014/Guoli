@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.Utilities.Helpers
 {
@@ -13,16 +14,29 @@ namespace Guoli.Utilities.Helpers
     /// <since>2016-09-18</since>
     public static class FileHelper
     {
+        public static string ReadText(string filename, out Encoding encoding)
+        {
+            using (var fs = new FileStream(filename, FileMode.Open, FileAccess.ReadWrite))
+            {
+                encoding = GetEncoding(fs);
+                using (var reader = new StreamReader(fs, encoding))
+                {
+                    return reader.ReadToEnd();
+                }
+
+            } // end FileStream
+        }
+
         /// <summary>
         /// 对写文件的简单封装
         /// </summary>
         /// <param name="path">要写入的文件绝对路径（不存在会自动创建）</param>
         /// <param name="txt">待写入的文本</param>
-        public static void Write(string path, string txt)
+        public static void Write(string path, string txt, Encoding encoding = null)
         {
             using (var fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write))
             {
-                using (var writer = new StreamWriter(fs))
+                using (var writer = new StreamWriter(fs, encoding ?? Encoding.Default))
                 {
                     writer.Write(txt);
                 }
@@ -76,6 +90,171 @@ namespace Guoli.Utilities.Helpers
             if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
             if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Encoding.UTF32;
             return Encoding.Default;
+        }
+
+        /// <summary>
+        /// 将给定的 word 文档（.doc|.docx）转换为 html 
+        /// </summary>
+        /// <param name="docFileName">word 文档绝对路径</param>
+        /// <param name="targetPath">转换后的 html 文件存储路径，若此参数为 null，则 html 文件存储路径将与 word 文档一致</param>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="Exception"></exception>
+        public static void Word2Html(string docFileName, string targetPath = null)
+        {
+            if (!File.Exists(docFileName))
+            {
+                throw new FileNotFoundException();
+            }
+
+            var ext = Path.GetExtension(docFileName).ToLower();
+            if (ext != ".doc" && ext != ".docx")
+            {
+                throw new InvalidOperationException("此函数仅支持转换“.doc|.docx”格式的文件");
+            }
+
+            if (!targetPath.IsNullOrEmpty())
+            {
+                if (!Directory.Exists(targetPath))
+                {
+                    Directory.CreateDirectory(targetPath);
+                }
+            }
+            else
+            {
+                targetPath = Path.GetDirectoryName(docFileName);
+            }
+
+            var htmlFilename = Path.Combine(targetPath, Path.GetFileNameWithoutExtension(docFileName) + ".html");
+
+            #region Microsoft.Office.Interop.Word
+            //var word = new ApplicationClass();
+            //Document doc = null;
+
+            //try
+            //{
+            //    doc = word.Documents.Open(docFileName);
+
+            //    doc.SaveAs2(htmlFilename, WdSaveFormat.wdFormatHTML);
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
+            //finally
+            //{
+            //    doc?.Close();
+            //    word.Quit();
+            //}
+            #endregion
+
+            // Aspose.Words
+            var doc = new Aspose.Words.Document(docFileName);
+            doc.Save(htmlFilename, new Aspose.Words.Saving.HtmlSaveOptions { SaveFormat = Aspose.Words.SaveFormat.Html, Encoding = Encoding.GetEncoding("GB2312") });
+        }
+
+        /// <summary>
+        /// 判断给定文件是否为 Microsoft Office Word 文档（后缀名是否为 .doc 或者 .docx）
+        /// </summary>
+        /// <param name="fileName">待判断的文件名称</param>
+        /// <returns></returns>
+        public static bool IsOfficeWordDocument(string fileName)
+        {
+            if (fileName.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            var ext = Path.GetExtension(fileName).ToLower();
+            return ext == ".doc" || ext == ".docx";
+        }
+
+        public static void Pdf2Html(string filename, string targetPath = null)
+        {
+            if (!File.Exists(filename))
+            {
+                throw new FileNotFoundException();
+            }
+            
+            if (!IsPdfDocument(filename))
+            {
+                throw new InvalidOperationException("此函数仅支持转换“.pdf”格式的文件");
+            }
+
+            if (!targetPath.IsNullOrEmpty())
+            {
+                if (!Directory.Exists(targetPath))
+                {
+                    Directory.CreateDirectory(targetPath);
+                }
+            }
+            else
+            {
+                targetPath = Path.GetDirectoryName(filename);
+            }
+
+            var htmlFilename = Path.Combine(targetPath, Path.GetFileNameWithoutExtension(filename) + ".html");
+
+            var doc = new Aspose.Pdf.Document(filename);
+            doc.Save(htmlFilename, Aspose.Pdf.SaveFormat.Html);
+            doc.Save(htmlFilename, new Aspose.Pdf.HtmlSaveOptions { DocumentType = Aspose.Pdf.HtmlDocumentType.Html5 });
+        }
+
+        public static bool IsPdfDocument(string filename)
+        {
+            if (filename.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            var ext = Path.GetExtension(filename).ToLower();
+            return ext == ".pdf";
+        }
+
+        /// <summary>
+        /// 读取 pdf 文件中的文本
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static string GetTextFromPdf(string filename)
+        {
+            var textAbsorber = new Aspose.Pdf.Text.TextAbsorber();
+            var pdf = new Aspose.Pdf.Document(filename);
+            pdf.Pages.Accept(textAbsorber);
+
+            return textAbsorber.Text;
+        }
+
+        public static string GetTextFromTxt(string filename)
+        {
+            using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = new StreamReader(fs))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 从 word 文档中读取文本
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static string GetTextFromWord(string filename)
+        {
+            try
+            {
+                var doc = new Aspose.Words.Document(filename);
+                var builder = new Aspose.Words.DocumentBuilder(doc);
+                builder.InsertField("MERGEFIELD Field");
+
+                return doc.GetText();
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
         }
     }
 }

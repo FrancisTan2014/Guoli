@@ -49,20 +49,18 @@
       <!-- 文件 -->
       <transition name="fade" v-for="file in curFiles" :key="file.Id">
 
-        <el-tooltip class="item" effect="dark" content="点击下载文件" placement="top">
-
-          <el-col :span="4" @click.native="download(file)">
+          <el-col :span="4">
             <div class="folder">
-              <a :href="`${base}${file.FilePath}`" :download="file.FileName">
-                <i class="folder-img" :class="getFileIconClass(file.FileExtension)" aria-hidden="true"></i>
+              <a title="点击下载文件" :href="`${base}${file.OriginFilePath || file.FilePath}`" :download="getDownloadFileName(file)">
+                <i class="folder-img" :class="getFileIconClass(getFileExtension(file.OriginFilePath || file.FilePath))" aria-hidden="true"></i>
               </a>
               <!-- <div class="file-info">
                   <span class="file-name">{{ file.FileName }}</span>
                   <span class="file-time">{{ `${file.DepartmentName}-${file.CreatorName}` }}</span>
                   <span class="file-time">{{ file.AddTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
                 </div> -->
-              <a class="file-info" :href="`${base}${file.FilePath}`" :download="file.FileName">
-                <span class="file-name">{{ file.FileName }}</span>
+              <a title="点击下载文件" class="file-info" :href="`${base}${file.OriginFilePath || file.FilePath}`" :download="file.FileName">
+                <span class="file-name">{{ getDownloadFileName(file) }}</span>
                 <span class="file-time">{{ `${file.DepartmentName}-${file.CreatorName}` }}</span>
                 <span class="file-time">{{ file.AddTime | moment('YYYY-MM-DD HH:mm:ss') }}</span>
               </a>
@@ -74,8 +72,6 @@
               </div>
             </div>
           </el-col>
-
-        </el-tooltip>
 
         <a :href="downloadUrl" style="display: none;" :download="downloadName"></a>
 
@@ -144,11 +140,11 @@
 </template>
 
 <script>
-import NProgress from 'nprogress';
-import _ from 'underscore';
-import server from '@/store/server';
-import local from '@/store/local';
-import { fileIcons, rules } from '@/utils';
+import NProgress from "nprogress";
+import _ from "underscore";
+import server from "@/store/server";
+import local from "@/store/local";
+import { fileIcons, rules } from "@/utils";
 
 export default {
   data() {
@@ -168,17 +164,24 @@ export default {
       // 文件/目录重合表单数据
       renameFormVisible: false,
       renameFormLoading: false,
-      renameFormModel: { id: 0, name: '', origin: '', type: 1 }, // type为1表示对目录重命名，2表示对文件重命名
+      renameFormModel: { id: 0, name: "", origin: "", type: 1 }, // type为1表示对目录重命名，2表示对文件重命名
       renameFormRules: { name: [rules.required, rules.getMaxRule(50)] },
       renameOriginModel: {},
 
       // 新建文件夹表单数据
       newFormVisible: false,
       newFormLoading: false,
-      newFormModel: { name: '', depart: [], isPublic: false, hidden: false },
+      newFormModel: { name: "", depart: [], isPublic: false, hidden: false },
       newFormRules: {
         name: [rules.required, rules.getMaxRule(50)],
-        depart: [{ required: true, type: 'array', message: '请选择责任部门', trigger: 'change' }]
+        depart: [
+          {
+            required: true,
+            type: "array",
+            message: "请选择责任部门",
+            trigger: "change"
+          }
+        ]
       },
       newFormOrigin: {},
 
@@ -187,8 +190,7 @@ export default {
 
       // 部门级联选择数据
       cascaderOptions: [],
-      departs: [],
-
+      departs: []
     };
   }, // end data()
 
@@ -197,7 +199,7 @@ export default {
       this.isFileLoading = true;
       NProgress.start();
 
-      return server.post('/Files/GetDirecAndFiles', {}, this).then(res => {
+      return server.post("/Files/GetDirecAndFiles", {}, this).then(res => {
         this.isFileLoading = false;
         NProgress.done();
         this.data = res.data;
@@ -206,8 +208,12 @@ export default {
 
     getCurrentFiles: function() {
       let _this = this;
-      _this.curDirs = _this.data.directories.filter((item, index) => item.ParentId === _this.curParentId);
-      _this.curFiles = _this.data.files.filter((item, index) => item.TypeId === _this.curParentId);
+      _this.curDirs = _this.data.directories.filter(
+        (item, index) => item.ParentId === _this.curParentId
+      );
+      _this.curFiles = _this.data.files.filter(
+        (item, index) => item.TypeId === _this.curParentId
+      );
     },
 
     openFolder: function(folder) {
@@ -241,18 +247,24 @@ export default {
       this.getCurrentFiles();
     },
 
+    getFileExtenExtension: function(filename) {
+      return filename.substr(filename.lastIndexOf("."));
+    },
+
     getFileIconClass: extension => {
-      return fileIcons[extension] || 'fa fa-file-o';
+      return fileIcons[extension] || "fa fa-file-o";
     },
 
     // 点击添加目录触发的事件
     newFolder: function() {
-
       // 顶级目录仅超级管理员可添加目录
       let isSuper = this.user.IsSuper;
       if (this.curParentId === 0) {
         if (!isSuper) {
-          this.$message({ type: 'error', message: '抱歉，只有超级管理员才能在顶级目录中添加目录(:=' });
+          this.$message({
+            type: "error",
+            message: "抱歉，只有超级管理员才能在顶级目录中添加目录(:="
+          });
           return;
         }
       } else {
@@ -263,7 +275,7 @@ export default {
           // 以及责任部门的管理员可以创建目录
           if (!c.IsPublic && this.user.DepartmentId !== c.DepartmentId) {
             this.$message({
-              type: 'error',
+              type: "error",
               message: `抱歉，当前目录的责任部门是${c.DepartmentName}，您没有操作权限(:=`
             });
             return;
@@ -272,7 +284,7 @@ export default {
       }
 
       this.newFormVisible = true;
-      this.newFormModel.name = '';
+      this.newFormModel.name = "";
       this.newFormModel.depart = [];
       this.newFormModel.isPublic = false;
       this.newFormModel.hidden = false;
@@ -295,7 +307,10 @@ export default {
           let m = this.newFormModel;
           // 目录的责任部门要么由超级管理员指定
           // 要么默认为当前登录用户所在部门
-          let departmentId = _.last(m.depart) || this.curDirectory.DepartmentId || this.user.DepartmentId;
+          let departmentId =
+            _.last(m.depart) ||
+            this.curDirectory.DepartmentId ||
+            this.user.DepartmentId;
           let origin = this.newFormOrigin;
           let model = {
             Id: origin.Id || 0,
@@ -310,30 +325,41 @@ export default {
           // 若满足下面的条件
           // 则说明文件信息没有被改变
           // 不需要提交服务器
-          if (model.TypeName === origin.TypeName
-            && model.DepartmentId === origin.DepartmentId
-            && model.IsPublic === origin.IsPublic) {
+          if (
+            model.TypeName === origin.TypeName &&
+            model.DepartmentId === origin.DepartmentId &&
+            model.IsPublic === origin.IsPublic
+          ) {
             return;
           }
 
           this.newFormLoading = true;
           NProgress.start();
-          server.post('/Files/AddDirectory', { directory: JSON.stringify(model) }, this)
+          server
+            .post(
+              "/Files/AddDirectory",
+              { directory: JSON.stringify(model) },
+              this
+            )
             .then(res => {
               this.newFormLoading = false;
               NProgress.done();
 
               let { code, id } = res;
-              let successMsg = model.Id > 0 ? `目录修改成功(:=` : '目录添加成功(:=';
-              let failureMsg = model.Id > 0 ? '目录修改失败，请稍后重试(:=' : '目录添加失败，请稍后重试(:=';
+              let successMsg = model.Id > 0 ? `目录修改成功(:=` : "目录添加成功(:=";
+              let failureMsg =
+                model.Id > 0 ? "目录修改失败，请稍后重试(:=" : "目录添加失败，请稍后重试(:=";
               if (code === 119) {
-                this.$message({ type: 'error', message: '已存在相同名称的目录(:=' });
+                this.$message({ type: "error", message: "已存在相同名称的目录(:=" });
               } else if (code === 116) {
                 // 目录添加成功
-                this.$message({ type: 'success', message: successMsg });
+                this.$message({ type: "success", message: successMsg });
                 this.newFormVisible = false;
 
-                let departName = _.find(this.departs, item => item.Id === model.DepartmentId).DepartmentName;
+                let departName = _.find(
+                  this.departs,
+                  item => item.Id === model.DepartmentId
+                ).DepartmentName;
                 if (model.Id > 0) {
                   // 将更新同步到本地
                   origin.TypeName = model.TypeName;
@@ -349,7 +375,7 @@ export default {
                   this.addLocal(model, 1);
                 }
               } else {
-                this.$message({ type: 'error', message: failureMsg, });
+                this.$message({ type: "error", message: failureMsg });
               }
             });
         }
@@ -362,10 +388,15 @@ export default {
       // 若当前登录用户不是超级管理员
       // 并且非当前目录责任部门的管理员
       // 则无权限添加文件
-      if (!this.user.IsSuper
-        && !this.curDirectory.IsPublic
-        && this.user.DepartmentId !== this.curDirectory.DepartmentId) {
-        this.$message({ type: 'error', message: `抱歉，当前目录是由${this.curDirectory.DepartmentName}负责的，您无权限添加文件(:=` });
+      if (
+        !this.user.IsSuper &&
+        !this.curDirectory.IsPublic &&
+        this.user.DepartmentId !== this.curDirectory.DepartmentId
+      ) {
+        this.$message({
+          type: "error",
+          message: `抱歉，当前目录是由${this.curDirectory.DepartmentName}负责的，您无权限添加文件(:=`
+        });
         return;
       }
 
@@ -374,7 +405,10 @@ export default {
 
     // 动态获取文件上传地址，因为需要通过url传递动态参数
     uploadPath: function() {
-      return `${server.base}/Files/AddFiles?token=${local.getItem('token')}&fileType=3&typeId=${this.curParentId}&depart=${this.curDirectory.DepartmentId}`;
+      return `${server.base}/Files/AddFiles?token=${local.getItem(
+        "token"
+      )}&fileType=3&typeId=${this.curParentId}&depart=${this.curDirectory
+        .DepartmentId}`;
     },
 
     beforeUpload: function(file) {
@@ -386,7 +420,7 @@ export default {
     },
 
     getFileExtension: function(fileName) {
-      return fileName.substr(fileName.lastIndexOf('.'));
+      return fileName.substr(fileName.lastIndexOf("."));
     },
 
     // 文件上传成功
@@ -395,16 +429,26 @@ export default {
       if (msg.code === 100) {
         this.data.files.push(fileModel);
         this.curFiles.push(fileModel);
-        this.$notify({ type: 'success', title: '提示', message: `《${file.name}》上传成功！` });
+        this.$notify({
+          type: "success",
+          title: "提示",
+          message: `《${file.name}》上传成功！`
+        });
       } else if (msg.code === 120) {
-        this.$notify({ type: 'error', message: `《${file.name}》已存在(:=` });
+        this.$notify({ type: "error", message: `《${file.name}》已存在(:=` });
       } else {
-        this.$notify({ type: 'error', message: `《${file.name}》上传失败(:=` });
+        this.$notify({ type: "error", message: `《${file.name}》上传失败(:=` });
       }
     },
 
-    download: function(file) {
-
+    getDownloadFileName: function(file) {
+      if (file.OriginFilePath) {
+        var originExt = this.getFileExtension(file.OriginFilePath);
+        var ext = this.getFileExtension(file.FilePath);
+        return file.FileName.replace(ext, originExt);
+      } else {
+        return file.FileName;
+      }
     },
 
     addLocal: function(model, type) {
@@ -419,18 +463,26 @@ export default {
 
     // 点击目录中的修改按钮触发
     renameFolder: function(folder) {
-
       // 权限验证
       if (folder.IsPublic) {
         if (!this.user.IsSuper) {
           // 公共目录仅超级管理员有修改权限
-          this.$message({ type: 'error', message: '抱歉，只有超级管理员才有对公共目录进行修改的权限(:=' });
+          this.$message({
+            type: "error",
+            message: "抱歉，只有超级管理员才有对公共目录进行修改的权限(:="
+          });
           return;
         }
       } else {
         // 私有目录仅超级管理员和责任部门管理员有修改权限
-        if (!this.user.IsSuper && this.user.DepartmentId !== folder.DepartmentId) {
-          this.$message({ type: 'error', message: `抱歉，此目录是由${folder.DepartmentName}负责的，您没有修改权限(:=` });
+        if (
+          !this.user.IsSuper &&
+          this.user.DepartmentId !== folder.DepartmentId
+        ) {
+          this.$message({
+            type: "error",
+            message: `抱歉，此目录是由${folder.DepartmentName}负责的，您没有修改权限(:=`
+          });
           return;
         }
       }
@@ -450,9 +502,11 @@ export default {
 
     // 点击文件中的重命名按钮触发
     renameFile: function(file) {
-
       if (!this.user.IsSuper && !this.user.DepartmentId !== file.DepartmentId) {
-        this.$message({ type: 'error', message: `抱歉，此文件是由${file.DepartmentName}上传的，您无权限修改(:=` });
+        this.$message({
+          type: "error",
+          message: `抱歉，此文件是由${file.DepartmentName}上传的，您无权限修改(:=`
+        });
         return;
       }
 
@@ -461,7 +515,7 @@ export default {
       this.renameFormModel.type = 2;
       this.renameOriginModel = file;
 
-      let name = file.FileName.replace(file.FileExtension, '');
+      let name = file.FileName.replace(file.FileExtension, "");
       this.renameFormModel.name = name;
       this.renameFormModel.origin = name;
     },
@@ -475,19 +529,24 @@ export default {
             this.renameFormLoading = true;
             NProgress.start();
             let { id, type } = this.renameFormModel;
-            let name = this.renameFormModel.name + this.renameOriginModel.FileExtension;
+            let name =
+              this.renameFormModel.name + this.renameOriginModel.FileExtension;
             // 文件重命名
-            server.post('/Files/Rename', { id, name, type }, this)
-              .then(res => {
-                let { code } = res;
-                if (code === 100) {
-                  this.$message({ type: 'success', title: '提示', message: `已成功将《${m.origin}》重命名为《${m.name}》(:=`, duration: 3000 });
-                  this.renameOriginModel.FileName = name;
-                  this.renameFormLoading = false;
-                  this.renameFormVisible = false;
-                  NProgress.done();
-                }
-              });
+            server.post("/Files/Rename", { id, name, type }, this).then(res => {
+              let { code } = res;
+              if (code === 100) {
+                this.$message({
+                  type: "success",
+                  title: "提示",
+                  message: `已成功将《${m.origin}》重命名为《${m.name}》(:=`,
+                  duration: 3000
+                });
+                this.renameOriginModel.FileName = name;
+                this.renameFormLoading = false;
+                this.renameFormVisible = false;
+                NProgress.done();
+              }
+            });
           } else {
             this.renameFormVisible = false;
           }
@@ -496,29 +555,36 @@ export default {
     },
 
     remove: function(id, type, model) {
-
       // 对目录或文件的删除权限
       // 仅超级管理员和其责任部门
       // 的管理员账户拥有
       if (!this.user.IsSuper && this.user.DepartmentId !== model.DepartmentId) {
-        let msg = type === 1
-          ? `抱歉，此目录是由${model.DepartmentName}负责的，您无权限删除(:=`
-          : `抱歉，此文件是由${model.DepartmentName}上传的，您无权限删除(:=`;
-        this.$message({ type: 'error', message: msg });
+        let msg =
+          type === 1
+            ? `抱歉，此目录是由${model.DepartmentName}负责的，您无权限删除(:=`
+            : `抱歉，此文件是由${model.DepartmentName}上传的，您无权限删除(:=`;
+        this.$message({ type: "error", message: msg });
         return;
       }
 
       let text = type === 1 ? `将删除此目录及其所有的子目录和子文件，是否确定删除？` : `文件删除后将无法恢复，是否删除？`;
-      this.$confirm(text).then(() => {
-        server.post('/Files/Delete', { id, type }, this)
-          .then(res => {
+      this.$confirm(text)
+        .then(() => {
+          server.post("/Files/Delete", { id, type }, this).then(res => {
             let { code } = res;
             if (code === 100) {
-              this.$message({ type: 'success', message: '删除成功(:=', duration: 3000 });
+              this.$message({
+                type: "success",
+                message: "删除成功(:=",
+                duration: 3000
+              });
               this.removeFromLocalData(id, type);
             }
           });
-      }).catch(() => { /* 取消 */ });
+        })
+        .catch(() => {
+          /* 取消 */
+        });
     },
 
     findIndex: (arr, id) => {
@@ -556,7 +622,7 @@ export default {
     //************部门选择器数据处理函数*************
     //
     loadDeparts: function() {
-      server.post('/Common/GetDeparts', {}, this).then(res => {
+      server.post("/Common/GetDeparts", {}, this).then(res => {
         let { code, data } = res;
         this.departs = data;
         this.cascaderOptions = this.findChildren(data, 0);
@@ -595,15 +661,15 @@ export default {
       }
 
       this.findParents(array, obj.ParentId, result);
-    },
+    }
   }, // end methods
 
   mounted() {
     this.loadFiles().then(res => this.getCurrentFiles());
-    this.user = local.getItem('user');
+    this.user = local.getItem("user");
     this.loadDeparts();
 
-    server.post('/Files/GetFileExtensions', {}, this).then(res => {
+    server.post("/Files/GetFileExtensions", {}, this).then(res => {
       this.fileExtensions = res.data;
     });
   }
@@ -611,12 +677,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../sass/mixins.scss';
+@import "../sass/mixins.scss";
 
-$folderColor: #A3DDFF;
-$folderContrastColor: #ED5E07;
-$pdfColor: #F14B37;
-$blue: #20A0FF;
+$folderColor: #a3ddff;
+$folderContrastColor: #ed5e07;
+$pdfColor: #f14b37;
+$blue: #20a0ff;
 
 .toolbar {
   border-bottom: 1px solid $borderColor;
@@ -639,7 +705,7 @@ $blue: #20A0FF;
 
   .folder-path {
     &::after {
-      content: '>';
+      content: ">";
       color: #bfcbd9;
       margin-left: 8px;
     }
@@ -649,7 +715,7 @@ $blue: #20A0FF;
       color: #bfcbd9;
 
       &::after {
-        content: '';
+        content: "";
       }
     }
   }
@@ -673,6 +739,7 @@ $blue: #20A0FF;
   position: relative;
   border: 1px solid $borderColor;
   overflow: hidden;
+  height: 217px;
 
   &.active {
     background: $folderColor;
@@ -751,11 +818,11 @@ $blue: #20A0FF;
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: all .5s ease-out
+  transition: all 0.5s ease-out;
 }
 
 .fade-enter,
 .fade-leave-to {
-  opacity: 0
+  opacity: 0;
 }
 </style>

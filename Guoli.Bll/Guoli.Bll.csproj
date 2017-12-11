@@ -108,6 +108,7 @@
     <Compile Include="Partital\TrainMomentBll.cs" />
     <Compile Include="Partital\TrainNoBll.cs" />
     <Compile Include="Partital\TrainNoLineBll.cs" />
+    <Compile Include="Partital\ViewAnnouncementBll.cs" />
     <Compile Include="Partital\ViewAppOperateLogBll.cs" />
     <Compile Include="Partital\ViewBaseLineBll.cs" />
     <Compile Include="Partital\ViewDepartInfoBll.cs" />
@@ -156,7 +157,9 @@
       <Name>Guoli.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

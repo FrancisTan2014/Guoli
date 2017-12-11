@@ -94,75 +94,77 @@
     </section>
 </template>
 <script>
+import moment from "moment";
 
-    import moment from 'moment';
+import server from "@/store/server";
+import { timepickerOptions } from "@/utils";
 
-    import server from '@/store/server';
-    import { timepickerOptions } from '@/utils';
+export default {
+  data() {
+    return {
+      isLoading: false,
+      data: [],
 
-    export default {
-        data() {
-            return {
-                isLoading: false,
-                data: [],
+      // 搜索
+      apiUrl: "/Instructor/GetListForVue",
+      table: "ViewExamRecords",
+      order: "MaxScore",
+      desc: false,
+      conditions: {
+        Name: { value: undefined, type: "like" },
+        DepartmentId: { value: undefined, type: "equal" },
+        ExamName: { value: undefined, type: "like" },
+        Passed: { value: undefined, type: "equal" }
+      },
+      DepartmentIdSelectData: [],
+      PassedSelectData: [
+        { key: "通过", value: "通过" },
+        { key: "未通过", value: "未通过" }
+      ],
 
-                // 搜索
-                apiUrl: '/Instructor/GetListForVue',
-                table: 'ViewExamRecords',
-                order: '',
-                desc: false,
-                conditions: {
-									Name: { value: undefined, type: 'like' },
-									DepartmentId: { value: undefined, type: 'equal' },
-									ExamName: { value: undefined, type: 'like' },
-									Passed: { value: undefined, type: 'equal' },
-                },
-								DepartmentIdSelectData: [],
-								PassedSelectData: [{ key: '通过', value: '通过' }, { key: '未通过', value: '未通过' }],
-
-                // 分页
-                total: 0,
-                sizes: [10, 20, 50, 100],
-                size: 10,
-                page: 1,
-            };
-        },
-
-        methods: {
-            load: function () {
-                let o = {
-                    page: this.page,
-                    size: this.size,
-                    order: this.order,
-                    desc: this.desc,
-                    table: this.table,
-                    conditions: this.conditions
-                };
-                server.post(this.apiUrl, { json: JSON.stringify(o) }).then(res => {
-                    let { data } = res;
-                    if (data) {
-                        let { total, list } = data;
-                        this.total = total;
-                        this.data = list;
-                    }
-                });
-            },
-
-
-
-            handlePageChange: function (page) {
-                this.page = page;
-                this.load();
-            }
-        },
-
-        mounted() {
-			server.post('/Common/GetDeparts', {}, this).then(res => {
-                      let { code, data } = res;this.DepartmentIdSelectData = data;});
-
-            this.load();
-        }
+      // 分页
+      total: 0,
+      sizes: [10, 20, 50, 100],
+      size: 10,
+      page: 1
     };
+  },
+
+  methods: {
+    load: function() {
+      let o = {
+        page: this.page,
+        size: this.size,
+        order: this.order,
+        desc: this.desc,
+        table: this.table,
+        conditions: this.conditions
+      };
+      server.post(this.apiUrl, { json: JSON.stringify(o) }).then(res => {
+        let { data } = res;
+        if (data) {
+          let { total, list } = data;
+          this.total = total;
+          this.data = list;
+        }
+      });
+    },
+
+    handlePageChange: function(page) {
+      this.page = page;
+      this.load();
+    }
+  },
+
+  mounted() {
+    server.post("/Common/GetDeparts", {}, this).then(res => {
+      let { code, data } = res;
+      this.DepartmentIdSelectData = data;
+    });
+
+    this.load();
+  }
+};
 </script>
 <style scoped lang="scss">
 
