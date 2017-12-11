@@ -27,6 +27,7 @@ namespace Guoli.Model
 		{}
 		#region Model
 		private int _id;
+	    private string _linename = string.Empty;
 		private int _driverid1;
 		private int _driverid2=0;
 		private int _vicedriverid=0;
@@ -67,6 +68,14 @@ namespace Guoli.Model
 			set{ _id=value;}
 			get{return _id;}
 		}
+        /// <summary>
+        /// 区段名称
+        /// </summary>
+	    public string LineName
+	    {
+	        set { _linename = value; }
+            get { return _linename; }
+	    }
 		/// <summary>
 		/// 主司机Id，关联乘务员信息表Id
 		/// </summary>
