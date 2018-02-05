@@ -52,18 +52,7 @@ namespace Guoli.Import
                 res = MessageBox.Show(@"再次提示，您确定要清空基础数据吗？", @"警告", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 if (res == DialogResult.Yes)
                 {
-                    var tables = new List<string> { "TrainMoment", "TrainNoLine", "LineStations", "BaseStation", "BaseLine", "TrainNo" };
-                    var truncate = $"TRUNCATE TABLE {string.Join("; TRUNCATE TABLE ", tables)};";
-                    var delete = $"DELETE FROM DbUpdateLog WHERE TableName IN( {string.Join(", ", tables.Select(s => $"'{s}'"))} );";
-                    //var sql = @"TRUNCATE TABLE TrainMoment
-                    //            TRUNCATE TABLE TrainNoLine
-                    //            TRUNCATE TABLE LineStations
-                    //            TRUNCATE TABLE BaseStation
-                    //            TRUNCATE TABLE BaseLine
-                    //            TRUNCATE TABLE TrainNo
-                    //            DELETE FROM DbUpdateLog WHERE DELETE FROM DbUpdateLog WHERE TableName IN('')";
-                    var bll = new TrainNoBll();
-                    bll.ExecuteSql(truncate + delete);
+                    ImportHelper.ClearBaseData();
                     MessageBox.Show(@"基础数据已被清空，您可以点击上方的按钮重新导入(:=");
                 }
             }
