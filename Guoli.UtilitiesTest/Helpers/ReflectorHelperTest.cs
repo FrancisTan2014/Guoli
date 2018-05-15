@@ -26,5 +26,16 @@ namespace Guoli.UtilitiesTest.Helpers
             propValue.Should().NotBeNull("because I've given a value when create the instance")
                 .And.Subject.ToString().Should().BeEquivalentTo("test success");
         }
+
+        [TestMethod]
+        public void TestGetPropertyValue2()
+        {
+            var testInstance = new TestClass { TestProp = "test success" };
+            var o = (object) testInstance;
+            var propValue = ReflectorHelper.GetPropertyValue(o, "TestProp");
+
+            propValue.Should().NotBeNull("because I've given a value when create the instance")
+                .And.Subject.ToString().Should().BeEquivalentTo("test success");
+        }
     }
 }

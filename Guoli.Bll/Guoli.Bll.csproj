@@ -43,6 +43,7 @@
     <Compile Include="BllFactory.cs" />
     <Compile Include="DalFactory.cs" />
     <Compile Include="ExceptionLogBll.cs" />
+    <Compile Include="IBll.cs" />
     <Compile Include="LoginResult.cs" />
     <Compile Include="OracleBll\J_JCYY_BASEPOSTBll.cs" />
     <Compile Include="OracleBll\VHISPLANINFOBll.cs" />
@@ -54,6 +55,8 @@
     <Compile Include="Partital\AppUpdateBll.cs" />
     <Compile Include="Partital\BaseLineBll.cs" />
     <Compile Include="Partital\BaseStationBll.cs" />
+    <Compile Include="Partital\DbIdentityBll.cs" />
+    <Compile Include="Partital\DbSyncStatusBll.cs" />
     <Compile Include="Partital\DbUpdateLogBll.cs" />
     <Compile Include="Partital\DepartInfoBll.cs" />
     <Compile Include="Partital\DrivePlanBll.cs" />

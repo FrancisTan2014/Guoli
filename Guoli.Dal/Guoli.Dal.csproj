@@ -57,6 +57,8 @@
     <Compile Include="Partital\AppUpdateDal.cs" />
     <Compile Include="Partital\BaseLineDal.cs" />
     <Compile Include="Partital\BaseStationDal.cs" />
+    <Compile Include="Partital\DbIdentityDal.cs" />
+    <Compile Include="Partital\DbSyncStatusDal.cs" />
     <Compile Include="Partital\DbUpdateLogDal.cs" />
     <Compile Include="Partital\DepartInfoDal.cs" />
     <Compile Include="Partital\DrivePlanDal.cs" />

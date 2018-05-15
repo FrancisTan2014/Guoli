@@ -12,7 +12,8 @@ namespace Guoli.Bll
     /// </summary>
     /// <author>FrancisTan</author>
     /// <since>2016-07-14</since>
-    public abstract class BaseBll<T> where T : class,new()
+    public abstract class BaseBll<T>: IBll
+        where T : class,new()
     {
         private BaseDal<T> _dalInstance;
         /// <summary>
@@ -384,6 +385,11 @@ namespace Guoli.Bll
         public int ExecuteSql(string sql)
         {
             return DalInstance.ExecuteSql(sql);
+        }
+
+        IEnumerable<object> IBll.QueryList(string condition)
+        {
+            return QueryList(condition);
         }
     }
 }
