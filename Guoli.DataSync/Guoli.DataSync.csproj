@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientSync.cs" />
     <Compile Include="ServerSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerExportModel.cs" />

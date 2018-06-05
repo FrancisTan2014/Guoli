@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Guoli.Bll;
 using Guoli.Model;
+using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
 
 namespace Guoli.DataSync
@@ -22,6 +23,11 @@ namespace Guoli.DataSync
         /// <returns></returns>
         public ServerExportModel GetNewData(string dbUniqueId)
         {
+            if (dbUniqueId.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException(nameof(dbUniqueId));
+            }
+
             // 根据客户端标识确定上次更新的位置
             var p = GetLastPosition(dbUniqueId);
 
@@ -50,7 +56,7 @@ namespace Guoli.DataSync
             };
         }
 
-        public int GetLastPosition(string dbUniqueId)
+        private int GetLastPosition(string dbUniqueId)
         {
             var bll = new DbSyncStatusBll();
             var status = bll.QuerySingle($"{nameof(DbSyncStatus.DbIdentity)}='{dbUniqueId}'",
@@ -58,13 +64,13 @@ namespace Guoli.DataSync
             return status?.Position ?? 0;
         }
 
-        public List<DbUpdateLog> GetDbLog(int start)
+        private List<DbUpdateLog> GetDbLog(int start)
         {
             var logBll = new DbUpdateLogBll();
             return logBll.QueryList($"Id>${start}") as List<DbUpdateLog>;
         }
 
-        public List<List<object>> GetTableData(List<DbUpdateLog> dbLog)
+        private List<List<object>> GetTableData(List<DbUpdateLog> dbLog)
         {
             var results = new List<List<object>>();
 
@@ -85,6 +91,28 @@ namespace Guoli.DataSync
 
         public void CopyNewFiles(List<string> relativePathList, string sourcePath, string targetPath)
         {
+            if (sourcePath.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException("源路径不能为空");
+            }
+            if (targetPath.IsNullOrEmpty())
+            {
+                throw new ArgumentNullException("目标路径不能为空");
+            }
+            if (!Directory.Exists(sourcePath))
+            {
+                throw new ArgumentException("源路径不存在");
+            }
+            if (!Directory.Exists(targetPath))
+            {
+                throw new ArgumentException("目标路径不存在");
+            }
+
+            if (relativePathList == null || relativePathList.Count == 0)
+            {
+                return;
+            }
+
             var dir = Utils.MakeSyncDir(targetPath);
             var list = relativePathList;
             list.ForEach(p =>
@@ -97,7 +125,10 @@ namespace Guoli.DataSync
                 }
 
                 var sourceName = Path.Combine(sourcePath, p);
-                File.Move(sourceName, destName);
+                if (File.Exists(sourceName))
+                {
+                    File.Move(sourceName, destName);
+                }
             });
         }
     }
