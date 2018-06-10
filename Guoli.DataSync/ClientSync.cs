@@ -54,7 +54,7 @@ namespace Guoli.DataSync
                     transactionBll.ExecuteSql(switchOnSql);
                     return true;
                 });
-                delegates.Insert(delegates.Count - 1, () =>
+                delegates.Add(() =>
                 {
                     transactionBll.ExecuteSql(switchOffSql);
                     return true;
