@@ -8,5 +8,7 @@ namespace Guoli.Bll
     public interface IBll
     {
         IEnumerable<object> QueryList(string condition);
+
+        void BulkInsert(string json);
     }
 }

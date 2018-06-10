@@ -7,6 +7,7 @@ using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
+using Newtonsoft.Json.Linq;
 
 namespace Guoli.DataSync
 {
@@ -35,22 +36,14 @@ namespace Guoli.DataSync
             var dbLog = GetDbLog(p);
 
             // 根据日志导出相关表的数据
-            List<List<object>> data = GetTableData(dbLog);
+            var data = GetTableData(dbLog);
+            data.Add(nameof(DbUpdateLog), dbLog);
 
             // 根据日志确定需要拷贝的文件
-            var files = data.Find(list => list?[0] is TraficFiles);
-            List<string> pathList = null;
-            if (files != null)
-            {
-                pathList =
-                    files.Select(
-                        o => ReflectorHelper.GetPropertyValue(o, nameof(TraficFiles.FilePath))
-                    ) as List<string>;
-            }
+            var pathList = GetFileData(dbLog);
 
             return new ServerExportModel
             {
-                DbLog = dbLog,
                 Data = data,
                 PathList = pathList
             };
@@ -70,9 +63,9 @@ namespace Guoli.DataSync
             return logBll.QueryList($"Id>${start}") as List<DbUpdateLog>;
         }
 
-        private List<List<object>> GetTableData(List<DbUpdateLog> dbLog)
+        private Dictionary<string, object> GetTableData(List<DbUpdateLog> dbLog)
         {
-            var results = new List<List<object>>();
+            var results = new Dictionary<string, object>();
 
             var groups = dbLog.GroupBy(o => o.TableName);
             foreach (var g in groups)
@@ -82,11 +75,30 @@ namespace Guoli.DataSync
                 var idList = log.Select(o => o.TargetId);
                 var condition = $" Id IN ({string.Join(",", idList)})";
                 var bll = ReflectorHelper.GetInstance("Guoli.Bll", $"Guoli.Bll.{name}Bll") as IBll;
-                var data = bll.QueryList(condition).ToList();
-                results.Add(data);
+                var data = bll.QueryList(condition);
+                if (data.Any())
+                {
+                    results.Add(name, data);
+                }
             }
 
             return results;
+        }
+
+        public List<string> GetFileData(List<DbUpdateLog> dbLog)
+        {
+            var groups = dbLog.GroupBy(o => o.TableName);
+            var fileLog = groups.SingleOrDefault(g => g.Key == nameof(TraficFiles));
+            if (fileLog != null)
+            {
+                var idList = fileLog.Select(o => o.TargetId);
+                var condition = $" Id IN ({string.Join(",", idList)})";
+                var bll = new TraficFilesBll();
+                var data = bll.QueryList(condition);
+                return data.Select(d => d.FilePath).ToList();
+            }
+
+            return new List<string>();
         }
 
         public void CopyNewFiles(List<string> relativePathList, string sourcePath, string targetPath)
@@ -130,6 +142,41 @@ namespace Guoli.DataSync
                     File.Move(sourceName, destName);
                 }
             });
+        }
+
+        /// <summary>
+        /// 向服务端数据库添加客户端新产生的数据
+        /// </summary>
+        /// <param name="data">从客户端导出的 json 格式的数据集</param>
+        public bool AddNewData(string data)
+        {
+            var tables = Utils.GetClient2ServerTables();
+            var obj = JObject.Parse(data);
+
+            var delegates = new List<Func<bool>>();
+            var assembly = "Guoli.Bll";
+            tables.ForEach(table =>
+            {
+                JToken token;
+                if (obj.TryGetValue(table, out token))
+                {
+                    delegates.Add(() =>
+                    {
+                        var bllInstance = ReflectorHelper.GetInstance(assembly, $"{assembly}.{table}") as IBll;
+                        var arrJson = token.ToString();
+                        bllInstance.BulkInsert(arrJson);
+                        return true;
+                    });
+                }
+            });
+
+            if (delegates.Any())
+            {
+                var bll = new TraficFilesBll();
+                return bll.ExecuteTransation(delegates.ToArray());
+            }
+
+            return true;
         }
     }
 }
