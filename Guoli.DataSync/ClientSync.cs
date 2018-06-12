@@ -36,7 +36,7 @@ namespace Guoli.DataSync
 
         public bool AddNewData(string data)
         {
-            var tables = Utils.GetClient2ServerTables();
+            var tables = Utils.GetServer2ClientTables();
 
             var jsonObj = JObject.Parse(data);
             JToken dataDict;
@@ -103,5 +103,5 @@ namespace Guoli.DataSync
             var list = tables.Select(t => $"SET IDENTITY_INSERT [dbo].[{t}] {onOrOff};");
             return string.Join(" ", list);
         }
-    }
+    } 
 }

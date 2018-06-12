@@ -34,13 +34,13 @@ namespace Guoli.DataSync
 
         private IEnumerable<USBDeviceInfo> GetUsbDevices()
         {
-            foreach (ManagementObject device in new ManagementObjectSearcher(@"SELECT * FROM Win32_DiskDrive WHERE InterfaceType LIKE 'USB%'").Get())
+            foreach (var device in new ManagementObjectSearcher(@"SELECT * FROM Win32_DiskDrive WHERE InterfaceType LIKE 'USB%'").Get())
             {
-                foreach (ManagementObject partition in new ManagementObjectSearcher(
+                foreach (var partition in new ManagementObjectSearcher(
                     "ASSOCIATORS OF {Win32_DiskDrive.DeviceID='" + device.Properties["DeviceID"].Value
                     + "'} WHERE AssocClass = Win32_DiskDriveToDiskPartition").Get())
                 {
-                    foreach (ManagementObject disk in new ManagementObjectSearcher(
+                    foreach (var disk in new ManagementObjectSearcher(
                                 "ASSOCIATORS OF {Win32_DiskPartition.DeviceID='"
                                     + partition["DeviceID"]
                                     + "'} WHERE AssocClass = Win32_LogicalDiskToPartition").Get())

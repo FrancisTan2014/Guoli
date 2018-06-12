@@ -125,7 +125,7 @@ namespace Guoli.DataSync
                 return;
             }
 
-            var dir = Utils.MakeSyncDir(targetPath);
+            var dir = targetPath;
             var list = relativePathList;
             list.ForEach(p =>
             {

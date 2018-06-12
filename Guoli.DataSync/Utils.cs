@@ -21,9 +21,15 @@ namespace Guoli.DataSync
             return config.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
-        public static string MakeSyncDir(string origin)
+        public static List<string> GetServer2ClientTables()
         {
-            return Path.Combine(origin, "__sync");
+            var config = ConfigurationManager.AppSettings["Server2ClientTables"];
+            if (config.IsNullOrEmpty())
+            {
+                throw new ConfigurationErrorsException("没有找到服务器端向客户端同步的表名这一项配置");
+            }
+
+            return config.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
     }
 }
