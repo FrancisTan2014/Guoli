@@ -64,26 +64,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientSync.cs" />
-    <Compile Include="FrmDeploy.cs">
+    <Compile Include="classes\ClientSync.cs" />
+    <Compile Include="classes\SyncInfo.cs" />
+    <Compile Include="frames\FrmDeploy.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmDeploy.Designer.cs">
+    <Compile Include="frames\FrmDeploy.Designer.cs">
       <DependentUpon>FrmDeploy.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmMain.cs">
+    <Compile Include="frames\FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmMain.Designer.cs">
+    <Compile Include="frames\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="ServerSync.cs" />
+    <Compile Include="classes\Program.cs" />
+    <Compile Include="classes\ServerSync.cs" />
+    <Compile Include="frames\FrmUsbs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frames\FrmUsbs.Designer.cs">
+      <DependentUpon>FrmUsbs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerExportModel.cs" />
-    <Compile Include="SyncInfo.cs" />
-    <Compile Include="USBDeviceInfo.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="classes\ServerExportModel.cs" />
+    <Compile Include="classes\USBSync.cs" />
+    <Compile Include="classes\USBDeviceInfo.cs" />
+    <Compile Include="classes\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Guoli.Bll\Guoli.Bll.csproj">
@@ -107,15 +114,20 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FrmDeploy.resx">
+    <EmbeddedResource Include="frames\FrmDeploy.resx">
       <DependentUpon>FrmDeploy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmMain.resx">
+    <EmbeddedResource Include="frames\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frames\FrmUsbs.resx">
+      <DependentUpon>FrmUsbs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

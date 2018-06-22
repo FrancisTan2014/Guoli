@@ -5,8 +5,10 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using Guoli.Bll;
+using Guoli.DataSync.classes;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
+using Guoli.Utilities.Helpers;
 
 namespace Guoli.DataSync
 {
@@ -18,13 +20,24 @@ namespace Guoli.DataSync
     ///     读出数据
     /// 等等
     /// </summary>
-    public class SyncInfo
+    public class USBSync
     {
-        public const string SyncDir = "/Guoli.Sync";
-        // "开发人员：谭光洪"的 MD5 值
-        public const string IdentifyFilename = "e17d877beaec65f96b27dbdd16e5f709";
+        private const string SyncDir = "Guoli.Sync";
+        private const string IdentifyFilename = "e17d877beaec65f96b27dbdd16e5f709";
+        private string JsonFilename => $"{RootDir}{SyncDir}/15caacaf54f28476017282b4a1fe1550";
 
-        public bool DeviceLeagal(string rootDir)
+        public USBDeviceInfo USBDevice { get; }
+
+        public bool DeviceReady => USBDevice != null && Match(USBDevice.Directory);
+
+        public string RootDir => USBDevice?.Directory;
+
+        public USBSync()
+        {
+            USBDevice = GetInitializedUsb();
+        }
+
+        public bool Match(string rootDir)
         {
             if (!Directory.Exists(rootDir))
             {
@@ -72,6 +85,37 @@ namespace Guoli.DataSync
             catch (Exception e)
             {
                 throw new Exception("未检测到机务运用管控系统的服务，请联系管理员");
+            }
+        }
+
+        private USBDeviceInfo GetInitializedUsb()
+        {
+            var devices = Utils.GetUsbDevices();
+            var device = devices.SingleOrDefault(d => Match(d.Directory));
+            return device;
+        }
+
+        public SyncInfo GetSyncInfo()
+        {
+            using (var fs = new FileStream(JsonFilename, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = new StreamReader(fs))
+                {
+                    var json = reader.ReadToEnd();
+                    return JsonHelper.Deserialize<SyncInfo>(json);
+                }
+            }
+        }
+
+        public void WriteSyncInfo(SyncInfo syncInfo)
+        {
+            using (var fs = new FileStream(JsonFilename, FileMode.Open, FileAccess.Write))
+            {
+                using (var writer = new StreamWriter(fs))
+                {
+                    var json = JsonHelper.Serialize(syncInfo);
+                    writer.Write(json);
+                }
             }
         }
     }

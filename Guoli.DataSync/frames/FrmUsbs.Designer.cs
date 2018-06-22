@@ -1,6 +1,6 @@
-﻿namespace Guoli.DataSync
+﻿namespace Guoli.DataSync.frames
 {
-    partial class FrmMain
+    partial class FrmUsbs
     {
         /// <summary>
         /// Required designer variable.
@@ -28,33 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnStart = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // btnStart
-            // 
-            this.btnStart.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnStart.Location = new System.Drawing.Point(136, 82);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(192, 58);
-            this.btnStart.TabIndex = 0;
-            this.btnStart.Text = "点击开始进行数据同步";
-            this.btnStart.UseVisualStyleBackColor = true;
-            // 
-            // FrmMain
+            // FrmUsbs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 257);
-            this.Controls.Add(this.btnStart);
-            this.Name = "FrmMain";
-            this.Text = "U盘数据同步工具";
+            this.ClientSize = new System.Drawing.Size(247, 140);
+            this.Name = "FrmUsbs";
+            this.Text = "请选择 U 盘";
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btnStart;
     }
 }

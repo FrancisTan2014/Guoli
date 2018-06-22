@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Guoli.DataSync
+namespace Guoli.DataSync.frames
 {
-    public partial class FrmMain : Form
+    public partial class FrmUsbs : Form
     {
-        public FrmMain()
+        public FrmUsbs()
         {
             InitializeComponent();
         }
