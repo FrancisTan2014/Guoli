@@ -11,6 +11,6 @@ namespace Guoli.DataSync
         public string Name { get; set; }
         public string VolumeName { get; set; }
 
-        public string Directory => Name + "\\";
+        public string Directory => Name.EndsWith("\\") ? Name : Name + "\\";
     }
 }

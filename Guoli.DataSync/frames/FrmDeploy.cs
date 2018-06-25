@@ -50,16 +50,16 @@ namespace Guoli.DataSync
             var t = btn.Text;
             var start = t.LastIndexOf("(") + 1;
             // 从像 xxx(x:) 的字符串中提取盘符
-            var dir = t.Substring(start, t.Length - start - 1) + "\\";
+            var dir = t.Substring(start, t.Length - start - 1);
             
-            var usbSync = new USBSync();
-            if (usbSync.Match(dir))
+            var usbSync = new USBSync(dir);
+            if (usbSync.Match())
             {
                 MessageBox.Show("此 U 盘已被正确初始化，可以正常使用");
             }
             else
             {
-                usbSync.InitUsb(dir);
+                usbSync.InitUsb();
                 this.Controls.Remove(btn);
                 MessageBox.Show("初始化成功");
             }

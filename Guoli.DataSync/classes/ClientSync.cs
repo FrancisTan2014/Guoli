@@ -10,20 +10,21 @@ using System.Text;
 
 namespace Guoli.DataSync
 {
-    public class ClientSync
+    public class ClientSync: ISync
     {
-        public Dictionary<string, object> GetNewData()
+        public Dictionary<string, object> GetNewData(Dictionary<string, int> startsDict)
         {
             var tables = Utils.GetClient2ServerTables();
-            var statusBll = new DbSyncStatusBll();
             var dict = new Dictionary<string, object>();
             tables.ForEach(table =>
             {
-                var cols = statusBll.QuerySingleColumn($"{nameof(DbSyncStatus.TableName)}='{table}'", nameof(DbSyncStatus.Position)).ToList();
-                var maxId = cols.Count == 0 ? 0 : (int)cols[0];
-
-                var assembly = "Guoli.Bll";
-                var bllInstance = ReflectorHelper.GetInstance(assembly, $"{assembly}.{table}") as IBll;
+                var maxId = 0;
+                if (startsDict.ContainsKey(table))
+                {
+                    maxId = startsDict[table];
+                }
+                
+                var bllInstance = BllFactory.GetBllInstance(table) as IBll;
                 var list = bllInstance.QueryList($"Id>{maxId}");
                 if (list.Any())
                 {
@@ -34,19 +35,15 @@ namespace Guoli.DataSync
             return dict;
         }
 
-        public bool AddNewData(string data)
+        private bool AddNewData(Dictionary<string, object> data)
         {
-            var tables = Utils.GetServer2ClientTables();
+                var tables = data.Keys.ToList();
 
-            var jsonObj = JObject.Parse(data);
-            JToken dataDict;
-            if (jsonObj.TryGetValue("Data", out dataDict))
-            {
                 // 这里只是需要一个 bll 对象用于执行事务
                 // 因此随便选择一个 bll 对象即可
                 var transactionBll = new TraficFilesBll();
 
-                var delegates = GetDelegates(tables, dataDict);
+                var delegates = GetDelegates(data);
 
                 var switchOnSql = GetIdentityInsertSwitchSql(tables, "ON");
                 var switchOffSql = GetIdentityInsertSwitchSql(tables, "OFF");
@@ -72,28 +69,24 @@ namespace Guoli.DataSync
                         return true;
                     }
                 }
-            }
 
             return false;
         }
 
-        private List<Func<bool>> GetDelegates(List<string> tables, JToken data)
+        private List<Func<bool>> GetDelegates(Dictionary<string, object> data)
         {
             var delegates = new List<Func<bool>>();
-            tables.ForEach(t =>
+            foreach (var couple in data)
             {
-                var json = data[t]?.ToString();
-                if (!json.IsNullOrEmpty())
+                var t = couple.Key;
+                var json = JsonHelper.Serialize(couple.Value);
+                delegates.Add(() =>
                 {
-                    delegates.Add(() =>
-                    {
-                        var assembly = "Guoli.Bll";
-                        var bllInstance = ReflectorHelper.GetInstance(assembly, $"{assembly}.{t}") as IBll;
-                        bllInstance.BulkInsert(json);
-                        return true;
-                    });
-                }
-            });
+                    var bllInstance = BllFactory.GetBllInstance(t) as IBll;
+                    bllInstance.BulkInsert(json);
+                    return true;
+                });
+            }
 
             return delegates;
         }
@@ -102,6 +95,76 @@ namespace Guoli.DataSync
         {
             var list = tables.Select(t => $"SET IDENTITY_INSERT [dbo].[{t}] {onOrOff};");
             return string.Join(" ", list);
+        }
+
+        public SyncInfo Import(SyncInfo syncInfo)
+        {
+            if (!syncInfo.ServerNewDataFlag || syncInfo.ClientWriteSuccess)
+            {
+                syncInfo.ClientWriteSuccess = true;
+                return syncInfo;
+            }
+
+            var success = AddNewData(syncInfo.ServerData);
+            syncInfo.ClientWriteSuccess = success;
+            return syncInfo;
+        }
+
+        public SyncInfo Export(SyncInfo syncInfo)
+        {
+            var startsDict = GetLastMaxIdDict(syncInfo);
+            var newData = GetNewData(startsDict);
+            syncInfo.ClientData = newData;
+            syncInfo.ClientNewDataFlag = newData.Any();
+            syncInfo.ServerWriteSuccess = false;
+
+            var newStartsDict = GetNewStartsDict();
+            syncInfo.ExportMaxIdDict = newStartsDict;
+
+            return syncInfo;
+        }
+
+        private static Dictionary<string, int> GetNewStartsDict()
+        {
+            var tables = Utils.GetClient2ServerTables();
+            var newStartsDict = new Dictionary<string, int>();
+            tables.ForEach(t =>
+            {
+                var bllInstance = BllFactory.GetBllInstance(t) as IBll;
+                var maxId = (int) bllInstance.GetMaxId();
+                newStartsDict.Add(t, maxId);
+            });
+            return newStartsDict;
+        }
+
+        private Dictionary<string, int> GetLastMaxIdDict(SyncInfo syncInfo)
+        {
+            var bll = new DbSyncStatusBll();
+            var startsDict = syncInfo.ExportMaxIdDict;
+            if (syncInfo.ServerWriteSuccess)
+            {
+                // 由于上次导入的数据已成功同步至服务端
+                // 因此，将上将导出数据的最大 Id 写入数据库
+                // 以作为下次导出数据的依据
+                var models = startsDict.Select(couple => new DbSyncStatus
+                {
+                    DbIdentity = string.Empty,
+                    TableName = couple.Key,
+                    Position = couple.Value,
+                    LastTime = DateTime.Now
+                });
+                bll.BulkInsert(models);
+            }
+            else
+            {
+                startsDict = new Dictionary<string, int>();
+                var list = bll.QueryAll();
+                foreach (var o in list)
+                {
+                    startsDict.Add(o.TableName, o.Position);
+                }
+            }
+            return startsDict;
         }
     } 
 }

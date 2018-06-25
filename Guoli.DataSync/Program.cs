@@ -16,7 +16,8 @@ namespace Guoli.DataSync
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmDeploy());
+            Application.Run(new FrmMain());
+            //Application.Run(new FrmDeploy());
         }
     }
 }

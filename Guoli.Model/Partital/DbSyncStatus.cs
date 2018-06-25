@@ -18,6 +18,7 @@ namespace Guoli.Model
         private string _dbidentity;
         private string _tablename;
         private int _position;
+        private DateTime _lasttime;
         /// <summary>
         /// 
         /// </summary>
@@ -49,6 +50,12 @@ namespace Guoli.Model
         {
             set { _position = value; }
             get { return _position; }
+        }
+
+        public DateTime LastTime
+        {
+            set { _lasttime = value; }
+            get { return _lasttime; }
         }
         #endregion Model
 

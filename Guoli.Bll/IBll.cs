@@ -10,5 +10,7 @@ namespace Guoli.Bll
         IEnumerable<object> QueryList(string condition);
 
         void BulkInsert(string json);
+
+        object GetMaxId();
     }
 }

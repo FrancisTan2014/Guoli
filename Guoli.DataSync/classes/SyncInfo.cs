@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guoli.DataSync.classes
+namespace Guoli.DataSync
 {
     public class SyncInfo
     {
@@ -51,5 +51,18 @@ namespace Guoli.DataSync.classes
         /// 客户端新数据
         /// </summary>
         public Dictionary<string, object> ClientData { get; set; }
+
+        /// <summary>
+        /// 需要拷贝的文件路径集合
+        /// </summary>
+        public List<string> PathList { get; set; }
+
+        public SyncInfo()
+        {
+            PathList = new List<string>();
+            ClientData = new Dictionary<string, object>();
+            ServerData = new Dictionary<string, object>();
+            ExportMaxIdDict = new Dictionary<string, int>();
+        }
     }
 }

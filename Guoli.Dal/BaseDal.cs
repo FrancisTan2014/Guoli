@@ -134,7 +134,7 @@ namespace Guoli.Dal
                 return model;
             }
 
-            var outParamName = "@identity";
+            var outParamName = "@__identity";
             var outParamSqlType = SqlDbType.Int;
             if (primaryKeyProp.PropertyType == typeof(long))
             {
@@ -153,7 +153,7 @@ namespace Guoli.Dal
             };
             sqlParamList.Add(outIdentity);
 
-            var propNames = string.Join(",", propNameList);
+            var propNames = string.Join(",", propNameList.Select(p => $"[{p}]"));
             var paramNames = string.Join(",", paraNameList);
             var cmdText =
                 $"INSERT INTO {TableName}({propNames}) VALUES({paramNames}) SELECT {outParamName}=SCOPE_IDENTITY()";

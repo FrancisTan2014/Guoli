@@ -65,6 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="classes\ClientSync.cs" />
+    <Compile Include="classes\ISync.cs" />
+    <Compile Include="classes\SyncFactory.cs" />
     <Compile Include="classes\SyncInfo.cs" />
     <Compile Include="frames\FrmDeploy.cs">
       <SubType>Form</SubType>
@@ -78,7 +80,7 @@
     <Compile Include="frames\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="classes\Program.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="classes\ServerSync.cs" />
     <Compile Include="frames\FrmUsbs.cs">
       <SubType>Form</SubType>

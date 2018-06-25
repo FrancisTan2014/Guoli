@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using Guoli.Bll;
-using Guoli.DataSync.classes;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
 using Guoli.Utilities.Helpers;
@@ -28,23 +27,31 @@ namespace Guoli.DataSync
 
         public USBDeviceInfo USBDevice { get; }
 
-        public bool DeviceReady => USBDevice != null && Match(USBDevice.Directory);
+        public bool DeviceReady => USBDevice != null && Match();
 
         public string RootDir => USBDevice?.Directory;
 
-        public USBSync()
+        public USBSync(USBDeviceInfo device)
         {
-            USBDevice = GetInitializedUsb();
+            USBDevice = device;
         }
 
-        public bool Match(string rootDir)
+        public USBSync(string rootDir)
         {
-            if (!Directory.Exists(rootDir))
+            USBDevice = new USBDeviceInfo
+            {
+                Name = rootDir
+            };
+        }
+
+        public bool Match()
+        {
+            if (!Directory.Exists(RootDir))
             {
                 return false;
             }
 
-            var syncDir = Path.Combine(rootDir, SyncDir);
+            var syncDir = Path.Combine(RootDir, SyncDir);
             if (!Directory.Exists(syncDir))
             {
                 return false;
@@ -56,31 +63,67 @@ namespace Guoli.DataSync
                 return false;
             }
 
+            var syncInfo = GetSyncInfo();
+            if (syncInfo == null)
+            {
+                return false;
+            }
+
             return true;
         }
 
-        public void InitUsb(string rootDir)
+        public void DoSync(int serverType)
+        {
+            var syncInfo = GetSyncInfo();
+            if (syncInfo == null)
+            {
+                throw new Exception("无法获取到同步信息的 json");
+            }
+
+            var sync = new SyncFactory().GetInstance(serverType);
+            syncInfo = sync.Import(syncInfo);
+            if (serverType == 2 && syncInfo.ClientWriteSuccess)
+            {
+                var sourcePath = Path.Combine(RootDir, SyncDir);
+                var targetPath = Utils.GetWebAppPath();
+                Utils.CopyNewFiles(syncInfo.PathList, sourcePath, targetPath);
+            }
+
+            var newSyncInfo = sync.Export(syncInfo);
+            WriteSyncInfo(newSyncInfo);
+        }
+
+        public void InitUsb()
         {
             try
             {
                 var identityBll = new DbIdentityBll();
-                var list = identityBll.QueryAll();
+                var list = identityBll.QueryAll().ToList();
                 if (!list.Any())
                 {
                     // TODO: 向表 DbIdentity 新增数据库标识
                     // TODO: 将新增的数据插入 list 中
-                    
+                    var identity = Utils.AddDbIdentity();
+                    list.Add(identity);
                 }
 
+                var dbIdentity = list.First();
                 var maxId = (int)new DbUpdateLogBll().GetMaxId();
 
-                var syncDir = Path.Combine(rootDir, SyncDir);
+                var syncDir = Path.Combine(RootDir, SyncDir);
                 Directory.CreateDirectory(syncDir);
 
                 var identityFile = Path.Combine(syncDir, IdentifyFilename);
                 File.Create(identityFile);
 
-                File.Create(IdentifyFilename);
+                var syncInfo = new SyncInfo
+                {
+                    DbIdentity = dbIdentity.UniqueId,
+                    ServerWriteSuccess = true,
+                    ClientNewDataFlag = false,
+                    DbUpdateLogMaxId = maxId
+                };
+                WriteSyncInfo(syncInfo);
             }
             catch (Exception e)
             {
@@ -88,34 +131,34 @@ namespace Guoli.DataSync
             }
         }
 
-        private USBDeviceInfo GetInitializedUsb()
+        private SyncInfo GetSyncInfo()
         {
-            var devices = Utils.GetUsbDevices();
-            var device = devices.SingleOrDefault(d => Match(d.Directory));
-            return device;
-        }
+            if (!File.Exists(JsonFilename))
+            {
+                return null;
+            }
 
-        public SyncInfo GetSyncInfo()
-        {
             using (var fs = new FileStream(JsonFilename, FileMode.Open, FileAccess.Read))
             {
                 using (var reader = new StreamReader(fs))
                 {
                     var json = reader.ReadToEnd();
+                    if (json.IsNullOrEmpty())
+                    {
+                        return null;
+                    }
+
                     return JsonHelper.Deserialize<SyncInfo>(json);
                 }
             }
         }
 
-        public void WriteSyncInfo(SyncInfo syncInfo)
+        private void WriteSyncInfo(SyncInfo syncInfo)
         {
-            using (var fs = new FileStream(JsonFilename, FileMode.Open, FileAccess.Write))
+            using (var writer = new StreamWriter(JsonFilename, false))
             {
-                using (var writer = new StreamWriter(fs))
-                {
-                    var json = JsonHelper.Serialize(syncInfo);
-                    writer.Write(json);
-                }
+                var json = JsonHelper.Serialize(syncInfo);
+                writer.Write(json);
             }
         }
     }
