@@ -467,7 +467,8 @@ namespace Guoli.Dal
                 throw new ArgumentNullException(nameof(delegates));
             }
 
-            using (TransactionScope scope = new TransactionScope())
+            using (TransactionScope scope = 
+                new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromMinutes(10)))
             {
                 try
                 {

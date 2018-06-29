@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using System.DirectoryServices;
 using System.Management;
+using System.Runtime.InteropServices;
 using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
@@ -13,13 +15,18 @@ namespace Guoli.DataSync
 {
     internal class Utils
     {
+        private static void EnsureConfigNotNullOrEmpty(string config, string msg)
+        {
+            if (config.IsNullOrEmpty())
+            {
+                throw new ConfigurationErrorsException(msg);
+            }
+        }
+
         public static List<string> GetClient2ServerTables()
         {
             var config = ConfigurationManager.AppSettings["Client2ServerTables"];
-            if (config.IsNullOrEmpty())
-            {
-                throw new ConfigurationErrorsException("没有找到客户端向服务器端同步的表名这一项配置");
-            }
+            EnsureConfigNotNullOrEmpty(config, "没有找到客户端向服务器端同步的表名这一项配置");
 
             return config.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
@@ -27,17 +34,25 @@ namespace Guoli.DataSync
         public static List<string> GetServer2ClientTables()
         {
             var config = ConfigurationManager.AppSettings["Server2ClientTables"];
-            if (config.IsNullOrEmpty())
-            {
-                throw new ConfigurationErrorsException("没有找到服务器端向客户端同步的表名这一项配置");
-            }
+            EnsureConfigNotNullOrEmpty(config, "没有找到服务器端向客户端同步的表名这一项配置");
 
             return config.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
-        public static string GetWebAppPath()
+        public static int GetWebAppPort()
         {
-            return ConfigurationManager.AppSettings["WebAppPath"];
+            var config = ConfigurationManager.AppSettings["WebAppPort"];
+            EnsureConfigNotNullOrEmpty(config, "没有找到 WebAppPort 这一项配置");
+
+            return config.ToInt32();
+        }
+
+        public static string GetWebAppName()
+        {
+            var config = ConfigurationManager.AppSettings["WebAppName"];
+            EnsureConfigNotNullOrEmpty(config, "获取配置项 WebAppName 失败");
+
+            return config;
         }
 
         public static IEnumerable<USBDeviceInfo> GetUsbDevices()
@@ -150,19 +165,117 @@ namespace Guoli.DataSync
             var list = files;
             list.ForEach(p =>
             {
-                var destName = Path.Combine(dir, p); // 新的文件绝对路径
+                var destName = dir + p; // 新的文件绝对路径
                 var destDir = Path.GetDirectoryName(destName); // 新的目录绝对路径
                 if (!Directory.Exists(destDir))
                 {
                     Directory.CreateDirectory(destDir);
                 }
 
-                var sourceName = Path.Combine(sourcePath, p);
+                var sourceName = sourcePath + p;
                 if (File.Exists(sourceName))
                 {
                     File.Move(sourceName, destName);
                 }
             });
+        }
+
+        public static string GetWebAppDirectoryByAppName(string appName)
+        {
+            DirectoryEntries children = null;
+            try
+            {
+                var rootEntry = new DirectoryEntry("IIS://localhost/w3svc");
+                children = rootEntry.Children;
+            }
+            catch (COMException e)
+            {
+                // 有可能会因为权限问题出现拒绝访问的异常
+                throw e;
+            }
+
+            foreach (DirectoryEntry entry in children)
+            {
+                if (entry.SchemaClassName.Equals("IIsWebServer", StringComparison.OrdinalIgnoreCase))
+                {
+                    var path = GetWebsitePhysicalPath(entry);
+                    var names = path.Split(new[] {'\\', '/'}, StringSplitOptions.RemoveEmptyEntries);
+                    if (names.Contains(appName))
+                    {
+                        return path;
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 根据指定的端口号获取 IIS 网站所在的目录
+        /// </summary>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        /// <exception cref="COMException"></exception>
+        public static string GetWebAppDirectoryByPort(int port)
+        {
+            DirectoryEntries children = null;
+            try
+            {
+                var rootEntry = new DirectoryEntry("IIS://localhost/w3svc");
+                children = rootEntry.Children;
+            }
+            catch (COMException e)
+            {
+                // 有可能会因为权限问题出现拒绝访问的异常
+                throw e;
+            }
+
+            foreach (DirectoryEntry entry in children)
+            {
+                if (entry.SchemaClassName.Equals("IIsWebServer", StringComparison.OrdinalIgnoreCase))
+                {
+                    //var name = entry.Name;
+                    var path = GetWebsitePhysicalPath(entry);
+                    var serverBindings = entry.Properties["ServerBindings"].Value;
+                    if (serverBindings != null)
+                    {
+                        var str = serverBindings.ToString();
+                        var nums = str.Split(new[] {'.', ':'}, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(s => s.ToInt32());
+                        if (nums.Contains(port))
+                        {
+                            return path;
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 得到网站的物理路径
+        /// </summary>
+        /// <param name="rootEntry">网站节点</param>
+        /// <returns></returns>
+        private static string GetWebsitePhysicalPath(DirectoryEntry rootEntry)
+        {
+            string physicalPath = "";
+            foreach (DirectoryEntry childEntry in rootEntry.Children)
+            {
+                if ((childEntry.SchemaClassName == "IIsWebVirtualDir") && (childEntry.Name.ToLower() == "root"))
+                {
+                    if (childEntry.Properties["Path"].Value != null)
+                    {
+                        physicalPath = childEntry.Properties["Path"].Value.ToString();
+                    }
+                    else
+                    {
+                        physicalPath = "";
+                    }
+                }
+            }
+            return physicalPath;
         }
     }
 }

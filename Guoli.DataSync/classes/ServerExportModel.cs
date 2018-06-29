@@ -14,5 +14,7 @@ namespace Guoli.DataSync
         /// 需要拷贝的文件路径集合
         /// </summary>
         public List<string> PathList { get; set; }
+
+        public bool NewDataFlag { get; set; }
     }
 }

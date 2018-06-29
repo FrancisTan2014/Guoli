@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
@@ -30,6 +31,8 @@ namespace Guoli.DataSync
         public bool DeviceReady => USBDevice != null && Match();
 
         public string RootDir => USBDevice?.Directory;
+
+        public string USBFilePath => Path.Combine(RootDir, SyncDir);
 
         public USBSync(USBDeviceInfo device)
         {
@@ -72,7 +75,7 @@ namespace Guoli.DataSync
             return true;
         }
 
-        public void DoSync(int serverType)
+        public void DoSync(int serverType, string webAppDir)
         {
             var syncInfo = GetSyncInfo();
             if (syncInfo == null)
@@ -82,15 +85,36 @@ namespace Guoli.DataSync
 
             var sync = new SyncFactory().GetInstance(serverType);
             syncInfo = sync.Import(syncInfo);
+            
             if (serverType == 2 && syncInfo.ClientWriteSuccess)
             {
-                var sourcePath = Path.Combine(RootDir, SyncDir);
-                var targetPath = Utils.GetWebAppPath();
-                Utils.CopyNewFiles(syncInfo.PathList, sourcePath, targetPath);
+                Utils.CopyNewFiles(syncInfo.PathList, USBFilePath, webAppDir);
             }
 
             var newSyncInfo = sync.Export(syncInfo);
+            if (serverType == 1 && newSyncInfo.PathList.Any())
+            {
+                Utils.CopyNewFiles(newSyncInfo.PathList, webAppDir, USBFilePath);
+            }
+
+            ClearData(syncInfo);
             WriteSyncInfo(newSyncInfo);
+        }
+
+        private void ClearData(SyncInfo syncInfo)
+        {
+            if (syncInfo.ServerWriteSuccess)
+            {
+                // 服务端已成功导入客户端数据
+                // 则将其设置为 null，以减少
+                // 后面向文件中写入内容的大小
+                syncInfo.ClientData = null;
+            }
+            if (syncInfo.ClientWriteSuccess)
+            {
+                syncInfo.ServerData = null;
+                syncInfo.PathList = null;
+            }
         }
 
         public void InitUsb()

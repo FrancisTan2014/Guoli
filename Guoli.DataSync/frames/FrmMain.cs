@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.DirectoryServices;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Guoli.Bll;
@@ -14,9 +17,32 @@ namespace Guoli.DataSync
 {
     public partial class FrmMain : Form
     {
+        private FrmDeploy initFrm;
+
         public FrmMain()
         {
             InitializeComponent();
+        }
+
+        private void ScanSyncDevice()
+        {
+            var devices = Utils.GetUsbDevices();
+            if (devices.Any())
+            {
+                var d = Utils.GetInitializedUsb(devices);
+                if (d == null)
+                {
+                    Hide();
+                    MessageBox.Show("您的 USB 设备还没有经过初始化，请先初始化您的设备");
+                    initFrm = FrmDeploy.GetForm(this);
+                    initFrm.Show();
+                }
+            }
+            else
+            {
+                MessageBox.Show("没有找到移动存储设备（USB），请检查您的设备是否连接到这台电脑");
+                this.Close();
+            }
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -43,13 +69,33 @@ namespace Guoli.DataSync
                     serverType = 2;
                 }
 
+                string webAppDir = string.Empty;
+                try
+                {
+                    //var port = Utils.GetWebAppPort();
+                    //webAppDir = Utils.GetWebAppDirectoryByPort(port);
+                    var appName = Utils.GetWebAppName();
+                    webAppDir = Utils.GetWebAppDirectoryByAppName(appName);
+                }
+                catch (COMException)
+                {
+                    MessageBox.Show("获取 webapp 目录失败，请尝试“关闭程序，然后以管理员身份运行此程序”");
+                    return;
+                }
+
                 // 根据身份启动相应的程序进行数据同步
-                usbSync.DoSync(serverType);
+                usbSync.DoSync(serverType, webAppDir);
+                MessageBox.Show("数据同步成功");
             }
             else
             {
                 MessageBox.Show("没有找到可用于同步数据的 USB 设备，您的 USB 设备没有经过“USB 初始化工具”初始化");
             }
+        }
+        
+        private void FrmMain_Shown(object sender, EventArgs e)
+        {
+            ScanSyncDevice();
         }
     }
 }

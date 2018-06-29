@@ -37,7 +37,8 @@ namespace Guoli.DataSync
             return new ServerExportModel
             {
                 Data = data,
-                PathList = pathList
+                PathList = pathList,
+                NewDataFlag = dbLog.Any()
             };
         }
 
@@ -131,6 +132,18 @@ namespace Guoli.DataSync
             var dbLogMaxId = syncInfo.DbUpdateLogMaxId;
             var bll = new DbSyncStatusBll();
             var status = bll.QuerySingle($"[DbIdentity]='{syncInfo.DbIdentity}'");
+            if (status == null)
+            {
+                status = new DbSyncStatus
+                {
+                    DbIdentity = syncInfo.DbIdentity.ToString(),
+                    LastTime = DateTime.Now,
+                    Position = dbLogMaxId,
+                    TableName = nameof(DbUpdateLog)
+                };
+                AddClientDbStatus(status);
+            }
+
             if (syncInfo.ClientWriteSuccess)
             {
                 status.Position = dbLogMaxId;
@@ -146,10 +159,27 @@ namespace Guoli.DataSync
             syncInfo.ServerData = newData.Data;
             syncInfo.PathList = newData.PathList;
             syncInfo.ClientWriteSuccess = false;
-            syncInfo.ServerNewDataFlag = newData.Data.Any();
-            syncInfo.DbUpdateLogMaxId = (int)bll.GetMaxId();
+            syncInfo.ServerNewDataFlag = newData.NewDataFlag;
+
+            var dbLogBll = new DbUpdateLogBll();
+            syncInfo.DbUpdateLogMaxId = (int)dbLogBll.GetMaxId();
 
             return syncInfo;
+        }
+
+        private void AddClientDbStatus(DbSyncStatus status)
+        {
+            var bll = new DbSyncStatusBll();
+            for (var i = 0; i < 5; i++)
+            {
+                bll.Insert(status);
+                if (status.Id > 0)
+                {
+                    return;
+                }
+            }
+
+            throw new Exception($"插入 DbSyncStatus 失败，Identity={status.DbIdentity}, Position=${status.Position}, LastTime={status.LastTime}");
         }
     }
 }

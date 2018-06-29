@@ -49,6 +49,7 @@
             this.ClientSize = new System.Drawing.Size(403, 234);
             this.Controls.Add(this.btnInitUsb);
             this.Name = "FrmDeploy";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "U盘部署工具";
             this.ResumeLayout(false);
 

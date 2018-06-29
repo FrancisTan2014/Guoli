@@ -49,7 +49,9 @@
             this.ClientSize = new System.Drawing.Size(449, 257);
             this.Controls.Add(this.btnStart);
             this.Name = "FrmMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "U盘数据同步工具";
+            this.Shown += new System.EventHandler(this.FrmMain_Shown);
             this.ResumeLayout(false);
 
         }

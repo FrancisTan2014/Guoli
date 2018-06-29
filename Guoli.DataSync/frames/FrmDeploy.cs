@@ -15,9 +15,23 @@ namespace Guoli.DataSync
 {
     public partial class FrmDeploy : Form
     {
-        public FrmDeploy()
+        private Form main;
+        private static FrmDeploy instance;
+
+        private FrmDeploy(Form main)
         {
+            this.main = main;
             InitializeComponent();
+        }
+
+        public static FrmDeploy GetForm(Form main)
+        {
+            if (instance == null)
+            {
+                instance = new FrmDeploy(main);
+            }
+
+            return instance;
         }
 
         private void btnInitUsb_Click(object sender, EventArgs e)
@@ -61,8 +75,15 @@ namespace Guoli.DataSync
             {
                 usbSync.InitUsb();
                 this.Controls.Remove(btn);
+                this.main.Show();
                 MessageBox.Show("初始化成功");
+                this.Close();
             }
+        }
+
+        private void FrmDeploy_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.main.Close();
         }
     }
 }

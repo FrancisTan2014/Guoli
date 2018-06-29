@@ -12,5 +12,7 @@ namespace Guoli.Bll
         void BulkInsert(string json);
 
         object GetMaxId();
+
+        int ExecuteSql(string sql);
     }
 }

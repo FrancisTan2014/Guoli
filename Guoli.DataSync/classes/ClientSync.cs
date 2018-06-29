@@ -37,30 +37,13 @@ namespace Guoli.DataSync
 
         private bool AddNewData(Dictionary<string, object> data)
         {
-                var tables = data.Keys.ToList();
-
                 // 这里只是需要一个 bll 对象用于执行事务
                 // 因此随便选择一个 bll 对象即可
                 var transactionBll = new TraficFilesBll();
 
                 var delegates = GetDelegates(data);
 
-                var switchOnSql = GetIdentityInsertSwitchSql(tables, "ON");
-                var switchOffSql = GetIdentityInsertSwitchSql(tables, "OFF");
-                delegates.Insert(0, () => {
-                    transactionBll.ExecuteSql(switchOnSql);
-                    return true;
-                });
-                delegates.Add(() =>
-                {
-                    transactionBll.ExecuteSql(switchOffSql);
-                    return true;
-                });
-
                 // 执行事务，插入数据（若执行失败，则重复五次，直到成功）
-                // 1. 打开主键插入开关 SET IDENTITY_INSERT [dbo].[ExamType] ON 
-                // 2. 插入数据
-                // 3. 关闭主键插入开关 SET IDENTITY_INSERT [dbo].[ExamType] OFF
                 for (var i = 0; i < 5; i++)
                 {
                     var success = transactionBll.ExecuteTransation(delegates.ToArray());
@@ -80,23 +63,30 @@ namespace Guoli.DataSync
             {
                 var t = couple.Key;
                 var json = JsonHelper.Serialize(couple.Value);
+
+                // 1. 打开主键插入开关 SET IDENTITY_INSERT [dbo].[ExamType] ON 
+                // 2. 插入数据
+                // 3. 关闭主键插入开关 SET IDENTITY_INSERT [dbo].[ExamType] OFF
                 delegates.Add(() =>
                 {
                     var bllInstance = BllFactory.GetBllInstance(t) as IBll;
+
+                    var format = "SET IDENTITY_INSERT [dbo].[{0}] {1};";
+                    var setOnSql = string.Format(format, t, "ON");
+                    bllInstance.ExecuteSql(setOnSql);
+
                     bllInstance.BulkInsert(json);
+
+                    var setOffSql = string.Format(format, t, "OFF");
+                    bllInstance.ExecuteSql(setOffSql);
+
                     return true;
                 });
             }
 
             return delegates;
         }
-
-        private string GetIdentityInsertSwitchSql(List<string> tables, string onOrOff)
-        {
-            var list = tables.Select(t => $"SET IDENTITY_INSERT [dbo].[{t}] {onOrOff};");
-            return string.Join(" ", list);
-        }
-
+        
         public SyncInfo Import(SyncInfo syncInfo)
         {
             if (!syncInfo.ServerNewDataFlag || syncInfo.ClientWriteSuccess)
