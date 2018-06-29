@@ -32,10 +32,18 @@ namespace Guoli.DataSync
                 var d = Utils.GetInitializedUsb(devices);
                 if (d == null)
                 {
-                    Hide();
-                    MessageBox.Show("您的 USB 设备还没有经过初始化，请先初始化您的设备");
-                    initFrm = FrmDeploy.GetForm(this);
-                    initFrm.Show();
+                    var serverType = Utils.GetCurrentServerType();
+                    if (serverType == 1)
+                    {
+                        MessageBox.Show("您的 USB 设备没有在客户端电脑进行过初始化，将无法在服务器端使用");
+                    }
+                    else if (serverType == 2)
+                    {
+                        Hide();
+                        MessageBox.Show("您的 USB 设备还没有经过初始化，请先初始化您的设备");
+                        initFrm = FrmDeploy.GetForm(this);
+                        initFrm.Show();
+                    }
                 }
             }
             else
