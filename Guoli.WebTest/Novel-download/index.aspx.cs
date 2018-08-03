@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Guoli.Utilities.Extensions;
 
 namespace Guoli.WebTest.Novel_download
 {
@@ -24,9 +25,14 @@ namespace Guoli.WebTest.Novel_download
         protected void Page_Load(object sender, EventArgs e)
         {
             var url = Request["novelUrl"];
+            var titleId = Request["tid"];
+            var conteintId = Request["cid"];
+            var nextId = Request["nid"];
+            var encoding = Request["encode"];
+            encoding = encoding.IsNullOrEmpty() ? "UTF-8" : encoding;
             if (!string.IsNullOrEmpty(url))
             {
-                var webClient = new WebClient { Encoding = Encoding.GetEncoding("UTF-8") };
+                var webClient = new WebClient { Encoding = Encoding.GetEncoding(encoding) };
                 var sourceCode = webClient.DownloadString(url);
                 var pageEncoding = GetEncoding(sourceCode);
                 if (pageEncoding.EncodingName.ToUpper() != "UTF-8")
@@ -35,7 +41,7 @@ namespace Guoli.WebTest.Novel_download
                     sourceCode = webClient.DownloadString(url);
                 }
 
-                var contentPattern = "(<h1>[\\s\\S]+?</h1>)[\\s\\S]+?(<div\\sid=\"content\">[\\s\\S]+?</div>)";
+                var contentPattern = $"(<h1\\s*id=\"{titleId}\">[\\s\\S]+?</h1>)[\\s\\S]+?(<div.+?id=\"{conteintId}\">[\\s\\S]+?</div>)";
                 var nextPagePattern = "<a\\s*href=\"([^\"]+)\">下一章</a>";
 
                 var contentRegex = new Regex(contentPattern);

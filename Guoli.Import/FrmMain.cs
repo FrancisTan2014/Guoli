@@ -30,15 +30,26 @@ namespace Guoli.Import
         /// </summary>
         private void btnStations_Click(object sender, EventArgs e)
         {
-            using (var ofd = new OpenFileDialog())
+            using (var ofd = new FolderBrowserDialog())
             {
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    TimeTableImporter.Execute(ofd.FileName);
+                    var dir = ofd.SelectedPath;
+                    var fileList = Directory.GetFiles(dir).Where(IsExcel);
+                    foreach (var filename in fileList)
+                    {
+                        TimeTableImporter.Execute(filename);
+                    }
 
                     MessageBox.Show(@"导入成功！");
                 }
             }
+        }
+
+        private bool IsExcel(string filename)
+        {
+            var ext = Path.GetExtension(filename)?.ToLower();
+            return ext == ".xls" || ext == ".xlsx";
         }
 
         /// <summary>
