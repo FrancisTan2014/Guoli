@@ -33,13 +33,15 @@
             this.btnAdmin = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.gpbInitial = new System.Windows.Forms.GroupBox();
+            this.btnImportStaff = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnTestChangeConfig = new System.Windows.Forms.Button();
             this.btnImport2 = new System.Windows.Forms.Button();
             this.groupKeywords = new System.Windows.Forms.GroupBox();
+            this.btnDistinct2 = new System.Windows.Forms.Button();
             this.btnDistinct = new System.Windows.Forms.Button();
             this.btnBaiduAnalysiser = new System.Windows.Forms.Button();
-            this.btnDistinct2 = new System.Windows.Forms.Button();
+            this.pb = new System.Windows.Forms.ProgressBar();
             this.gpbInitial.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupKeywords.SuspendLayout();
@@ -87,16 +89,28 @@
             // 
             // gpbInitial
             // 
+            this.gpbInitial.Controls.Add(this.pb);
+            this.gpbInitial.Controls.Add(this.btnImportStaff);
             this.gpbInitial.Controls.Add(this.btnAdmin);
             this.gpbInitial.Controls.Add(this.btnStations);
             this.gpbInitial.Controls.Add(this.btnMigration);
             this.gpbInitial.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.gpbInitial.Location = new System.Drawing.Point(12, 12);
             this.gpbInitial.Name = "gpbInitial";
-            this.gpbInitial.Size = new System.Drawing.Size(792, 179);
+            this.gpbInitial.Size = new System.Drawing.Size(1100, 179);
             this.gpbInitial.TabIndex = 4;
             this.gpbInitial.TabStop = false;
             this.gpbInitial.Text = "系统部署时的初始化操作";
+            // 
+            // btnImportStaff
+            // 
+            this.btnImportStaff.Location = new System.Drawing.Point(808, 59);
+            this.btnImportStaff.Name = "btnImportStaff";
+            this.btnImportStaff.Size = new System.Drawing.Size(268, 64);
+            this.btnImportStaff.TabIndex = 3;
+            this.btnImportStaff.Text = "从 excel 表格导入人员信息";
+            this.btnImportStaff.UseVisualStyleBackColor = true;
+            this.btnImportStaff.Click += new System.EventHandler(this.btnImportStaff_Click);
             // 
             // groupBox1
             // 
@@ -106,7 +120,7 @@
             this.groupBox1.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox1.Location = new System.Drawing.Point(12, 234);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(786, 184);
+            this.groupBox1.Size = new System.Drawing.Size(1100, 184);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "当铁路总公司通知变图时（针对基础数据需要先清空，再重新导入新的基础数据）";
@@ -139,10 +153,20 @@
             this.groupKeywords.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupKeywords.Location = new System.Drawing.Point(12, 461);
             this.groupKeywords.Name = "groupKeywords";
-            this.groupKeywords.Size = new System.Drawing.Size(786, 179);
+            this.groupKeywords.Size = new System.Drawing.Size(1100, 179);
             this.groupKeywords.TabIndex = 6;
             this.groupKeywords.TabStop = false;
             this.groupKeywords.Text = "关键词处理";
+            // 
+            // btnDistinct2
+            // 
+            this.btnDistinct2.Location = new System.Drawing.Point(446, 68);
+            this.btnDistinct2.Name = "btnDistinct2";
+            this.btnDistinct2.Size = new System.Drawing.Size(197, 59);
+            this.btnDistinct2.TabIndex = 2;
+            this.btnDistinct2.Text = "处理重复关键字导致的搜索结果";
+            this.btnDistinct2.UseVisualStyleBackColor = true;
+            this.btnDistinct2.Click += new System.EventHandler(this.btnDistinct2_Click);
             // 
             // btnDistinct
             // 
@@ -164,21 +188,19 @@
             this.btnBaiduAnalysiser.UseVisualStyleBackColor = true;
             this.btnBaiduAnalysiser.Click += new System.EventHandler(this.btnBaiduAnalysiser_Click);
             // 
-            // btnDistinct2
+            // pb
             // 
-            this.btnDistinct2.Location = new System.Drawing.Point(446, 68);
-            this.btnDistinct2.Name = "btnDistinct2";
-            this.btnDistinct2.Size = new System.Drawing.Size(197, 59);
-            this.btnDistinct2.TabIndex = 2;
-            this.btnDistinct2.Text = "处理重复关键字导致的搜索结果";
-            this.btnDistinct2.UseVisualStyleBackColor = true;
-            this.btnDistinct2.Click += new System.EventHandler(this.btnDistinct2_Click);
+            this.pb.Location = new System.Drawing.Point(808, 141);
+            this.pb.Name = "pb";
+            this.pb.Size = new System.Drawing.Size(268, 23);
+            this.pb.TabIndex = 4;
+            this.pb.Visible = false;
             // 
             // frmImport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(829, 696);
+            this.ClientSize = new System.Drawing.Size(1124, 689);
             this.Controls.Add(this.groupKeywords);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gpbInitial);
@@ -206,6 +228,8 @@
         private System.Windows.Forms.Button btnBaiduAnalysiser;
         private System.Windows.Forms.Button btnDistinct;
         private System.Windows.Forms.Button btnDistinct2;
+        private System.Windows.Forms.Button btnImportStaff;
+        private System.Windows.Forms.ProgressBar pb;
     }
 }
 

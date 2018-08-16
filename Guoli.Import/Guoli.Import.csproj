@@ -115,6 +115,7 @@
     <Compile Include="ImportHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StaffImporter.cs" />
     <Compile Include="TimeTableImporter.cs" />
     <EmbeddedResource Include="FrmInit.resx">
       <DependentUpon>FrmInit.cs</DependentUpon>

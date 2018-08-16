@@ -347,5 +347,30 @@ namespace Guoli.Import
                 }
             }
         }
+
+        private void btnImportStaff_Click(object sender, EventArgs e)
+        {
+            using (var ofd = new FolderBrowserDialog())
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    var dir = ofd.SelectedPath;
+                    var fileList = Directory.GetFiles(dir).Where(IsExcel);
+                    var importer = new StaffImporter();
+
+                    pb.Maximum = fileList.Count();
+                    pb.Visible = true;
+                    pb.Value = 0;
+                    foreach (var filename in fileList)
+                    {
+                        importer.Execute(filename);
+                        pb.Value += 1;
+                    }
+
+                    pb.Visible = false;
+                    MessageBox.Show(@"导入成功！");
+                }
+            }
+        }
     }
 }
