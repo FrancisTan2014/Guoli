@@ -38,9 +38,9 @@ namespace Guoli.DataSync.Test
         [TestMethod]
         public void TestAddNewData()
         {
-            var sync = new ServerSync();
-            var json = "{\"Feedback\": [{ \"Id\": 3, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" },{ \"Id\": 4, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" },{ \"Id\": 5, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" },{ \"Id\": 6, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" }]}";
-            sync.AddNewData(json);
+            //var sync = new ServerSync();
+            //var json = "{\"Feedback\": [{ \"Id\": 3, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" },{ \"Id\": 4, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" },{ \"Id\": 5, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" },{ \"Id\": 6, \"Content\": \"色彩不够鲜明\", \"PersonId\": 4, \"AddTime\": \"2018-06-10 10:15\" }]}";
+            //sync.AddNewData(json);
         }
     }
 }
