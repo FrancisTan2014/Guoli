@@ -265,7 +265,7 @@ namespace Guoli.Admin.Utilities
                     Directory.CreateDirectory(absolutePath);
                 }
 
-                keywords.ResultPath = $"{relativePath}/{Guid.NewGuid()}";
+                keywords.ResultPath = $"{relativePath}/{Guid.NewGuid()}.";
             }
 
             var relativeFilename = PathExtension.MapPath(filename);
