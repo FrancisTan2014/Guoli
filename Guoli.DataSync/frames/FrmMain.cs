@@ -37,7 +37,7 @@ namespace Guoli.DataSync
                     {
                         MessageBox.Show("您的 USB 设备没有在客户端电脑进行过初始化，将无法在服务器端使用");
                     }
-                    else if (serverType == 2)
+                    else if (serverType == 0)
                     {
                         Hide();
                         MessageBox.Show("您的 USB 设备还没有经过初始化，请先初始化您的设备");
@@ -55,6 +55,8 @@ namespace Guoli.DataSync
 
         private void btnStart_Click(object sender, EventArgs e)
         {
+            btnStart.Enabled = false;
+            btnStart.Text = "数据同步中，请稍后！";
             var devices = Utils.GetUsbDevices();
             if (!devices.Any())
             {
@@ -77,22 +79,24 @@ namespace Guoli.DataSync
                     serverType = 2;
                 }
 
-                string webAppDir = string.Empty;
-                try
-                {
-                    //var port = Utils.GetWebAppPort();
-                    //webAppDir = Utils.GetWebAppDirectoryByPort(port);
-                    var appName = Utils.GetWebAppName();
-                    webAppDir = Utils.GetWebAppDirectoryByAppName(appName);
-                }
-                catch (COMException)
-                {
-                    MessageBox.Show("获取 webapp 目录失败，请尝试“关闭程序，然后以管理员身份运行此程序”");
-                    return;
-                }
+                //string webAppDir = Utils.GetWebAppDir();
+                //string webAppDir = Utils.GetServerUrl();
+
+                //try
+                //{
+                //    //var port = Utils.GetWebAppPort();
+                //    //webAppDir = Utils.GetWebAppDirectoryByPort(port);
+                //    var appName = Utils.GetWebAppName();
+                //    webAppDir = Utils.GetWebAppDirectoryByAppName(appName);
+                //}
+                //catch (COMException)
+                //{
+                //    MessageBox.Show("获取 webapp 目录失败，请尝试“关闭程序，然后以管理员身份运行此程序”");
+                //    return;
+                //}
 
                 // 根据身份启动相应的程序进行数据同步
-                usbSync.DoSync(serverType, webAppDir);
+                usbSync.DoSync(serverType);
                 MessageBox.Show("数据同步成功");
             }
             else

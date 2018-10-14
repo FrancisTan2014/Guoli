@@ -49,6 +49,8 @@ namespace Guoli.Admin.Utilities
 
         public static readonly string ApkFiles = ConfigurationManager.AppSettings["ApkFiles"];
 
+        public static readonly string SearchResults = ConfigurationManager.AppSettings["SearchResults"];
+
         /// <summary>
         /// 根据要保存的文件类型，返回对应的文件保存路径配置信息
         /// </summary>

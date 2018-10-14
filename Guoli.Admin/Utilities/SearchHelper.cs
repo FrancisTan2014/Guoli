@@ -128,8 +128,7 @@ namespace Guoli.Admin.Utilities
                             try
                             {
                                 var searchResult = SearchFromHtml(keywords.Keywords, html);
-
-                                SearchResultEnqueue(searchResult, fileId, keywords.Id);
+                                SearchResultEnqueue(searchResult, fileId, keywords);
                             }
                             catch (Exception ex)
                             {
@@ -213,8 +212,7 @@ namespace Guoli.Admin.Utilities
                             Directory.CreateDirectory(ZipTempPath);
                         }
 
-                        SearchResultEnqueue(searchResult, file.Id, keywordsId);
-
+                        SearchResultEnqueue(searchResult, file.Id, keywords);
                         SearchCompleted(zipTempFileName, zipFileName, ExtractPath);
                     }
                 }
@@ -228,28 +226,57 @@ namespace Guoli.Admin.Utilities
         /// <summary>
         /// 将搜索结果插入数据库
         /// </summary>
-        /// <param name="searchResult"></param>
-        /// <param name="fileId"></param>
-        /// <param name="keywordsId"></param>
-        private static void SearchResultEnqueue(Dictionary<string, string> searchResult, int fileId, int keywordsId)
+        private static void SearchResultEnqueue(Dictionary<string, string> searchResult, int fileId, TraficKeywords keywords)
         {
+            lock (_lockObj)
+            {
+                var results = new List<TraficSearchResult>();
                 foreach (var pair in searchResult)
                 {
-                    searchResultQueue.Enqueue(new TraficSearchResult
+                    var res = new TraficSearchResult
                     {
-                        KeywordsId = keywordsId,
+                        KeywordsId = keywords.Id,
                         TraficFileId = fileId,
                         SearchResult = pair.Value,
                         Position = pair.Key
-                    });
-                } 
+                    };
+                    results.Add(res);
+                    searchResultQueue.Enqueue(res);
+                }
+                UpdateTraficKeywordsSearchResult(keywords, results);
+            }
+        }
+
+        private static void UpdateTraficKeywordsSearchResult(TraficKeywords keywords, IEnumerable<TraficSearchResult> results)
+        {
+            EnsureSearchResultFileExists(keywords);
+        }
+
+        private static void EnsureSearchResultFileExists(TraficKeywords keywords)
+        {
+            var filename = keywords.ResultPath;
+            if (filename.IsNullOrEmpty())
+            {
+                var d = DateTime.Now;
+                var relativePath = $"{AppSettings.SearchResults}/{d.ToString("yyyy-MM-dd")}";
+                var absolutePath = PathExtension.MapPath(relativePath);
+                if (!Directory.Exists(absolutePath))
+                {
+                    Directory.CreateDirectory(absolutePath);
+                }
+
+                keywords.ResultPath = $"{relativePath}/{Guid.NewGuid()}";
+            }
+
+            var relativeFilename = PathExtension.MapPath(filename);
         }
 
         private static void ClearSearchResultQueue()
         {
             var resultBll = new TraficSearchResultBll();
             var maxId = resultBll.GetMaxId();
-            resultBll.BulkInsert(searchResultQueue.ToList());
+            var resultList = searchResultQueue.ToList();
+            resultBll.BulkInsert(resultList);
             DataUpdateLog.BulkUpdate(typeof(TraficSearchResult).Name, (int)maxId);
             searchResultQueue.Clear();
         }
@@ -307,7 +334,7 @@ namespace Guoli.Admin.Utilities
         public static Dictionary<string, string> SearchFromHtml(string keywords, string html)
         {
             var result = new Dictionary<string, string>();
-            
+
             if (string.IsNullOrEmpty(keywords))
             {
                 throw new ArgumentNullException(nameof(keywords));

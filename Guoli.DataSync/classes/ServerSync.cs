@@ -52,10 +52,16 @@ namespace Guoli.DataSync
         {
             var results = new Dictionary<string, object>();
 
+            var tables = Utils.GetServer2ClientTables();
             var groups = dbLog.GroupBy(o => o.TableName);
             foreach (var g in groups)
             {
                 var name = g.Key;
+                if (!tables.Contains(name))
+                {
+                    continue;
+                }
+
                 var log = g.ToList();
                 var idList = log.Select(o => o.TargetId);
                 var condition = $" Id IN ({string.Join(",", idList)})";
@@ -72,18 +78,64 @@ namespace Guoli.DataSync
 
         public List<string> GetFileData(List<DbUpdateLog> dbLog)
         {
+            // TODO: 将下面的参数搞成配置文件，通过程序读取，现在是写死的
+            //       其中：键是表名，值是需要提取文件路径的字段名称
+            var dict = new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string>(nameof(TraficFiles), nameof(TraficFiles.FilePath)),
+                new KeyValuePair<string, string>(nameof(TraficFiles), nameof(TraficFiles.OriginFilePath)),
+                new KeyValuePair<string, string>(nameof(Announcement), nameof(Announcement.FilePath)),
+                new KeyValuePair<string, string>(nameof(ExamFiles), nameof(ExamFiles.FilePath)),
+                new KeyValuePair<string, string>(nameof(TraficKeywords), nameof(TraficKeywords.ResultPath))
+            };
+
+            var result = new List<string>();
+            dict.ForEach(keyValue =>
+            {
+                var table = keyValue.Key;
+                var field = keyValue.Value;
+                var temp = GetFilePathList(dbLog, table, field);
+                result.AddRange(temp);
+            });
+
+            return result;
+        }
+
+        private List<string> GetFilePathList(IEnumerable<DbUpdateLog> dbLog, string table, string filePathField)
+        {
+            var result = new List<string>();
             var groups = dbLog.GroupBy(o => o.TableName);
-            var fileLog = groups.SingleOrDefault(g => g.Key == nameof(TraficFiles));
+            var fileLog = groups.SingleOrDefault(g => g.Key == table);
             if (fileLog != null)
             {
-                var idList = fileLog.Select(o => o.TargetId);
-                var condition = $" Id IN ({string.Join(",", idList)})";
-                var bll = new TraficFilesBll();
-                var data = bll.QueryList(condition);
-                return data.Select(d => d.FilePath).ToList();
+                try
+                {
+                    var idList = fileLog.Select(o => o.TargetId);
+                    var condition = $" Id IN ({string.Join(",", idList)})";
+                    var bll = BllFactory.GetBllInstance(table) as IBll;
+                    var data = bll.QueryList(condition);
+                    foreach (var o in data)
+                    {
+                        var path = (string)ReflectorHelper.GetPropertyValue(o, filePathField);
+                        result.Add(path);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    new ExceptionLogBll().Insert(new ExceptionLog
+                    {
+                        ClassName = nameof(ServerSync),
+                        FileName = nameof(ServerSync),
+                        HappenTime = DateTime.Now,
+                        Instance = ex.Source,
+                        Message = ex.Message,
+                        Source = 1,
+                        MethodName = nameof(ServerSync.GetFilePathList),
+                        StackTrace = ex.StackTrace
+                    });
+                }
             }
 
-            return new List<string>();
+            return result;
         }
 
         /// <summary>

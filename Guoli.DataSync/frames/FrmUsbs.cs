@@ -15,5 +15,10 @@ namespace Guoli.DataSync.frames
         {
             InitializeComponent();
         }
+
+        private void FrmUsbs_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

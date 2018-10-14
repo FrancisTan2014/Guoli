@@ -29,6 +29,7 @@ namespace Guoli.Model
 		private int _id;
 		private string _keywords;
 		private int _searchcount=0;
+        private string _resultPath = "";
 		private DateTime _addtime= DateTime.Now;
 		/// <summary>
 		/// 主键
@@ -62,8 +63,16 @@ namespace Guoli.Model
 			set{ _addtime=value;}
 			get{return _addtime;}
 		}
-		#endregion Model
+        /// <summary>
+        /// 搜索结果文件地址
+        /// </summary>
+        public string ResultPath
+        {
+            set { _resultPath = value; }
+            get { return _resultPath; }
+        }
+        #endregion Model
 
-	}
+    }
 }
 

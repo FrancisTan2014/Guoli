@@ -75,7 +75,7 @@ namespace Guoli.DataSync
             return true;
         }
 
-        public void DoSync(int serverType, string webAppDir)
+        public void DoSync(int serverType)
         {
             var syncInfo = GetSyncInfo();
             if (syncInfo == null)
@@ -83,18 +83,25 @@ namespace Guoli.DataSync
                 throw new Exception("无法获取到同步信息的 json");
             }
 
+            //判断是调用ClientSync.cs  ServerSync.cs
             var sync = new SyncFactory().GetInstance(serverType);
             syncInfo = sync.Import(syncInfo);
             
+            //从U盘到客户端服务器
             if (serverType == 2 && syncInfo.ClientWriteSuccess)
             {
+                string webAppDir = Utils.GetWebAppDir();
                 Utils.CopyNewFiles(syncInfo.PathList, USBFilePath, webAppDir);
+
             }
 
+            //从服务器下载到U盘
             var newSyncInfo = sync.Export(syncInfo);
             if (serverType == 1 && newSyncInfo.PathList.Any())
             {
+                string webAppDir = Utils.GetServerUrl();
                 Utils.CopyNewFiles(newSyncInfo.PathList, webAppDir, USBFilePath);
+
             }
 
             ClearData(syncInfo);
@@ -109,11 +116,13 @@ namespace Guoli.DataSync
                 // 则将其设置为 null，以减少
                 // 后面向文件中写入内容的大小
                 syncInfo.ClientData = null;
+            
             }
             if (syncInfo.ClientWriteSuccess)
             {
                 syncInfo.ServerData = null;
                 syncInfo.PathList = null;
+               
             }
         }
 

@@ -45,5 +45,7 @@ namespace Guoli.Utilities.Helpers
         {
             return JsonConvert.DeserializeObject<T>(value, DefaultSettings);
         }
+
+        public static object Deserialize(string value, Type type)        {            return JsonConvert.DeserializeObject(value, type, DefaultSettings);        }
     }
 }

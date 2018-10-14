@@ -391,5 +391,11 @@ namespace Guoli.Bll
         {
             return QueryList(condition);
         }
+
+        bool IBll.Update(object model)
+        {
+            T m = model as T;
+            return Update(m);
+        }
     }
 }

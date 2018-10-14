@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using Guoli.Bll;
 using Guoli.Model;
 using Guoli.Utilities.Extensions;
+using System.Net;
 
 namespace Guoli.DataSync
 {
@@ -51,6 +52,23 @@ namespace Guoli.DataSync
         {
             var config = ConfigurationManager.AppSettings["WebAppName"];
             EnsureConfigNotNullOrEmpty(config, "获取配置项 WebAppName 失败");
+
+            return config;
+        }
+
+        public static string GetWebAppDir()
+        {
+            var config = ConfigurationManager.AppSettings["WebAppDir"];
+            EnsureConfigNotNullOrEmpty(config, "获取配置项 WebAppDir 失败");
+
+            return config;
+        }
+
+
+        public static string GetServerUrl()
+        {
+            var config = ConfigurationManager.AppSettings["ServerUrl"];
+            EnsureConfigNotNullOrEmpty(config, "获取配置项 ServerUrl 失败");
 
             return config;
         }
@@ -147,10 +165,10 @@ namespace Guoli.DataSync
             {
                 throw new ArgumentNullException("目标路径不能为空");
             }
-            if (!Directory.Exists(sourcePath))
-            {
-                throw new ArgumentException("源路径不存在");
-            }
+            //if (!Directory.Exists(sourcePath))
+            //{
+            //    throw new ArgumentException("源路径不存在");
+            //}
             if (!Directory.Exists(targetPath))
             {
                 throw new ArgumentException("目标路径不存在");
@@ -172,11 +190,15 @@ namespace Guoli.DataSync
                     Directory.CreateDirectory(destDir);
                 }
 
-                var sourceName = sourcePath + p;
-                if (File.Exists(sourceName))
-                {
-                    File.Move(sourceName, destName);
-                }
+                //var sourceName = sourcePath + p;
+                //if (File.Exists(sourceName))
+                //{
+                //    File.Move(sourceName, destName);
+                //}
+
+                var url = sourcePath + p; // 这里的 serverUrl 是服务器地址，需要在配置文件里配好
+                WebClient myWebClient = new WebClient();
+                myWebClient.DownloadFile(url, destName);
             });
         }
 
@@ -199,7 +221,7 @@ namespace Guoli.DataSync
                 if (entry.SchemaClassName.Equals("IIsWebServer", StringComparison.OrdinalIgnoreCase))
                 {
                     var path = GetWebsitePhysicalPath(entry);
-                    var names = path.Split(new[] {'\\', '/'}, StringSplitOptions.RemoveEmptyEntries);
+                    var names = path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
                     if (names.Contains(appName))
                     {
                         return path;
@@ -240,7 +262,7 @@ namespace Guoli.DataSync
                     if (serverBindings != null)
                     {
                         var str = serverBindings.ToString();
-                        var nums = str.Split(new[] {'.', ':'}, StringSplitOptions.RemoveEmptyEntries)
+                        var nums = str.Split(new[] { '.', ':' }, StringSplitOptions.RemoveEmptyEntries)
                             .Select(s => s.ToInt32());
                         if (nums.Contains(port))
                         {

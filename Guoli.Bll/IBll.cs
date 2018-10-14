@@ -14,5 +14,7 @@ namespace Guoli.Bll
         object GetMaxId();
 
         int ExecuteSql(string sql);
+
+        bool Update(object model);
     }
 }
