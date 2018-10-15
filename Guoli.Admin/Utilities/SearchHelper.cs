@@ -247,15 +247,36 @@ namespace Guoli.Admin.Utilities
             }
         }
 
+        /// <summary>
+        /// 当新增搜索结果时，将其写入对应关键字的搜索结果文件中（每个关键字对应一个搜索结果文件）
+        /// </summary>
+        /// <param name="keywords"></param>
+        /// <param name="results"></param>
         private static void UpdateTraficKeywordsSearchResult(TraficKeywords keywords, IEnumerable<TraficSearchResult> results)
         {
             EnsureSearchResultFileExists(keywords);
+
+            var filename = PathExtension.MapPath(keywords.ResultPath);
+            var seperator = "Guoli.Admin.SearchHelper.Seperator";
+            using (var fs = new FileStream(filename, FileMode.Append, FileAccess.Write))
+            {
+                using (var writer = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    foreach (var r in results)
+                    {
+                        var json = JsonHelper.Serialize(r);
+                        writer.Write(json);
+                        writer.Write(seperator);
+                    }
+                }
+            }
+
+            DataUpdateLog.SingleUpdate(nameof(TraficKeywords), keywords.Id, DataUpdateType.Update);
         }
 
         private static void EnsureSearchResultFileExists(TraficKeywords keywords)
         {
-            var filename = keywords.ResultPath;
-            if (filename.IsNullOrEmpty())
+            if (keywords.ResultPath.IsNullOrEmpty())
             {
                 var d = DateTime.Now;
                 var relativePath = $"{AppSettings.SearchResults}/{d.ToString("yyyy-MM-dd")}";
@@ -265,10 +286,14 @@ namespace Guoli.Admin.Utilities
                     Directory.CreateDirectory(absolutePath);
                 }
 
-                keywords.ResultPath = $"{relativePath}/{Guid.NewGuid()}.";
+                keywords.ResultPath = $"{relativePath}/{Guid.NewGuid()}";
             }
 
-            var relativeFilename = PathExtension.MapPath(filename);
+            var filename = PathExtension.MapPath(keywords.ResultPath);
+            if (!File.Exists(filename))
+            {
+                File.Create(filename);
+            }
         }
 
         private static void ClearSearchResultQueue()
