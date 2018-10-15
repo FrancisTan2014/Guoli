@@ -13,6 +13,8 @@ using NPOI.SS.Formula.Functions;
 using WebGrease.Css.Extensions;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Guoli.Utilities.Extensions;
+using System.IO;
 
 namespace Guoli.Admin.Controllers
 {
@@ -352,6 +354,29 @@ namespace Guoli.Admin.Controllers
             logBll.BulkInsert(list);
 
             return Json(ErrorModel.OperateSuccess);
+        }
+
+        /// <summary>
+        /// 获取搜索结果文件（压缩包）
+        /// </summary>
+        /// <returns></returns>
+        public FileResult GetSearchResultFiles()
+        {
+            var tempPath = PathExtension.MapPath("/_zipTemp");
+            if (!Directory.Exists(tempPath))
+            {
+                Directory.CreateDirectory(tempPath);
+            }
+
+            var zipFilename = $"{tempPath}/{Guid.NewGuid()}.zip";
+            var searchPath = PathExtension.MapPath(AppSettings.SearchResults);
+            FileHelper.Zip(zipFilename, searchPath);
+            using (var fs = new FileStream(zipFilename, FileMode.Open, FileAccess.Read))
+            {
+                byte[] bytes = new byte[fs.Length];
+                fs.Read(bytes, 0, bytes.Length);
+                return File(bytes, System.Net.Mime.MediaTypeNames.Application.Zip, Path.GetFileName(zipFilename));
+            }
         }
     }
 }
